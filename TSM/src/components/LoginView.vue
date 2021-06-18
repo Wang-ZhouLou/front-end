@@ -1,0 +1,168 @@
+<template>
+	<div class="login-wrap">
+		<div class="ms-login">
+			<div class="ms-title">后台管理系统</div>
+			<el-form  :rules="rules" ref="login" label-width="0px" class="ms-content">
+				<el-form-item prop="username">
+					<el-input v-model="loginData.username" placeholder="username">
+						<template #prepend>
+							<el-button icon="el-icon-user"></el-button>
+						</template>
+					</el-input>
+				</el-form-item>
+				<el-form-item prop="password">
+					<el-input type="password" placeholder="password" v-model="loginData.password"
+						@keyup.enter="submitForm()">
+						<template #prepend>
+							<el-button icon="el-icon-lock"></el-button>
+						</template>
+					</el-input>
+				</el-form-item>
+				<div class="login-btn">
+					<el-button type="primary" @click="submitForm()">登录</el-button>
+				</div>
+				<p class="login-tips">Tips : 用户名和密码随便填。</p>
+			</el-form>
+		</div>
+	</div>
+</template>
+
+<script>
+	const modules =
+		import.meta.glob('../components/**/*.vue');
+		import HomeView from '../components/Home.vue'
+	export default {
+		data() {
+			return {
+				loginData: {
+					username: 'admin',
+					password: '123456'
+				},
+				rouw:{
+						path: '/home',
+						name: 'home',
+						meta:{
+							title:"首页"
+						},
+						component: HomeView,
+						children: [
+							
+						]
+				},
+				rules:{
+					username: [{
+						required: true,
+						message: "请输入用户名",
+						trigger: "blur"
+					}],
+					password: [{
+						required: true,
+						message: "请输入密码",
+						trigger: "blur"
+					}]
+				}
+			}
+		},
+		methods: {
+			submitForm() {
+				const _this = this;
+				console.log("modules=%o", modules)
+				//return
+				this.axios.post("http://localhost:8089/demo/login", this.loginData)
+					.then(function(res) {
+						//console.log(res)
+						console.log("----------------------------")
+						console.log(res.data.data)
+						_this.$store.commit("updateUserInfo", res.data.data)
+						for (var i = 0; i < _this.$store.state.userInfo.menus.length; i++) {
+							let comp = '../components/' + _this.$store.state.userInfo.menus[i].componentPath
+							//console.log("comp=%s", comp)
+							const rou = {
+								path: _this.$store.state.userInfo.menus[i].url,
+								name: _this.$store.state.userInfo.menus[i].componentName,
+								meta:{
+									title:_this.$store.state.userInfo.menus[i].menuName,
+								},
+								
+								component: modules[`${comp}`],
+								children: []
+							}
+							let chm = _this.$store.state.userInfo.menus[i].asideChildren
+							for (var k = 0; k < chm.length; k++) {
+								let cpath = '../components/' + chm[k].componentPath
+								//console.log("有子菜单哦:%o", chm[k])
+								const rouc = {
+									path: chm[k].url,
+									name: chm[k].componentName,
+									meta:{
+										title:chm[k].menuName
+									},
+									
+									component: modules[`${cpath}`]
+								}
+								rou.children.push(rouc)
+							}
+							_this.rouw.children.push(rou);    
+						}
+						_this.$router.addRoute(_this.rouw)
+						console.log("pppppppppppppp,%o",_this.rouw)
+						_this.$router.push("/home");
+					})
+					.catch(function(err) {
+						console.log(err)
+					})
+
+			}
+		}
+	};
+</script>
+
+<style scoped>
+	.login-wrap {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background-image: url(../assets/img/login-bg.jpg);
+		background-size: 100%;
+	}
+
+	.ms-title {
+		width: 100%;
+		line-height: 50px;
+		text-align: center;
+		font-size: 20px;
+		color: #fff;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.ms-login {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 350px;
+		margin: -190px 0 0 -175px;
+		border-radius: 5px;
+		background: rgba(255, 255, 255, 0.3);
+		overflow: hidden;
+	}
+
+	.ms-content {
+		padding: 30px 30px;
+	}
+
+	.login-btn {
+		text-align: center;
+	}
+
+	.login-btn button {
+		width: 100%;
+		height: 36px;
+		margin-bottom: 10px;
+	}
+
+	.login-tips {
+		font-size: 12px;
+		line-height: 30px;
+		color: #fff;
+	}
+</style>
