@@ -152,9 +152,7 @@
 							</el-input>
 						</div>
 						<div style="margin: 0 0 0 30px ;">
-							<font style="font-size: 13px;">回访次数: </font>
-							<el-input size=mini v-model="form1.riqi" disabled style="width: 190px;">
-							</el-input>
+							<font style="font-size: 13px;">回访次数: {{num}}</font>
 						</div>
 
 						<div>
@@ -225,8 +223,6 @@
 				</el-table-column>
 				<el-table-column prop="sourceVo.sourceName" label="生源渠道" width="90" align="center">
 				</el-table-column>
-				<el-table-column prop="findTotal" label="回访次数" width="85" align="center">
-				</el-table-column>
 				<el-table-column prop="empVo.empName" label="接待人" width="100" align="center">
 				</el-table-column>
 				<el-table-column prop="attentstate" label="状态" width="50" align="center">
@@ -273,6 +269,11 @@
 		ElMessage
 	} from 'element-plus'
 	export default {
+		computed: {
+			num: function() {
+				return this.returnvisitdate.length
+			}
+		},
 		methods: {
 			//回访记录的删除
 			//全选复选框
@@ -571,6 +572,7 @@
 					delete _this.form[key];
 				}
 				_this.dialogFormVisible = false
+				_this.dialogFormVisible2 = false
 			},
 			//分页大小
 			handleSizeChange(pagesize) {

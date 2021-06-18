@@ -125,25 +125,25 @@
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
 			},
-			// selall() {
-			// 	const _this = this
-			// 	this.axios.get("http://localhost:8089/demo/selectAllSources", {
-			// 			params: this.pageInfo
-			// 		})
-			// 		.then(function(response) {
-			// 			_this.sourceData = response.data.list
-			// 			_this.pageInfo.total = response.data.total
-			// 			console.log(response)
-			// 		}).catch(function(error) {
-			// 			console.log(error)
-			// 		})
-			// },
+			selall() {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.sourceData = response.data.list
+						_this.pageInfo.total = response.data.total
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 
 			updsource() {
 				const _this = this
-				this.axios.put("http://localhost:8089/demo/updSource", this.form)
+				this.axios.put("http://localhost:8089/tsm/updSource", this.form)
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/demo/selectAllSources", {
+						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -169,9 +169,9 @@
 			},
 			delete1(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/demo/deleteupdSource", row)
+				this.axios.put("http://localhost:8089/tsm/deleteupdSource", row)
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/demo/selectAllSources", {
+						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -193,7 +193,7 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/demo/deleteupdSource", row)
+					_this.axios.put("http://localhost:8089/tsm/deleteupdSource", row)
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.sourceData
@@ -213,9 +213,9 @@
 
 			addSource() {
 				const _this = this
-				this.axios.post("http://localhost:8089/demo/addsource", this.form)
+				this.axios.post("http://localhost:8089/tsm/addsource", this.form)
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/demo/selectAllSources", {
+						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -238,14 +238,19 @@
 					delete _this.form[key];
 				}
 				_this.dialogFormVisible = false
+				_this.dialogFormVisible1 = false
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/demo/selectAllSources", {
-						params: this.pageInfo
+				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -258,8 +263,12 @@
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/demo/selectAllSources", {
-						params: this.pageInfo
+				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.sourceData = response.data.list
@@ -308,8 +317,8 @@
 		},
 		created() {
 			const _this = this
-			console.log("aaabbbccc")
-			this.axios.get("http://localhost:8089/demo/recruit/selectAllSources", {
+			console.log("tokeN:"+_this.$store.getters.token);
+			this.axios.get("http://localhost:8089/tsm/recruit/selectAllSources", {
 					params: this.pageInfo,
 					headers: {
 						'content-type': 'application/json',

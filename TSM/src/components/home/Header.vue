@@ -61,7 +61,7 @@ export default {
         handleCommand(command) {
             if (command == "loginout") {
 						const _this=this
-						this.axios.post("http://localhost:8089/demo/signout")
+						this.axios.post("http://localhost:8089/tsm/signout")
 							.then(function(response){
 				 				console.log("已退出")
 								_this.$store.commit("updateUserInfo",null)

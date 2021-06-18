@@ -68,7 +68,7 @@
 				const _this = this;
 				console.log("modules=%o", modules)
 				//return
-				this.axios.post("http://localhost:8089/demo/login", this.loginData)
+				this.axios.post("http://localhost:8089/tsm/login", this.loginData)
 					.then(function(res) {
 						//console.log(res)
 						console.log("----------------------------")
@@ -83,7 +83,6 @@
 								meta:{
 									title:_this.$store.state.userInfo.menus[i].menuName,
 								},
-								
 								component: modules[`${comp}`],
 								children: []
 							}
