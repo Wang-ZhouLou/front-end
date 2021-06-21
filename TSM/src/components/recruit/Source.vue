@@ -318,7 +318,7 @@
 		created() {
 			const _this = this
 			console.log("tokeN:"+_this.$store.getters.token);
-			this.axios.get("http://localhost:8089/tsm/recruit/selectAllSources", {
+			this.axios.get("http://localhost:8089/tsm/selectAllSources",{
 					params: this.pageInfo,
 					headers: {
 						'content-type': 'application/json',

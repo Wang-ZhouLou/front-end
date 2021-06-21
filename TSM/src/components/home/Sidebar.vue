@@ -44,11 +44,6 @@
 		data() {
 			return {
 				items: [
-					{
-						icon: "el-icon-lx-home",
-						index: "dashboard",
-						title: "系统首页"
-					}
 				],
 				subs: []
 			};

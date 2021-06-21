@@ -31,6 +31,7 @@
 	const modules =
 		import.meta.glob('../components/**/*.vue');
 		import HomeView from '../components/Home.vue'
+		import Sy from '../components/dashboard/Sy.vue'
 	export default {
 		data() {
 			return {
@@ -46,7 +47,14 @@
 						},
 						component: HomeView,
 						children: [
-							
+							{
+									path: "/dashboard",
+									name: "dashboard",
+									meta: {
+										title: '系统首页'
+									},
+									component:Sy
+								}
 						]
 				},
 				rules:{
@@ -96,16 +104,15 @@
 									meta:{
 										title:chm[k].menuName
 									},
-									
 									component: modules[`${cpath}`]
 								}
 								rou.children.push(rouc)
 							}
-							_this.rouw.children.push(rou);    
+							_this.rouw.children.push(rou);
 						}
 						_this.$router.addRoute(_this.rouw)
 						console.log("pppppppppppppp,%o",_this.rouw)
-						_this.$router.push("/home");
+						_this.$router.push("/dashboard");
 					})
 					.catch(function(err) {
 						console.log(err)
