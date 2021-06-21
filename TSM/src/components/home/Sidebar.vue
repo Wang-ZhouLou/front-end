@@ -43,13 +43,13 @@
 	export default {
 		data() {
 			return {
-				items: [
-				],
+				items: [],
 				subs: []
 			};
 		},
 		methods:{
 			handleAsideSelect(index, key, keyPath) {
+				this.$router.push(index)
 				console.log("index:"+index)
 				console.log("key:"+key)
 				console.log("keyPath:"+keyPath)
@@ -75,6 +75,7 @@
 				};
 				menu.index = item.componentName
 				menu.title = item.menuName
+				menu.icon=item.icon
 				item.asideChildren.forEach((item) => {
 					var sub = {
 						index: "",
@@ -82,6 +83,8 @@
 					};
 					sub.index = item.componentName
 					sub.title = item.menuName
+					console.log("======================")
+					console.log(sub)
 					this.subs.push(sub)
 				})
 				menu.subs = this.subs
