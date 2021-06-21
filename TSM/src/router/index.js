@@ -11,7 +11,7 @@ import {
 } from 'vuex'
 const routes = [
 	{
-		path: '/login',
+		path: '/',
 		name: 'login',
 		component: LoginView
 	}
@@ -58,6 +58,7 @@ router.beforeEach(function(to, from, next) {
 					rou.children.push(rouc)
 				}
 				router.addRoute(rou)
+				//console.log(rou)
 			}
 			sessionStorage.setItem("refresh", "false")
 			next({

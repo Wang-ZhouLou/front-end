@@ -71,9 +71,11 @@ export default {
         },
         // 设置标签
         setTags(route) {
-			// console.log("路由名"+route.name)
-			// console.log(route.meta.title)
-			// console.log(route.fullPath)
+			console.log("____________路由")
+			console.log(route)
+			console.log(route.name)
+			console.log(route.meta.title)
+			console.log(route.fullPath)
             const isExist = this.tagsList.some(item => {
                 return item.path === route.fullPath;
             });
@@ -81,6 +83,7 @@ export default {
 				console.log("!bbb")
 			}
             if (!isExist) {
+				
                 if (this.tagsList.length >= 8) {
                     this.$store.commit("delTagsItem", { index: 0 });
                 }

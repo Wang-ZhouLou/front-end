@@ -26,12 +26,12 @@ const store = createStore({
 			if (state.userInfo.menus == null) return
 			//console.log("过滤菜单,%o", state.userInfo.menus)
 			var m = state.userInfo.menus.filter(aside => aside.url == path)
+			console.log(m.length+"-+++++++++++++++++++++++++-------------------------------------------")
 			if (m.length > 0) {
 				//console.log("m=",m[0].asideChildren)
 				return m[0].asideChildren
 			}
 			return null
-
 		}
 	},
 	mutations: {
@@ -64,6 +64,7 @@ const store = createStore({
 			state
 				.tagsList
 				.push(data)
+				console.log("aaaa")
 			console.log(state
 				.tagsList)
 		},

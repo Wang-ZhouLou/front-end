@@ -29,7 +29,7 @@
 		},
 		computed: {
 			tagsList() {
-				console.log("ffff:%o",this.$route)
+				console.log("in  Home  tagsList ----------------------------------------")
 				return this.$store.state.tagsList.map(item => item.name);
 			},
 			collapse() {
