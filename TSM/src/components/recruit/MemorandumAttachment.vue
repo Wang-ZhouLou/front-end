@@ -104,7 +104,11 @@
 				if (this.select == 1) { // eslint-disable-line no-unused-vars
 					const _this = this
 					this.axios.get("http://localhost:8089/tsm/wshzsisexamine", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							_this.memorandumentData = response.data.list
@@ -116,7 +120,11 @@
 				} else if (this.select == 2) { // eslint-disable-line no-unused-vars
 					const _this = this
 					this.axios.get("http://localhost:8089/tsm/yshzsisexamine", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							_this.memorandumentData = response.data.list
@@ -128,7 +136,11 @@
 				} else if (this.select == 3) { // eslint-disable-line no-unused-vars
 					const _this = this
 					this.axios.get("http://localhost:8089/tsm/wshjwisexamine", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							_this.memorandumentData = response.data.list
@@ -140,7 +152,11 @@
 				} else if (this.select == 4) { // eslint-disable-line no-unused-vars
 					const _this = this
 					this.axios.get("http://localhost:8089/tsm/yshjwisexamine", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							_this.memorandumentData = response.data.list
@@ -152,7 +168,11 @@
 				} else { // eslint-disable-line no-unused-vars
 					const _this = this
 					this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							_this.memorandumentData = response.data.list
@@ -167,7 +187,8 @@
 				//var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				console.log(ps) // eslint-disable-line no-unused-vars
+				this.selall()
+				// eslint-disable-line no-unused-vars
 				/* 				this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
 										params: this.pageInfo
 									})
@@ -177,12 +198,12 @@
 									}).catch(function(error) {
 										console.log(error)
 									}), */
-				this.selall()
 			},
 			handleCurrentChange(currentPage) {
 				//		var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.selall()
 				/* this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
 						params: this.pageInfo
 					})
@@ -191,7 +212,6 @@
 					}).catch(function(error) {
 						console.log(error)
 					}), */
-				this.selall()
 			},
 			handleClick(row) {
 				console.log(row);
@@ -235,7 +255,6 @@
 		},
 		created() {
 			const _this = this
-			this.selall()
 			/* this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
 					params: this.pageInfo
 				})
@@ -246,6 +265,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				}), */
+			this.selall()
 			this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit")
 				.then(function(response) {
 					_this.returnvisitdate = response.data

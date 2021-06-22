@@ -125,10 +125,15 @@
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
 			},
+			//模糊查询
 			selall() {
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.sourceData = response.data.list
@@ -138,13 +143,22 @@
 						console.log(error)
 					})
 			},
-
+			//修改
 			updsource() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updSource", this.form)
+				this.axios.put("http://localhost:8089/tsm/updSource", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.sourceData = response.data.list
@@ -167,12 +181,22 @@
 				this.form.potential = row.potential
 				this.dialogFormVisible1 = true
 			},
+			//批量删除
 			delete1(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/deleteupdSource", row)
+				this.axios.put("http://localhost:8089/tsm/deleteupdSource", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.sourceData = response.data.list
@@ -184,6 +208,7 @@
 						console.log(error)
 					})
 			},
+			//单个删除
 			deleteupdSource(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
@@ -193,7 +218,12 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteupdSource", row)
+					_this.axios.put("http://localhost:8089/tsm/deleteupdSource", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.sourceData
@@ -210,13 +240,22 @@
 					});
 				});
 			},
-
+			//新增
 			addSource() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addsource", this.form)
+				this.axios.post("http://localhost:8089/tsm/addsource", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.sourceData = response.data.list
@@ -317,8 +356,8 @@
 		},
 		created() {
 			const _this = this
-			console.log("tokeN:"+_this.$store.getters.token);
-			this.axios.get("http://localhost:8089/tsm/selectAllSources",{
+			console.log("tokeN:" + _this.$store.getters.token);
+			this.axios.get("http://localhost:8089/tsm/selectAllSources", {
 					params: this.pageInfo,
 					headers: {
 						'content-type': 'application/json',

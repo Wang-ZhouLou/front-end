@@ -110,14 +110,23 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			//修改缴费状态
+			//修改缴费方式修改咨询登记中的缴费状态
 			upPayState(row) {
 				const _this = this
 				row.paystate = 2
-				this.axios.put("http://localhost:8089/tsm/upPayState", row)
+				this.axios.put("http://localhost:8089/tsm/upPayState", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.registerData = response.data.list
@@ -126,11 +135,21 @@
 								console.log(error)
 							})
 					})
+				//报班点击审核通过修改缴费状态
 				row.feesState = 1
-				this.axios.put("http://localhost:8089/tsm/upfeesState", row)
+				this.axios.put("http://localhost:8089/tsm/upfeesState", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
@@ -139,8 +158,14 @@
 								console.log(error)
 							})
 					})
+				//新增欠费记录表信息
 				this.form2.registerId = row.registerId
-				this.axios.post("http://localhost:8089/tsm/addmemorandumatt", this.form2)
+				this.axios.post("http://localhost:8089/tsm/addmemorandumatt", this.form2, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						console.log(response)
 						for (var key in _this.form2) {
@@ -174,14 +199,23 @@
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
 			},
-			//修改
+			//修改报班缴费信息
 			upentryfees() {
 				const _this = this
 				this.form.accumulated = this.form.course.courseMoney - this.form.receipts //剩余待缴=应收-实收
-				this.axios.put("http://localhost:8089/tsm/upentryfees", this.form)
+				this.axios.put("http://localhost:8089/tsm/upentryfees", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
@@ -210,10 +244,19 @@
 			//删除
 			deleAlls(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/deleteEntryfees", row)
+				this.axios.put("http://localhost:8089/tsm/deleteEntryfees", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
@@ -239,7 +282,11 @@
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -254,7 +301,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.entryfeesData = response.data.list
@@ -350,7 +401,11 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
 					_this.entryfeesData = response.data.list

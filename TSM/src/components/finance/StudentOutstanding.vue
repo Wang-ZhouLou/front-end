@@ -107,7 +107,12 @@
 			addStudentoutstanding() {
 				const _this = this
 				this.form.accumulateds = this.form.accumulated - this.form.alongmoney //累计欠费=剩余待缴金额-补缴金额
-				this.axios.post("http://localhost:8089/tsm/addStudentoutstanding",this.form)
+				this.axios.post("http://localhost:8089/tsm/addStudentoutstanding", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						console.log(response)
 						_this.dialogFormVisible = false
@@ -120,10 +125,19 @@
 				//修改剩余金额alongmoney
 				this.form.accumulated = this.form.accumulated - this.form.alongmoney
 				console.log(this.form.accumulated)
-				this.axios.put("http://localhost:8089/tsm/upaccumulated",this.form)
+				this.axios.put("http://localhost:8089/tsm/upaccumulated", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selefeesType", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.studentoutData = response.data.list
@@ -135,7 +149,7 @@
 			},
 			xfbjxs(row) {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/WjfeeesId?feesId=" + row.feesId)
+				this.axios.get("http://localhost:8089/tsm/WjfeeesId?feesId=" + row.feesIdK)
 					.then(function(response) {
 						_this.courseData = response.data
 						console.log(response)
@@ -157,7 +171,11 @@
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selefeesType", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -172,7 +190,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selefeesType", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.studentoutData = response.data.list
@@ -235,7 +257,11 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selefeesType", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
 					_this.studentoutData = response.data.list

@@ -397,7 +397,11 @@
 			selall() {
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.registerData = response.data.list
@@ -434,10 +438,19 @@
 			//批量删除
 			delete1(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/deleteRegister", row)
+				this.axios.put("http://localhost:8089/tsm/deleteRegister", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.registerData = response.data.list
@@ -459,7 +472,12 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteRegister", row)
+					_this.axios.put("http://localhost:8089/tsm/deleteRegister", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.registerData
@@ -480,10 +498,19 @@
 			upPayState(row) {
 				const _this = this
 				row.paystate = 1
-				this.axios.put("http://localhost:8089/tsm/upPayState", row)
+				this.axios.put("http://localhost:8089/tsm/upPayState", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.registerData = response.data.list
@@ -495,7 +522,12 @@
 				this.form2.registerId = row.registerId
 				this.form2.courseId = row.courseId
 				this.form2.course = row.course //新增一条报班缴费数据
-				this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2)
+				this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						console.log(response)
 						for (var key in _this.form2) {
@@ -512,7 +544,11 @@
 				this.axios.put("http://localhost:8089/tsm/updateregister", this.form)
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.registerData = response.data.list
@@ -546,11 +582,20 @@
 			addregister() {
 				const _this = this
 				this.form.empId = this.form.empVo.empId
-				this.axios.post("http://localhost:8089/tsm/addregister", this.form)
+				this.axios.post("http://localhost:8089/tsm/addregister", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.registerData = response.data.list
@@ -581,7 +626,11 @@
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -596,7 +645,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.registerData = response.data.list
@@ -690,7 +743,6 @@
 				courseData: [],
 				returnvisitdate: [],
 				empData: [],
-
 				shortcuts: [{
 					text: '最近一周',
 					value: (() => {
@@ -751,7 +803,11 @@
 					console.log(error)
 				}),
 				this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
 					_this.registerData = response.data.list

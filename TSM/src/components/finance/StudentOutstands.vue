@@ -138,7 +138,11 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
 					_this.studentoutsData = response.data.list
