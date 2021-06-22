@@ -91,6 +91,35 @@
 		</template>
 	</el-dialog>
 
+	<el-dialog title="学员分班信息" v-model="dialogFormVisible11">
+		<el-form :model="form11">
+			<!-- <el-form-item label="课程名称" width="120">
+				<el-input v-model="form11.courseName" autocomplete="off" width="90" disabled></el-input>
+			</el-form-item>
+			&nbsp; -->
+			班级名称：
+			<el-select v-model="form11" :index='index' size=mini style="width: 90px;">
+				<el-option v-for="(items,index) in  ClassesData" v-on:click.enter="cha12(index)" :key="items.classesId"
+					:label="items.classesName" :value="items.classesId"></el-option>
+			</el-select>
+			<!-- <el-form-item label="班主任名称">
+				<el-input v-model="form11.empName" autocomplete="off" width="90" disabled> </el-input>
+			</el-form-item>
+			<el-form-item label="教员名称">
+				<el-input v-model="form11.teacherName" autocomplete="off" width="90" disabled></el-input>
+			</el-form-item>
+			<el-form-item label="班级人数" width="formLabelWidth">
+				<el-input v-model="form11.classesSize" type="text" autocomplete="off" disabled></el-input>
+			</el-form-item> -->
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible11 = false">取 消</el-button>
+				<el-button type="primary" @click="addClassesId(row)">确 定</el-button>
+			</span>
+		</template>
+	</el-dialog>
+
 	<el-dialog title="查看学员详细信息" v-model="dialogFormVisible10">
 		<el-form :model="form">
 			<el-form-item>
@@ -135,6 +164,9 @@
 				<el-table-column label="" align="center" prop="courserecorddetailsId">
 				</el-table-column>
 				<el-table-column label="班级名称" align="center" prop="classesVo.classesName">
+					<template v-slot="scope">
+						{{ scope.row.classesVo.classesName || '暂未分班' }}
+					</template>
 				</el-table-column>
 				<el-table-column label="报课日期" align="center" prop="courserecordVo.addtime">
 				</el-table-column>
@@ -158,15 +190,16 @@
 				</el-table-column>
 				<el-table-column label="备注" align="center" prop="remarks">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="250">
-					<!-- <template v-slot="scope">
+				<el-table-column label="操作" align="center" width="280">
+					<template v-slot="scope">
 						<div style="display:flex;justify-content:center">
-							<el-button size="mini" type="info" >停课</el-button>
+							<el-button size="mini" type="info" @click="cha11(scope.row)">分班</el-button>
+							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
 							<el-button type="info" size="mini" >复课</el-button>
-							<el-button size="mini" type="info" >转班</el-button>
-							<el-button type="info" size="mini" >退学</el-button>
+							<el-button size="mini" type="info">转班</el-button>
+							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
 						</div>
-					</template> -->
+					</template>
 				</el-table-column>
 			</el-table>
 		</el-form>
@@ -216,8 +249,7 @@
 							style="width: 180px;margin-right: 200px;">
 						</el-input>
 
-						课类选择: <el-select id="aa" v-model="form2.classtype.classtypeId" size=mini @change="cha1()"
-							style="width: 90px;">
+						课类选择: <el-select id="aa" v-model="form2.classtype.classtypeId" size=mini style="width: 90px;">
 							<el-option v-for="item in  ClasstypesData" :key="item.classtypeId"
 								:label="item.classtypeName" :value="item.classtypeId"></el-option>
 						</el-select>
@@ -282,7 +314,7 @@
 		<el-table-column label="操作" align="center" width="250">
 			<template v-slot="scope">
 				<div style="display:flex;justify-content:center">
-					<el-button size="mini" type="info" @click="showEdit2(scope.row)">补报</el-button>
+					<el-button size="mini" type="info" @click="showEdit2(scope.row)">报课</el-button>
 					<el-button size="mini" type="info" @click="showEdit(scope.row)">编辑</el-button>
 					<el-button type="info" size="mini" @click="selectAllCourseRecorddetails(scope.row)">详情</el-button>
 					<el-button type="info" size="mini" @click="delete1(scope.row)">删除</el-button>
@@ -303,10 +335,101 @@
 	export default {
 
 		methods: {
+			updateLearningstate5(row){
+				const _this = this
+					this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+				
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								var rows = _this.CourseRecorddetailsData2
+									.filter(c => c.courserecorddetailsId != row.courserecorddetailsId)
+								console.log("update rows:%o", rows)
+								console.log("+++++++++++++++++++++++++++++++++"+row.courserecorddetailsId)
+								_this.CourseRecorddetailsData2 = rows
+							}).catch(function(error) {
+								console.log(error)
+							})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消操作!'
+						});
+					});
+				},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo1.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo1)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo1
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.StudentData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo1.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo1) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo1
+					})
+					.then(function(response) {
+						_this.StudentData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+
+			addClassesId(row) {
+				const _this = this
+				console.log("_____________________________________SSSS")
+				console.log(this.form11.classesId)
+				this.axios.put("http://localhost:8089/tsm/updateclassesId",this.form11.classesId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						
+						_this.CourseRecorddetailsData2 = response.data
+						_this.dialogFormVisible11 = false
+					}).catch(function(error) {
+						console.log(error)
+					});
+			},
 			addSource() {
 				const _this = this
 				this.courserecord.studentId = this.form.studentId
-				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord)
+				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						var c = response.data.data
 						_this.courserecordId = c.courserecordId
@@ -319,7 +442,12 @@
 						})
 
 						_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
-								.CourserecorddetailsData)
+								.CourserecorddetailsData, {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
 							.then(function(response) { // eslint-disable-line no-unused-vars
 								_this.dialogFormVisible3 = false
 							}).catch(function(error) {
@@ -376,8 +504,15 @@
 			},
 			cha1() {
 				var _this = this
+
+
 				this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
-						this.form2.classtype.classtypeId
+						this.form2.classtype.classtypeId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}
 					)
 					.then(function(response) {
 						_this.CourseData = response.data
@@ -385,6 +520,41 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
+			},
+			cha11(row) {
+				var _this = this
+				console.log(row)
+				console.log("1111111111111111111111111111111")
+				this.dialogFormVisible11 = true
+				this.axios.get("http://localhost:8089/tsm/selClasses2?courseId=" +
+						row.courseId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}
+					)
+					.then(function(response) {
+						_this.ClassesData = response.data
+						// _this.form11.empId = _this.ClassesData[0].empId
+						// _this.form11.teacherId = _this.ClassesData[0].teacherId
+						// _this.form11.classesSize = _this.ClassesData[0].classesSize
+						_this.form11.classesId = _this.ClassesData[0].classesId
+						// _this.form11.courseName = _this.ClassesData[0].course.courseName
+						console.log(_this.ClassesData[0])
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+			},
+			cha12(index) {
+				// this.form11.empId = this.ClassesData[index].empId
+				// this.form11.teacherId = this.ClassesData[index].teacherId
+				// this.form11.classesSize = this.ClassesData[index].classesSize
+				console.log("sadsadbaskdsadsabjdba")
+				console.log(this.ClassesData[index].classesId)
+				this.form11.classesId = this.ClassesData[index].classesId
+				// this.form11.courseName = this.ClassesData[index].course.courseName
 			},
 			close() {
 				for (var key in this.form) {
@@ -394,12 +564,18 @@
 				this.dialogFormVisible2 = false
 				this.dialogFormVisible3 = false
 				this.dialogFormVisible10 = false
+				this.dialogFormVisible11 = false
 			},
 			close2() {
 				for (var key in this.CourseRecorddetailsData2) {
 					delete this.CourseRecorddetailsData2[key];
 				}
 				this.dialogFormVisible10 = false
+			},
+			Allclose() {
+				for (var key in this.form) {
+					delete this.form[key];
+				}
 			},
 			//修改
 			showEdit(row) {
@@ -418,7 +594,6 @@
 			},
 			//补报
 			showEdit2(row) {
-
 				this.form.studentId = row.studentId
 				this.form.studentName = row.studentName
 				this.dialogFormVisible3 = true
@@ -449,8 +624,13 @@
 				// 	}).catch(function(error) {
 				// 		console.log(error)
 				// 	}),
-					this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
-						.studentId)
+				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+						.studentId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						for (var key in response.data) {
 							console.log(key + ":")
@@ -487,9 +667,18 @@
 			},
 			add() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addstudent", this.form)
+				this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -508,9 +697,18 @@
 			},
 			update() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatestudent", this.form)
+				this.axios.put("http://localhost:8089/tsm/updatestudent", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -530,7 +728,12 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selbystudentName", {
-					params: this.pageInfo
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo,
+
 				})
 				.then(function(response) {
 					_this.StudentData = response.data.list
@@ -539,25 +742,35 @@
 					console.log(error)
 				})
 
-			this.axios.get("http://localhost:8089/tsm/selectClasstypes")
+			this.axios.get("http://localhost:8089/tsm/selectClasstypes", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.ClasstypesData = response.data
 				}).catch(function(error) {
 					console.log(error)
 				})
-			this.axios.get("http://localhost:8089/tsm/WJselAllclasses")
-				.then(function(response) {
-					_this.ClassesData = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
+			// this.axios.get("http://localhost:8089/tsm/WJselAllclasses")
+			// 	.then(function(response) {
+			// 		_this.ClassesData = response.data
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
 			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetails")
 			// 	.then(function(response) {
 			// 		_this.CourseRecorddetailsData2 = response.data
 			// 	}).catch(function(error) {
 			// 		console.log(error)
 			// 	})
-			this.axios.get("http://localhost:8089/tsm/selectAllwjSources")
+			this.axios.get("http://localhost:8089/tsm/selectAllwjSources", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.SourceData = response.data
 				}).catch(function(error) {
@@ -572,11 +785,15 @@
 					classtype: {},
 					course: {}
 				},
+				form11: {
+					classesId:""
+				},
 				person: "TSM",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
 				dialogFormVisible3: false,
 				dialogFormVisible10: false,
+				dialogFormVisible11: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],

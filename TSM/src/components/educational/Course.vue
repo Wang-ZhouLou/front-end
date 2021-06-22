@@ -103,13 +103,12 @@
 	</div>
 </template>
 <script>
-	import qs from 'qs'
-	import ref from 'vue' // eslint-disable-line no-unused-vars
-	import {
-		ElMessage
-	} from 'element-plus'
+	import qs from 'qs' // eslint-disable-line no-unused-vars
+	// import ref from 'vue' 
+	// import {
+	// 	ElMessage
+	// } from 'element-plus'
 	export default {
-		name: "Course",
 		data() {
 			return {
 				CourseData: [],
@@ -150,10 +149,20 @@
 			updatecourseState(row) {
 				this.showEdit2(row)
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatecoursestate", this.form)
+				this.axios.put("http://localhost:8089/tsm/updatecoursestate", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-								params: _this.pageInfo
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+
+								params: this.pageInfo
 							})
 							.then(function(response) {
 								_this.CourseData = response.data.list
@@ -184,29 +193,49 @@
 			},
 			updatecourse() { // eslint-disable-line no-unused-vars
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatecourse", this.form)
+				this.axios.put("http://localhost:8089/tsm/updatecourse", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-								params: _this.pageInfo
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+
+								params: this.pageInfo
 							})
 							.then(function(response) {
 								_this.CourseData = response.data.list
 								_this.pageInfo.total = response.data.total
 								//console.log(_this.EnterpriseData[0])
+								_this.dialogFormVisible2 = false
 							}).catch(function(error) {
 								console.log(error)
 							})
-						_this.dialogFormVisible2 = false
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			addcourse() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addcourse", this.form)
+				this.axios.post("http://localhost:8089/tsm/addcourse", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-								params: _this.pageInfo
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+
+								params: this.pageInfo
 							})
 							.then(function(response) {
 								_this.CourseData = response.data.list
@@ -228,6 +257,11 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/selAllcourse", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -235,67 +269,107 @@
 						_this.CourseData = response.data.list
 					}).catch(function(error) {
 						console.log(error)
-					})
+					});
 			},
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.CourseData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			}, //全选复选框
-			SAll() {
-				this.$refs.multipleTable.toggleAllSelection();
-			},
-			//取消选中的复选框
-			NSel() {
-				this.$refs.multipleTable.clearSelection();
-			},
-			//批量删除按钮
-			del() {
-				console.log(this.multipleSelection.length)
-				if (this.multipleSelection.length === 0) {
-					this.deld();
-				} else {
-					this.multipleSelection.forEach(item => {
-						this.delete1(item)
-					});
-					this.dels();
-				}
-			}
-			//总复选框的全选和取消全选
-			,
-			handleSelectionChange(val) {
-				this.multipleSelection = val;
-			},
-			delete1(row) {
-				this.showEdit2(row)
-				const _this = this
-				this.axios.put("http://localhost:8089/tsm/delcourse", this.form)
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-								params: _this.pageInfo
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
+
+							params: this.pageInfo
+						})
+						.then(function(response) {
+							_this.CourseData = response.data.list
+						}).catch(function(error) {
+							console.log(error)
+						})
+						
+					},
+					//全选复选框
+					SAll() {
+						this.$refs.multipleTable.toggleAllSelection();
+					},
+					//取消选中的复选框
+					NSel() {
+						this.$refs.multipleTable.clearSelection();
+					},
+					//批量删除按钮
+					del() {
+						console.log(this.multipleSelection.length)
+						if (this.multipleSelection.length === 0) {
+							this.deld();
+						} else {
+							this.multipleSelection.forEach(item => {
+								this.delete1(item)
+							});
+							this.dels();
+						}
+					}
+					//总复选框的全选和取消全选
+					,
+					handleSelectionChange(val) {
+						this.multipleSelection = val;
+					},
+					delete1(row) {
+						this.showEdit2(row)
+						const _this = this
+						this.axios.put("http://localhost:8089/tsm/delcourse", this.form, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.axios.get("http://localhost:8089/tsm/selAllcourse", {
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										},
+
+										params: this.pageInfo
+									})
+									.then(function(response) {
+										_this.CourseData = response.data.list
+										_this.pageInfo.total = response.data.total
+									}).catch(function(error) {
+										console.log(error)
+									})
+							}).catch(function(error) {
+								console.log(error)
+							})
+					},
+					c1() {
+						const _this = this
+						this.axios.get("http://localhost:8089/tsm/selAllcourse", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+
+								params: this.pageInfo
 							})
 							.then(function(response) {
+								console.log(response)
 								_this.CourseData = response.data.list
 								_this.pageInfo.total = response.data.total
 							}).catch(function(error) {
 								console.log(error)
 							})
-					}).catch(function(error) {
-						console.log(error)
-					})
+					}
 			},
-			c1() {
+			created() {
 				const _this = this
-
 				this.axios.get("http://localhost:8089/tsm/selAllcourse", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -305,27 +379,19 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
+				this.axios.get("http://localhost:8089/tsm/selectClasstypes", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+
+						},
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.classType = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
 			}
-		},
-		created() {
-			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selAllcourse", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					console.log(response)
-					_this.CourseData = response.data.list
-					_this.pageInfo.total = response.data.total
-				}).catch(function(error) {
-					console.log(error)
-				})
-			this.axios.get("http://localhost:8089/tsm/selectClasstypes")
-				.then(function(response) {
-					console.log(response)
-					_this.classType = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
 		}
-	}
 </script>
