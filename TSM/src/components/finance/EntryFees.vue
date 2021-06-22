@@ -97,7 +97,7 @@
 			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
-
+	
 </template>
 
 <script>
