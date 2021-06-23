@@ -97,7 +97,7 @@
 			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
-	
+
 </template>
 
 <script>
@@ -110,7 +110,7 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			//修改缴费方式修改咨询登记中的缴费状态
+			//修改缴费方式修改咨询登记中的缴费状态（未/待/已）
 			upPayState(row) {
 				const _this = this
 				row.paystate = 2
@@ -121,21 +121,33 @@
 						}
 					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo,
+						_this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
 							})
 							.then(function(response) {
-								_this.registerData = response.data.list
-								_this.pageInfo.total = response.data.total
+								_this.registerData = response.data
 							}).catch(function(error) {
 								console.log(error)
 							})
+
 					})
 				//报班点击审核通过修改缴费状态
+				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.registerData = response.data
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
 				row.feesState = 1
 				this.axios.put("http://localhost:8089/tsm/upfeesState", row, {
 						headers: {
@@ -158,7 +170,7 @@
 								console.log(error)
 							})
 					})
-				//新增欠费记录表信息
+				//新增学员交接记录表信息
 				this.form2.registerId = row.registerId
 				this.axios.post("http://localhost:8089/tsm/addmemorandumatt", this.form2, {
 						headers: {
@@ -422,7 +434,12 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll")
+				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response.data)
 					_this.registerData = response.data

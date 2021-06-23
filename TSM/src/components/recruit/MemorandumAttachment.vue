@@ -66,37 +66,32 @@
 	} from 'element-plus'
 	export default {
 		methods: {
+			//修改教务
 			upjwisexamine(row) {
 				const _this = this
 				row.jwisexamine = 1
-				this.axios.put("http://localhost:8089/tsm/upjwisexamine", row)
+				this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.memorandumentData = response.data.list
-								_this.pageInfo.total = response.data.total
-							}).catch(function(error) {
-								console.log(error)
-							})
+						_this.selall()
 					})
 			},
 			//修改缴费状态
 			upzsisexamine(row) {
 				const _this = this
 				row.zsisexamine = 1
-				this.axios.put("http://localhost:8089/tsm/upzsisexamine", row)
+				this.axios.put("http://localhost:8089/tsm/upzsisexamine", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.memorandumentData = response.data.list
-								_this.pageInfo.total = response.data.total
-							}).catch(function(error) {
-								console.log(error)
-							})
+						_this.selall()
 					})
 			},
 			//模糊查询

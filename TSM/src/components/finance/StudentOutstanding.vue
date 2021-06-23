@@ -147,10 +147,18 @@
 							})
 					})
 			},
+			//点击学员补缴
 			xfbjxs(row) {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/WjfeeesId?feesId=" + row.feesIdK)
+				this.axios.get("http://localhost:8089/tsm/WjfeeesId?feesId=" + row.feesId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
+						console.log("---------------------------------------")
+						console.log(row.feesId)
 						_this.courseData = response.data
 						console.log(response)
 					}).catch(function(error) {
@@ -269,7 +277,12 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse")
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response.data)
 					_this.courseData = response.data
@@ -277,7 +290,12 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll")
+				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response.data)
 					_this.registerData = response.data

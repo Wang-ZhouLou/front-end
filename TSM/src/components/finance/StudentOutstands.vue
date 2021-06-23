@@ -65,7 +65,11 @@
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -80,7 +84,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.studentoutsData = response.data.list

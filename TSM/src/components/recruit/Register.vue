@@ -24,10 +24,7 @@
 								<el-option v-for="items in empData" :key="items.empId" :label="items.empName"
 									:value="items"></el-option>
 							</el-select>
-							咨询方式: <el-select style="width: 190px;" v-model="form.returnvisitId">
-								<el-option v-for="items in returnvisitdata" :key="items.returnvisitId"
-									:label="items.returnvisitmode" :value="items.returnvisitId"></el-option>
-							</el-select>
+							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
 						<div style="margin: 16px 0 0 30px;">
 							信息渠道: <el-select v-model="form.sourceId" style="margin-right: 160px; width: 190px;">
@@ -38,15 +35,12 @@
 							</el-input>
 						</div>
 						<div style="margin: 9px 0 0 30px;">
-							咨询课程: <el-select v-model="form.courseId" style="margin-right: 142px;">
+							咨询课程: <el-select v-model="form.courseId" style="margin-right: 171px;">
 								<el-option v-for="items in courseData" :key="items.courseId" :label="items.courseName"
 									:value="items.courseId"></el-option>
 							</el-select>
-							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
-						</div>
-						<div style="margin: 16px 0 0 57px ;">
-							性别: &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
-							<el-radio v-model="form.sex" label="女" style="margin-right: 195px;">女</el-radio>
+							性别 : &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
+							<el-radio v-model="form.sex" label="女">女</el-radio>
 						</div>
 						<div style="margin: 0 0 0 34px;">咨询内容:<el-input style="margin-bottom: 10px;" type="textarea"
 								:rows="2" placeholder="请输入内容" v-model="form.consultcontent">
@@ -70,10 +64,8 @@
 								<el-option v-for="items in empData" :key="items.empId" :label="items.empName"
 									:value="items"></el-option>
 							</el-select>
-							咨询方式: <el-select style="width: 190px;" v-model="form.returnvisitId">
-								<el-option v-for="items in returnvisitdata" :key="items.returnvisitId"
-									:label="items.returnvisitmode" :value="items.returnvisitId"></el-option>
-							</el-select>
+							咨询日期: <el-input v-model="form.addtime" disabled style="width: 190px;">
+							</el-input>
 						</div>
 						<div style="margin: 16px 0 0 30px;">
 							生源渠道: <el-select v-model="form.sourceId" style="margin-right: 160px; width: 190px;">
@@ -90,9 +82,7 @@
 							</el-select>
 							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
-						<div style="margin: 16px 0 0 30px ;">
-							咨询日期: <el-input v-model="form.addtime" disabled style="width: 190px;margin-right: 175px;">
-							</el-input>
+						<div style="margin: 16px 0 0 60px ;">
 							性别: &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
 							<el-radio v-model="form.sex" label="女">女</el-radio>
 						</div>
@@ -109,8 +99,6 @@
 					</span>
 				</template>
 			</el-dialog>
-
-
 
 
 			<el-dialog title="客户回访" v-model="dialogFormVisible3">
@@ -151,9 +139,9 @@
 								v-model="form1.consultcontent">
 							</el-input>
 						</div>
-						<div style="margin: 0 0 0 30px ;">
+						<!-- <div style="margin: 0 0 0 30px ;">
 							<font style="font-size: 13px;">回访次数: {{num}}</font>
-						</div>
+						</div> -->
 
 						<div>
 							<font>回访登记</font>
@@ -186,7 +174,6 @@
 								<el-input size=mini style="margin-bottom: 10px; width: 566px;" placeholder="请输入内容"
 									v-model="form1.returnvisitback">
 								</el-input>
-								<el-button @click="addreturnvisits" size=mini>保存</el-button>
 							</div>
 						</div>
 					</el-form-item>
@@ -269,11 +256,11 @@
 		ElMessage
 	} from 'element-plus'
 	export default {
-		computed: {
+		/* computed: {
 			num: function() {
 				return this.returnvisitdata.length
 			}
-		},
+		}, */
 		methods: {
 			//回访记录的删除
 			//全选复选框
@@ -303,9 +290,19 @@
 			//批量删除
 			delete2(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/dereturnvisit", row)
+				this.axios.put("http://localhost:8089/tsm/dereturnvisit", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId)
+						_this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.returnvisitdata = response.data
 								console.log(response)
@@ -319,7 +316,12 @@
 			//回访传咨询登记的id到后台,并根据id显示回访记录
 			huif(row) {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId)
+				this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.returnvisitdata = response.data
 						console.log(response)
@@ -346,7 +348,12 @@
 					this.form1.addtime = row.addtime
 					this.form1.returnvisitVo = row.returnvisitVo
 
-					this.axios.get("http://localhost:8089/tsm/selectAllwjSources")
+					this.axios.get("http://localhost:8089/tsm/selectAllwjSources", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							_this.sourceData = response.data
 							console.log(response)
@@ -363,9 +370,19 @@
 			addreturnvisits() {
 				const _this = this
 				//this.form1.empId = this.form1.empVo.empId
-				this.axios.post("http://localhost:8089/tsm/addreturnvisit", this.form1)
+				this.axios.post("http://localhost:8089/tsm/addreturnvisit", this.form1, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit")
+						_this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.returnvisitdata = response.data
 							}).catch(function(error) {
@@ -537,11 +554,16 @@
 						console.log(error)
 					})
 			},
-			//修改
+			//修改咨询登记
 			updregister() {
 				const _this = this
 				this.form.empId = this.form.empVo.empId
-				this.axios.put("http://localhost:8089/tsm/updateregister", this.form)
+				this.axios.put("http://localhost:8089/tsm/updateregister", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
 								params: _this.pageInfo,
