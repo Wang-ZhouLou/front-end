@@ -55,7 +55,7 @@
 				</el-table-column>
 				<el-table-column prop="feesId" label="编号" width="50" align="center">
 				</el-table-column>
-				<el-table-column prop="feesName" label="单据号" width="90" align="center">
+				<el-table-column prop="feesName" label="单据号" width="150" align="center">
 				</el-table-column>
 				<el-table-column prop="addtime" label="缴费日期" width="210" align="center">
 				</el-table-column>
@@ -69,7 +69,7 @@
 						<p v-if="slot.row.feesType==1">预缴学费</p>
 					</template>
 				</el-table-column>
-				<el-table-column prop="receipts" label="实收金额/预缴金额" width="140" align="center">
+				<el-table-column prop="receipts" label="预缴金额" width="90" align="center">
 				</el-table-column>
 				<el-table-column prop="addname" label="录入人" width="100" align="center">
 				</el-table-column>
@@ -89,6 +89,9 @@
 				</el-table-column>
 			</el-table>
 		</div>
+	</div>
+	<div style="float: left;margin-top: 10px;">
+		<i class="el-icon-date">缴费总额</i>
 	</div>
 	<!-- 分页 -->
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
@@ -426,7 +429,12 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse")
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response.data)
 					_this.courseData = response.data

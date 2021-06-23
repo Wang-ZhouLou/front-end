@@ -16,7 +16,7 @@
 				@click="del()">删除
 			</el-button>
 
-			<el-dialog title="新增咨询登记信息" v-model="dialogFormVisible">
+			<el-dialog title="新增咨询登记信息" v-model="dialogFormVisible" @click="close()">
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
@@ -34,7 +34,7 @@
 							咨询人: <el-input v-model="form.consultant" style="width: 190px;margin-bottom: 10px;">
 							</el-input>
 						</div>
-						<div style="margin: 9px 0 0 30px;">
+						<div style="margin: 9px 0 0 -40px;">
 							咨询课程: <el-select v-model="form.courseId" style="margin-right: 171px;">
 								<el-option v-for="items in courseData" :key="items.courseId" :label="items.courseName"
 									:value="items.courseId"></el-option>
@@ -42,7 +42,8 @@
 							性别 : &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
 							<el-radio v-model="form.sex" label="女">女</el-radio>
 						</div>
-						<div style="margin: 0 0 0 34px;">咨询内容:<el-input style="margin-bottom: 10px;" type="textarea"
+						<div style="margin: 0 0 0 34px;">
+							咨询内容:<el-input style="margin-top: 10px; width: 600px;" type="textarea"
 								:rows="2" placeholder="请输入内容" v-model="form.consultcontent">
 							</el-input>
 						</div>
@@ -56,7 +57,7 @@
 				</template>
 			</el-dialog>
 
-			<el-dialog title="修改咨询登记信息" v-model="dialogFormVisible2">
+			<el-dialog title="修改咨询登记信息" v-model="dialogFormVisible2" @click="close()">
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
@@ -82,12 +83,13 @@
 							</el-select>
 							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
-						<div style="margin: 16px 0 0 60px ;">
+						<div style="margin: 16px 0 0 -420px ;">
 							性别: &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
 							<el-radio v-model="form.sex" label="女">女</el-radio>
 						</div>
-						<div style="margin: 0 0 0 34px;">咨询内容:<el-input style="margin-bottom: 10px;" type="textarea"
-								:rows="2" placeholder="请输入内容" v-model="form.consultcontent">
+						<div style="margin: 0 0 0 34px;">
+							咨询内容:<el-input style="margin-top: 10px; width: 600px;" type="textarea" :rows="2"
+								placeholder="请输入内容" v-model="form.consultcontent">
 							</el-input>
 						</div>
 					</el-form-item>

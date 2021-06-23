@@ -1,5 +1,5 @@
 <template>
-	<el-aside style="width: 240px; height: 850px" class="aside">
+	<el-aside style="width: 250px; height: 850px" class="aside">
 		<div class="sidebar">
 			<el-menu class="sidebar-el-menu" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff"
 				:default-active="$route.path" :uniqueOpened="true" @open="handleOpen" @close="handleClose" router>
