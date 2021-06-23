@@ -197,7 +197,7 @@
 							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
 							<el-button type="info" size="mini" >复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
-							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
+							<el-button type="info" size="mini" @click="dialogFormVisible12=true">退学</el-button>
 						</div>
 					</template>
 				</el-table-column>
@@ -288,7 +288,34 @@
 			</span>
 		</template>
 	</el-dialog>
-
+   <el-dialog  title="学员退学" v-model="dialogFormVisible12">
+	  <el-form :model="form13" >
+		  <el-form-item>
+			  <!-- <div style="margin: 16px 0 0 35px;">
+			  	学号: <el-input v-model="form12.row.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
+			  	</el-input>
+				退学学员: <el-input v-model="form12.row.studentName" readonly="true"
+					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
+				</el-input>
+			  </div> -->
+			  <div style="margin: 16px 0 0 35px;">
+			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
+			  	</el-input>
+			  </div>
+			  <div style="margin: 16px 0 0 10px;">
+			  	退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2"
+			  		v-model="form13.dropReason">
+			  	</el-input>
+			  </div>
+		  </el-form-item>
+	  </el-form>
+	  <template #footer>
+	  	<span class="dialog-footer">
+	  		<el-button @click="dialogFormVisible12=false">关闭</el-button>
+	  		<el-button type="primary" @click="addDrop(row)">保 存</el-button>
+	  	</span>
+	  </template>
+   </el-dialog>
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -335,36 +362,70 @@
 	export default {
 
 		methods: {
-			updateLearningstate5(row){
+			addDrop(row) {
 				const _this = this
-					this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
+				this.axios.post("http://localhost:8089/tsm/addDrop",this.form13, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+					.then(function(response) {
+					this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+								.studentId, {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
+							.then(function(response) {
+								for (var key in response.data) {
+									console.log(key + ":")
+									console.log(response.data[key])
+					
+									for (var i = 0; i < response.data[key].length; i++) {
+										_this.CourseRecorddetailsData2.push(response.data[key][i])
+									}
 								}
+								console.log(response.data)
 							})
-				
-							.then(function(response) { // eslint-disable-line no-unused-vars
-								var rows = _this.CourseRecorddetailsData2
-									.filter(c => c.courserecorddetailsId != row.courserecorddetailsId)
-								console.log("update rows:%o", rows)
-								console.log("+++++++++++++++++++++++++++++++++"+row.courserecorddetailsId)
-								_this.CourseRecorddetailsData2 = rows
-							}).catch(function(error) {
+							})
+							})
+							.catch(function(error) {
 								console.log(error)
 							})
-					}).catch(() => {
-						this.$message({
-							type: 'error',
-							message: '取消操作!'
-						});
-					});
-				},
+					
+					},
+			// updateLearningstate5(row){
+			// 	const _this = this
+			// 		this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
+			// 			confirmButtonText: '确定',
+			// 			cancelButtonText: '取消',
+			// 			type: 'warning'
+			// 		}).then(() => {
+			// 			_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+			// 					headers: {
+			// 						'content-type': 'application/json',
+			// 						'jwtAuth': _this.$store.getters.token
+			// 					}
+			// 				})
+			// 		.catch(function(error) {
+			// 					console.log(error)
+			// 				})
+			// 		}).catch(() => {
+			// 			this.$message({
+			// 				type: 'error',
+			// 				message: '取消操作!'
+			// 			});
+			// 		});
+			// 	},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo1.pagesize = pagesize
@@ -504,8 +565,6 @@
 			},
 			cha1() {
 				var _this = this
-
-
 				this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
 						this.form2.classtype.classtypeId, {
 							headers: {
@@ -565,6 +624,7 @@
 				this.dialogFormVisible3 = false
 				this.dialogFormVisible10 = false
 				this.dialogFormVisible11 = false
+				this.dialogFormVisible12 = false
 			},
 			close2() {
 				for (var key in this.CourseRecorddetailsData2) {
@@ -647,6 +707,7 @@
 					})
 
 			},
+
 
 			//学员详情
 			showEdit10(row) {
@@ -788,12 +849,16 @@
 				form11: {
 					classesId:""
 				},
+				form13: {
+					
+				},
 				person: "TSM",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
 				dialogFormVisible3: false,
 				dialogFormVisible10: false,
 				dialogFormVisible11: false,
+				dialogFormVisible12: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],
