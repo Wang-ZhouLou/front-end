@@ -22,35 +22,75 @@
 			<el-button style="background-color: #009688;color: white;" size="mini">导出</el-button>
 		</div>&nbsp;
 		<div class="zxdj">
-			<el-table :data="tableData" border style="width: 100%">
-				<el-table-column type="selection" width="55" align="center">
+			<el-table :data="empData" border style="width: 1200px;" ref="empTable"
+				@selection-change="handleSelectionChange">
+				<el-table-column type="selection" width="35">
 				</el-table-column>
-				<el-table-column fixed prop="date" label="编号" width="50" align="center">
+				<el-table-column fixed="left" prop="empId" label="编号" width="50">
 				</el-table-column>
-				<el-table-column prop="name" label="退费日期" width="100" align="center">
+				<el-table-column fixed="left" prop="empName" label="姓名" width="231">
 				</el-table-column>
-				<el-table-column prop="province" label="缴费学员" width="100" align="center">
+				<el-table-column prop="dept.deptName" label="部门" width="231">
 				</el-table-column>
-				<el-table-column prop="city" label="退费明细" width="400" align="center">
+				<el-table-column prop="position.positionName" label="职位" width="231">
 				</el-table-column>
-				<el-table-column prop="address" label="退还金额" width="110" align="center">
+				<el-table-column prop="jobnumber" label="工号" width="231">
 				</el-table-column>
-				<el-table-column prop="zip" label="经办人" width="100" align="center">
-				</el-table-column>
-				<el-table-column prop="lxdh" label="校区" width="100" align="center">
-				</el-table-column>
-				<el-table-column prop="zt" label="状态" width="100" align="center">
-				</el-table-column>
-				<el-table-column fixed="right" label="操作" align="center">
-					<template #default="scope">
-						<el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-						<el-button type="text" size="small">回访</el-button>
+				<el-table-column prop="empstate" label="职工状态" width="231">
+					<template v-slot="scope">
+						<p v-if="scope.row.empstate==0">在职</p>
+						<p v-if="scope.row.empstate==1">离职</p>
 					</template>
 				</el-table-column>
+				<el-table-column prop="empSex" label="性别" width="231">
+				</el-table-column>
+				<el-table-column prop="empPhone" label="电话" width="231">
+				</el-table-column>
+				<el-table-column prop="eMail" label="电子邮件" width="231">
+				</el-table-column>
+				<el-table-column prop="birthday" label="生日" width="231">
+				</el-table-column>
+				<el-table-column prop="address" label="居住地址" width="231">
+				</el-table-column>
+				<el-table-column prop="education" label="教育水平" width="231">
+				</el-table-column>
+				<el-table-column prop="graduate" label="毕业学校" width="231">
+				</el-table-column>
+				<el-table-column prop="remarks" label="备注" width="231">
+				</el-table-column>
+				<el-table-column prop="loginstate" label="限制登录状态" width="231">
+					<template v-slot="scope">
+						<p v-if="scope.row.loginstate==0">不限制</p>
+						<p v-if="scope.row.loginstate==1">限制</p>
+					</template>
+				</el-table-column>
+				<el-table-column fixed="right" label="操作" width="240">
+					<template #default="scope">
+						<el-button v-if="scope.row.empstate==0" @click="stopEmpStateOpen(scope.row)" type="text"
+							size="small" style="color: red;">停职</el-button>
+						<el-button v-if="scope.row.empstate==1" @click="goEmpStateOpen(scope.row)" type="text"
+							size="small" style="color: green;">复职</el-button>
+						<el-button @click="selectEmpOpen(scope.row)" type="text" size="small">查看</el-button>
+						<el-button @click="updateEmpOpen(scope.row)" type="text" size="small" style="color: gold;">编辑
+						</el-button>
+						<el-button @click="updateDeptAndPositionOpen(scope.row)" type="text" size="small">转部门/转职位
+						</el-button>
+					</template>
+				</el-table-column>
+			
 			</el-table>&nbsp;
 		</div>
+		
 
 	</div>
+	
+	<!-- 分页 -->
+	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+			:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
+			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+		</el-pagination>
+		</div>
 
 </template>
 
@@ -58,8 +98,50 @@
 	import {
 		ref
 	} from 'vue'
+	import qs from 'qs'
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				console.log(ps) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.empData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.empData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			handleClick(row) {
 				console.log(row);
 			},
@@ -83,57 +165,43 @@
 		},
 		data() {
 			return {
-				options: [{
-						value: '选项1',
-						label: '人大分校区'
-					}, {
-						value: '选项2',
-						label: '北大分校区'
-					},
-					{
-						value: '选项3',
-						label: '清华分校区'
-					}
-				],
-				optionss: [{
-					value: '选项1',
-					label: '已审核'
-				}, {
-					value: '选项2',
-					label: '未审核'
-				}],
-				input: ref(''),
-				value: '',
-				tableData: [{
-					date: '2',
-					name: '王小虎',
-					province: '上海',
-					city: '普陀区',
-					address: '上海市弄',
-					zip: 200333
-				}, {
-					date: '04',
-					name: '王小虎',
-					province: '上海',
-					city: '普陀区',
-					address: '上海1517 弄',
-					zip: 200333
-				}, {
-					date: '2',
-					name: '王小虎',
-					province: '上海',
-					city: '普陀区',
-					address: '上海519 弄',
-					zip: 200333
-				}, {
-					date: '8',
-					name: '王小虎',
-					province: '上海',
-					city: '普陀区',
-					address: '上海1516 弄',
-					zip: 200333
-				}]
+				empData: [],
+				deptData: [],
+				pageInfo: {
+					currentPage: 1, //当前页数，由用户指定
+					pagesize: 2, //每页显示的条数
+					total: 0, //总记录条数，数据库查出来的
+					flag: ""
+				}
 			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
+				params: this.pageInfo,
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
+				console.log(response)
+				_this.empData = response.data.list
+				_this.pageInfo.total = response.data.total
+			}).catch(function(error) {
+				console.log(error)
+			})
+			//  this.axios.get("http://localhost:8089/tsm/selectAllDept").then(function(response) {
+			// 	console.log(response)
+			// 	_this.deptData = response.data
+			// }).catch(function(error) {
+			// 	console.log(error)
+			// })
+			// this.axios.get("http://localhost:8089/tsm/selectAllPosition").then(function(response) {
+			// 	console.log(response)
+			// 	_this.positionData = response.data
+			// }).catch(function(error) {
+			// 	console.log(error)
+			// })
 		}
 	}
 </script>

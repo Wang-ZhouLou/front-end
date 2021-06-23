@@ -92,15 +92,17 @@
 
 		</div>&nbsp;
 		<div class="qdwh">
-			<el-table :data="sourceData" border style="width: 100%" @selection-change="handleSelectionChange"
+			<el-table :data="roleData" border  @selection-change="handleSelectionChange"
 				ref="multipleTable">
-				<el-table-column type="selection" width="55">
+				<el-table-column type="selection"  width="55">
 				</el-table-column>
-				<el-table-column prop="sourceId" label="编号" width="50" align="center">
+				<el-table-column prop="id" label="编号" width="50" align="center">
 				</el-table-column>
-				<el-table-column prop="sourceName" label="角色名称" width="400" align="center">
+				<el-table-column prop="roleName" label="角色名称" align="center">
 				</el-table-column>
-				<el-table-column prop="already" label="备注" width="400" align="center">
+				<el-table-column prop="roleCode" label="英文名"  align="center">
+				</el-table-column>
+				<el-table-column prop="status" label="状态" align="center">
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
@@ -139,12 +141,16 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line nzaao-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-						params: this.pageInfo
+				this.axios.get("http://localhost:8089/tsm/selectAllrole", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
-						console.log(response.data)
-						_this.sourceData = response.data.list
+						_this.roleData = response.data.list
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -153,11 +159,16 @@
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-						params: this.pageInfo
+				this.axios.get("http://localhost:8089/tsm/selectAllrole", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
-						_this.sourceData = response.data.list
+						_this.roleData = response.data.list
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -277,7 +288,7 @@
 					already: ''
 				},
 				search: ref(''),
-				sourceData: [],
+				roleData: [],
 				caozuoData: [{
 					name: '王小虎',
 					province: '上海'
@@ -287,11 +298,15 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selectAllSources", {
-					params: this.pageInfo
+			this.axios.get("http://localhost:8089/tsm/selectAllrole", {
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
-					_this.sourceData = response.data.list
+					_this.roleData = response.data.list
 					_this.pageInfo.total = response.data.total
 					console.log(response)
 				}).catch(function(error) {

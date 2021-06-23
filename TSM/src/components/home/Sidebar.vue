@@ -1,94 +1,69 @@
 <template>
-	<div class="sidebar">
-		<el-menu class="sidebar-el-menu" @select="handleAsideSelect" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-			text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
-			<template v-for="item in items">
-				<template v-if="item.subs">
+	<el-aside style="width: 240px; height: 850px" class="aside">
+		<div class="sidebar">
+			<el-menu class="sidebar-el-menu" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff"
+				:default-active="$route.path" :uniqueOpened="true" @open="handleOpen" @close="handleClose" router>
+				<el-menu-item index="dashboard">
+					<span>首頁</span>
+				</el-menu-item>
 
-					<el-submenu :index="item.index" :key="item.index">
-						<template #title>
-							<i :class="item.icon"></i>
-							<span>{{ item.title }}</span>
-						</template>
-						<template v-for="subItem in item.subs">
-							<el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
-								<template #title>{{ subItem.title }}</template>
-								<el-menu-item v-for="(threeItem, i) in subItem.subs" :key="i" :index="threeItem.index">
-									{{ threeItem.title }}
-								</el-menu-item>
-							</el-submenu>
-							<el-menu-item v-else :index="subItem.index" :key="subItem.index">{{ subItem.title }}
-							</el-menu-item>
-						</template>
-					</el-submenu>
-				</template>
-
-				<template v-else>
-					<el-menu-item :index="item.index" :key="item.index">
+				<el-submenu :index="item.id" v-for="item in menus" :key="item.id">
+					<template #title>
 						<i :class="item.icon"></i>
-						<template #title>{{ item.title }}</template>
-					</el-menu-item>
-				</template>
-			</template>
-		</el-menu>
-	</div>
+						<span>{{ item.menuName }}</span>
+					</template>
+					<el-menu-item-group>
+						<template #title>
+						</template>
+						<el-menu-item :index="'/'+subItem.componentName" v-for="subItem in item.asideChildren"
+							:key="subItem.id">
+							<i :class="subItem.menuIcon"></i>
+							{{ subItem.menuName }}
+						</el-menu-item>
+					</el-menu-item-group>
+				</el-submenu>
+			</el-menu>
+		</div>
+	</el-aside>
 </template>
 
 <script>
-	// import bus from "../common/bus";
+	import {
+		mapState
+	} from "vuex";
 	export default {
+		name: "HomeView",
 		data() {
 			return {
-				items: [],
-				subs: []
+				circleUrl: "",
+				username: "",
+				menus: [],
+				imgs: "./src/components/assets/img/shous.jpeg",
+				user: "",
+				drawer: false,
 			};
 		},
-		methods:{
-			handleAsideSelect(index, key, keyPath) {
-				console.log("子菜单:%o", this.$route,index)
-				this.$router.push({
-					path: index
-				})
-				this.$store.getters.asideMenus(index);
-				
-			}
-		},
-			
-		computed: {
-			onRoutes() {
-				return this.$route.path.replace("/", "");
+		methods: {
+			handleOpen(key, keyPath) {
+				console.log(key, keyPath);
 			},
-			collapse() {
-				return this.$store.state.collapse
-			}
+			handleClose(key, keyPath) {
+				console.log(key, keyPath);
+			},
+			usererror() {
+				sessionStorage.clear();
+				this.$router.push("/Login");
+			},
 		},
 		created() {
-			this.$store.state.userInfo.menus.forEach((item) => {
-				//遍历prodAllPrice这个字段，并累加
-				var menu = {
-					icon: "",
-					index: "",
-					title: "",
-					subs: []
-				};
-				menu.index = item.componentName
-				menu.title = item.menuName
-				menu.icon = item.icon
-				item.asideChildren.forEach((item) => {
-					var sub = {
-						index: "",
-						title: ""
-					};
-					sub.index = item.componentName
-					sub.title = item.menuName
-					this.subs.push(sub)
-				})
-				menu.subs = this.subs
-				this.items.push(menu)
-				this.subs = []
-			})
-
-		}
+			this.menus = this.rightList;
+			// this.menus[0].childMenu[0];
+			// this.circleUrl = sessionStorage.getItem("imgs");
+			// this.user = sessionStorage.getItem("username");
+		},
+		computed: {
+			...mapState(["rightList"]),
+		},
 	};
 </script>
 

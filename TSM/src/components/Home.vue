@@ -1,8 +1,8 @@
 <template>
 	<div class="about">
 		<v-header />
-		<v-sidebar />
-		<div class="content-box" :class="{ 'content-collapse': collapse }">
+		
+		<!-- <div class="content-box" :class="{ 'content-collapse': collapse }">
 			<v-tags></v-tags>
 			<div class="content">
 				<router-view v-slot="{ Component }">
@@ -14,7 +14,16 @@
 				</router-view>
 				<el-backtop target=".content"></el-backtop>
 			</div>
-		</div>
+		</div> -->
+		<el-container >
+		  <!-- 侧边栏导航菜单 -->
+		  <v-sidebar />
+		  <!-- 内容  -->
+		  <el-main style="width: 80%; height: 830px; padding: 20px">
+		    <router-view></router-view>
+		  </el-main>
+		</el-container>
+		
 	</div>
 </template>
 <script>
@@ -26,15 +35,9 @@
 			vHeader,
 			vSidebar,
 			vTags
-		},
-		computed: {
-			tagsList() {
-				console.log("in  Home  tagsList ----------------------------------------")
-				return this.$store.state.tagsList.map(item => item.name);
-			},
-			collapse() {
-				return this.$store.state.collapse;
-			}
 		}
 	};
 </script>
+
+
+

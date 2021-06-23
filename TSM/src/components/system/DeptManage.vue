@@ -18,14 +18,18 @@
 			<el-button type="primary" @click="selectAllDept" style="margin-left: 10px;" size="small">
 				查询所有部门<i class="el-icon-search el-icon--right"></i>
 			</el-button>
+			
+			
 			<el-button :disabled="this.multipleSelection.length === 0" @click="deleteDeptMany(multipleSelection)"
 				type="primary" icon="el-icon-delete" style="margin-left: 10px;" size="small"></el-button>
 		</div>
 		<div class="memorandum" style="margin-top: 20px;display:flex;justify-content: center">
+			
 			<el-table :data="deptData" border style="width: 1200px;" ref="deptTable"
 				@selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="35" align="center">
+				<el-table-column type="selection"  width="55" align="center">
 				</el-table-column>
+
 				<el-table-column prop="deptId" label="编号" width="50" align="center">
 				</el-table-column>
 				<el-table-column prop="deptName" label="部门名称" width="321" align="center">
@@ -51,6 +55,11 @@
 			</el-pagination>
 		</div>
 	</div>
+	
+	
+	
+	
+	
 
 	<el-dialog title="添加部门信息" v-model="addDeptVisible" width="450px" top="27vh">
 		<el-form :model="deptForm" :rules="rules" ref="deptForm" label-width="100px" class="demo-ruleForm" size="mini"
@@ -81,6 +90,10 @@
 			</span>
 		</template>
 	</el-dialog>
+
+
+
+
 
 	<el-dialog title="修改部门信息" v-model="updateDeptVisible" width="450px" top="27vh">
 		<el-form :model="deptForm" :rules="rules" ref="deptForm" label-width="100px" class="demo-ruleForm" size="mini"
@@ -195,7 +208,7 @@
 				pageInfo: {
 					what: '',
 					currentPage: 1,
-					pagesize: 6,
+					pagesize: 3,
 					total: 0
 				},
 				multipleSelection: []
@@ -208,10 +221,13 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/selectAllDeptPageInfo", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
-						console.log(response.data)
 						_this.deptData = response.data.list
 					}).catch(function(error) {
 						console.log(error)
@@ -222,7 +238,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectAllDeptPageInfo", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.deptData = response.data.list
@@ -495,7 +515,11 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectAllDeptPageInfo", {
-				params: this.pageInfo
+				params: this.pageInfo,
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
 			}).then(function(
 				response) {
 				console.log(response)
