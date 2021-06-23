@@ -124,7 +124,12 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selectClasstypes")
+			this.axios.get("http://localhost:8089/tsm/selectClasstypes", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response)
 					_this.tableData = response.data
@@ -133,6 +138,11 @@
 				})
 
 			this.axios.get("http://localhost:8089/tsm/findPage", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -150,6 +160,11 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -165,6 +180,11 @@
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -230,7 +250,12 @@
 			},
 			addClasstype() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addClasstypes", this.form)
+				this.axios.post("http://localhost:8089/tsm/addClasstypes", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						var classtype = response.data
@@ -244,7 +269,12 @@
 			updateDept() {
 				const _this = this
 				console.log(this.form)
-				this.axios.put("http://localhost:8089/tsm/updateClasstypes", this.form)
+				this.axios.put("http://localhost:8089/tsm/updateClasstypes", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						var classtype = response.data
@@ -254,11 +284,11 @@
 					}).catch(function(error) {
 						console.log(error)
 					}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消删除!'
+						this.$message({
+							type: 'error',
+							message: '取消删除!'
+						});
 					});
-				});
 			},
 
 
@@ -269,7 +299,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.put("http://localhost:8089/tsm/deleteClasstypes/", row)
+					_this.axios.put("http://localhost:8089/tsm/deleteClasstypes/", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 
 						.then(function(response) { // eslint-disable-line no-unused-vars
 
