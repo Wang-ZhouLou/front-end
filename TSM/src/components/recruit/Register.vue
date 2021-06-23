@@ -25,7 +25,7 @@
 									:value="items"></el-option>
 							</el-select>
 							咨询方式: <el-select style="width: 190px;" v-model="form.returnvisitId">
-								<el-option v-for="items in returnvisitdate" :key="items.returnvisitId"
+								<el-option v-for="items in returnvisitdata" :key="items.returnvisitId"
 									:label="items.returnvisitmode" :value="items.returnvisitId"></el-option>
 							</el-select>
 						</div>
@@ -71,7 +71,7 @@
 									:value="items"></el-option>
 							</el-select>
 							咨询方式: <el-select style="width: 190px;" v-model="form.returnvisitId">
-								<el-option v-for="items in returnvisitdate" :key="items.returnvisitId"
+								<el-option v-for="items in returnvisitdata" :key="items.returnvisitId"
 									:label="items.returnvisitmode" :value="items.returnvisitId"></el-option>
 							</el-select>
 						</div>
@@ -160,7 +160,7 @@
 							<el-button style="background-color: #FF5722;color: white; width: 50px; margin-left: 610px;"
 								size="mini" type="text" @click="de2()">删除
 							</el-button>
-							<el-table :data="returnvisitdate" border style="width: 100%" size=mini
+							<el-table :data="returnvisitdata" border style="width: 100%" size=mini
 								@selection-change="handleSelectionChange2" ref="multipleTable2">
 								<el-table-column type="selection" width="55" align="center">
 								</el-table-column>
@@ -271,7 +271,7 @@
 	export default {
 		computed: {
 			num: function() {
-				return this.returnvisitdate.length
+				return this.returnvisitdata.length
 			}
 		},
 		methods: {
@@ -307,7 +307,7 @@
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId)
 							.then(function(response) {
-								_this.returnvisitdate = response.data
+								_this.returnvisitdata = response.data
 								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
@@ -321,7 +321,7 @@
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/Wjxsreturnvisit?registerId=" + row.registerId)
 					.then(function(response) {
-						_this.returnvisitdate = response.data
+						_this.returnvisitdata = response.data
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -367,7 +367,7 @@
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit")
 							.then(function(response) {
-								_this.returnvisitdate = response.data
+								_this.returnvisitdata = response.data
 							}).catch(function(error) {
 								console.log(error)
 							}),
@@ -741,7 +741,7 @@
 				registerData: [],
 				sourceData: [],
 				courseData: [],
-				returnvisitdate: [],
+				returnvisitdata: [],
 				empData: [],
 				shortcuts: [{
 					text: '最近一周',
@@ -773,28 +773,48 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/wjselectAllEmp")
+			this.axios.get("http://localhost:8089/tsm/wjselectAllEmp", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.empData = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit")
+				this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.returnvisitdate = response.data
+					_this.returnvisitdata = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/selectAllwjSources")
+				this.axios.get("http://localhost:8089/tsm/selectAllwjSources", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.sourceData = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse")
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response.data)
 					_this.courseData = response.data
