@@ -29,9 +29,9 @@
 				</el-table-column>
 				<el-table-column prop="book.booksprice" label="售价" width="80">
 				</el-table-column>
-				<el-table-column prop="book.storage" label="入库量" width="80">
+				<el-table-column prop="storagecount" label="入库量" width="80">
 				</el-table-column>
-				<el-table-column prop="book.deliverycount" label="库存量" width="80">
+				<el-table-column prop="deliverycount" label="库存量" width="80">
 				</el-table-column>
 				<el-table-column prop="book.safestock" label="安全库存" width="80">
 				</el-table-column>
@@ -43,7 +43,7 @@
 					<template #default="scope" style="width: 150px;">
 						<el-button @click="handleClick(scope.row)" type="text" size="medium" style="text-decoration:underline;">追加库存</el-button>
 						<el-button type="text" size="medium" style="text-decoration:underline;" @click="showEdit(scope.row)">修改入库</el-button>
-						<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deletebookstor(scope.row)">删除入库</el-button>
+						<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deletebookstor1(scope.row)">删除入库</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -76,8 +76,15 @@
 						<el-input v-model="form.storagecount" placeholder="请输入入库数量" autocomplete="off" style="width: 220px; "></el-input>
 						本
 					</el-form-item>
+					
+					
 					<el-form-item label="入库时间 :" :label-width="formLabelWidth" style="margin: -100px 0 0 399px;">
 						<el-date-picker type="date" placeholder="选择日期" v-model="form.storagetime" style="width: 200px;"></el-date-picker>
+					</el-form-item>
+					
+					<el-form-item label="库存数量 :" :label-width="formLabelWidth" style="margin: -40px 0 0 399px">
+						<el-input v-model="form.deliverycount" placeholder="请输入库存数量" autocomplete="off" style="width: 200px; "></el-input>
+						本
 					</el-form-item>
 
 
@@ -110,8 +117,13 @@
 							<b style="font-weight: 100; ">本</b>
 						</el-form-item>
 						<el-form-item label="入库时间">
-							<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期" style="width: 193px;">
+							<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期" style="width: 200px;">
 							</el-date-picker>
+						
+						
+						<b style="font-weight: 100;margin-left: 135px; margin: 0px 0 0 70px;">库存数量：</b>
+						<el-input style="width: 193px;" size="mini" v-model="form.deliverycount" placeholder="" clearable></el-input>
+						<b style="font-weight: 100; ">本</b>
 						</el-form-item>
 						<el-form-item size="large">
 							<el-button style="margin-left: -100px; margin: 0 0 0 180px;" @click="updateBookstorage">更新</el-button>
@@ -144,9 +156,8 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" width="252">
 					<template #default="scope" style="width: 150px;">
-						<el-button @click="handleClick(scope.row)" type="text" size="medium" style="text-decoration:underline;">追加库存</el-button>
-						<el-button type="text" size="medium" style="text-decoration:underline;" @click="showEdit(scope.row)">修改入库</el-button>
-						<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deletebookstor(scope.row)">删除入库</el-button>
+						
+						<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deletebookstor1(scope.row)">删除教材</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -196,8 +207,8 @@
 </template>
 
 <script>
-	//import qs from "qs" 
-	//import ref from 'vue' 
+	import qs from "qs" // eslint-disable-line no-unused-vars
+	import ref from 'vue' // eslint-disable-line no-unused-vars
 	import {
 		ElMessage
 	} from 'element-plus'
@@ -220,6 +231,20 @@
 						type: 'success'
 					});
 				},
+				addss(){
+					ElMessage({
+						showClose: true,
+						message: '新增成功!',
+						type: 'success'
+					});
+				},
+				upss(){
+					ElMessage({
+						showClose: true,
+						message: '修改成功!',
+						type: 'success'
+					});
+				},
 				bookdata: [],
 				form: {
 					mbookstorageId: '',
@@ -230,6 +255,7 @@
 					bookjprice: '',
 					press: '',
 					storagecount: '',
+					deliverycount:'',
 					storagetime: '',
 					booksprice: ''
 				},
@@ -273,12 +299,14 @@
 
 		},
 		methods: {
+			
 			showEdit2(row) {
 				this.form.mbookstorageId = row.mbookstorageId
 				this.form.bookId = row.bookId
 				this.form.bookname = row.bookname
 				this.form.storagecount = row.storagecount
 				this.form.storagetime = row.storagetime
+				
 			},
 			del() {
 				console.log(this.multipleSelection.length)
@@ -288,7 +316,7 @@
 					this.multipleSelection.forEach(item => {
 						this.deletebookstor(item)
 					});
-					this.dels();
+					
 				}
 			},
 			handleSelectionChange(val) {
@@ -297,6 +325,7 @@
 			//增加
 			addBook() {
 				const _this = this
+				
 				this.axios.post("http://localhost:8089/tsm/addBookstorage", this.form)
 					.then(function(response) {
 						console.log(response)
@@ -310,6 +339,7 @@
 								console.log(error)
 							})
 						_this.dialogFormVisible = false
+						_this.addss()
 						for (var key in _this.form) {
 							delete _this.form[key]
 						}
@@ -325,7 +355,9 @@
 						console.log(response)
 						var book = response.data
 						_this.bookdata.push(book)
+						
 						_this.book = false
+						_this.addss()
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -336,20 +368,33 @@
 							this.form.bookId = row.bookId
 							this.form.storagecount = row.storagecount
 							this.form.storagetime = row.storagetime
+							this.form.deliverycount=row.deliverycount
 							this.xgrk = true
 
 						},
 			updateBookstorage() {
 							const _this = this
 							this.axios.put("http://localhost:8089/tsm/updateBookstorage", this.form)
+							.then(function(response) {
+								console.log(response)
+								_this.axios.get("http://localhost:8089/tsm/findPage1", {
+										params: _this.pageInfo
+									})
 								.then(function(response) {
+									_this.pageInfo.total = response.data.total
+									_this.tableData = response.data.list
 									var bookstorage = response.data
 									var book = response.data
 									var row = _this.tableData.filter(t => t.mbookstorageId == bookstorage.mbookstorageId)[0]
 									row.bookId = book.bookId
 									row.storagecount = bookstorage.storagecount
 									row.storagetime = bookstorage.storagetime
+									row.deliverycount=bookstorage.deliverycount
+									}).catch(function(error) {
+										console.log(error)
+									})
 									_this.xgrk = false
+									_this.upss()
 									for (var key in _this.form) {
 										delete _this.form[key]
 									}
@@ -364,6 +409,10 @@
 					
 					
 					this.axios.put("http://localhost:8089/tsm/delectbookstor", this.form)
+					
+					this.axios.get("http://localhost:8089/tsm/findPage1", {
+							params: this.pageInfo
+						})
 						.then(function(response) {
 							console.log(response)
 							console.log(response.data.mbookstorageId)
@@ -373,14 +422,49 @@
 							_this.pageInfo.total = _this.pageInfo.total - 1
 				
 							_this.dialogFormVisible2 = false
+							_this.dels()
 						}).catch(function(error) {
 							console.log(error)
 						})
+						
+				},
+				deletebookstor1(row) {
+					this.showEdit2(row)
+					const _this = this
+					// this.dialogVisible=true
+					
+					this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+										confirmButtonText: '确定',
+										cancelButtonText: '取消',
+										type: 'warning'
+									}).then(() => {
+					this.axios.put("http://localhost:8089/tsm/delectbookstor", this.form)
+					this.axios.get("http://localhost:8089/tsm/findPage1", {
+							params: this.pageInfo
+						})
+						.then(function(response) {
+							console.log(response)
+							console.log(response.data.mbookstorageId)
+							var rows = _this.tableData
+								.filter(d => d.mbookstorageId != row.mbookstorageId)
+							_this.tableData = rows
+							_this.pageInfo.total = _this.pageInfo.total - 1
+							_this.dels()
+						}).catch(function(error) {
+							console.log(error)
+						})
+						}).catch(() => {
+							this.$message({
+								type: 'error',
+								message: '取消删除!'
+							});
+						});
 				},
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
-				var qs = qs.stringify(this.pageInfo)
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/findPage1", {
 						params: this.pageInfo
 					})
@@ -394,7 +478,7 @@
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
-				var qs = qs.stringify(this.pageInfo)
+				var ps = qs.stringify(this.pageInfo)// eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage1", {
 						params: this.pageInfo
 					})
@@ -408,16 +492,6 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/findPage1", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					_this.tableData = response.data.list
-					_this.pageInfo.total = response.data.total
-				}).catch(function(error) {
-					console.log(error)
-				})
-
 			this.axios.get("http://localhost:8089/tsm/selectbook")
 				.then(function(response) {
 					console.log(response)
@@ -425,6 +499,18 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+			this.axios.get("http://localhost:8089/tsm/findPage1", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData = response.data.list
+					_this.pageInfo.total = response.data.total
+					
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			
 		}
 
 

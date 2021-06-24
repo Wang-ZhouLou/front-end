@@ -192,7 +192,7 @@
 			},
 			updateclassroom() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form{
+				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
