@@ -27,7 +27,6 @@
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{username}}
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <template #dropdown>
@@ -42,19 +41,9 @@
 export default {
     data() {
         return {
-            fullscreen: false,
-            name: "linxin",
-            message: 2
-        };
+        }
     },
     computed: {
-        username() {
-            let username = localStorage.getItem("ms_username");
-            return username ? username : this.name;
-        },
-        collapse() {
-            return this.$store.state.collapse;
-        }
     },
     methods: {
         // 用户名下拉菜单选择事件
@@ -65,9 +54,8 @@ export default {
 							.then(function(response){
 				 				console.log("已退出")
 								_this.$store.commit("updateUserInfo",null)
-								sessionStorage.setItem('refresh',"false")
 								_this.$router.push({
-									path: "login"
+									path: "/Login"
 								})
 							}).catch(function(error){
 								console.log(error)
@@ -75,14 +63,14 @@ export default {
             }
         },
         // 侧边栏折叠
-        collapseChage() {
-            this.$store.commit("hadndleCollapse", !this.collapse);
-        }
+        // collapseChage() {
+        //     this.$store.commit("hadndleCollapse", !this.collapse);
+        // }
     },
     mounted() {
-        if (document.body.clientWidth < 1500) {
-            this.collapseChage();
-        }
+        // if (document.body.clientWidth < 1500) {
+        //     this.collapseChage();
+        // }
     }
 };
 </script>

@@ -216,6 +216,7 @@
 			}
 		},
 		data() {
+			const menus=this.$store.state.rightList
 			const data = [{ //层级
 				id: 1,
 				label: '一级 1',
@@ -297,6 +298,7 @@
 			}
 		},
 		created() {
+			console.log(this.$store.state.rightList)
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectAllrole", {
 					params: this.pageInfo,
@@ -308,10 +310,11 @@
 				.then(function(response) {
 					_this.roleData = response.data.list
 					_this.pageInfo.total = response.data.total
-					console.log(response)
+					//console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				})
+				
 		}
 	}
 </script>

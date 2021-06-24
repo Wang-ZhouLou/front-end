@@ -19,7 +19,7 @@
 		  <!-- 侧边栏导航菜单 -->
 		  <v-sidebar />
 		  <!-- 内容  -->
-		  <el-main style="width: 80%; height: 830px; padding: 20px">
+		  <el-main style="padding: 20px">
 		    <router-view></router-view>
 		  </el-main>
 		</el-container>
