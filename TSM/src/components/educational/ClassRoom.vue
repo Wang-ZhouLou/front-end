@@ -33,19 +33,21 @@
 			<el-dialog title="修改教室" v-model="dialogFormVisible2">
 				<el-form :model="form">
 					<el-form-item style="display: flex;justify-content: center;">
-							教室编号:&nbsp; <el-input disabled="disabled"  v-model="form.classroomId" style=" width: 250px;margin-right: 105px;">
-								</el-input>
-							<br />
-							<br />
-							教室名: &nbsp;&nbsp;&nbsp;&nbsp; <el-input v-model="form.classroomName" style="width: 250px;margin-right: 105px;">
-							</el-input>
-							<br />
-							<br />
-							容纳量:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<el-input v-model="form.catacity" style="width: 250px;"></el-input>
-							<br />
-							<br />
-							教室地点：<el-input v-model="form.place" style="width: 250px;margin-right: 105px;"></el-input>
+						教室编号:&nbsp; <el-input disabled="disabled" v-model="form.classroomId"
+							style=" width: 250px;margin-right: 105px;">
+						</el-input>
+						<br />
+						<br />
+						教室名: &nbsp;&nbsp;&nbsp;&nbsp; <el-input v-model="form.classroomName"
+							style="width: 250px;margin-right: 105px;">
+						</el-input>
+						<br />
+						<br />
+						容纳量:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<el-input v-model="form.catacity" style="width: 250px;"></el-input>
+						<br />
+						<br />
+						教室地点：<el-input v-model="form.place" style="width: 250px;margin-right: 105px;"></el-input>
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -123,10 +125,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/selectfinds", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -141,10 +143,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectfinds", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -155,19 +157,20 @@
 			},
 			addClassromm() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addclassroom", this.form,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/tsm/addclassroom", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectfinds", {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							},
-								params: _this.pageInfo})
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+								params: _this.pageInfo
+							})
 							.then(function(response) {
 								_this.ClassroomData = response.data.list
 								_this.pageInfo.total = response.data.total
@@ -192,18 +195,18 @@
 			},
 			updateclassroom() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectfinds", {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							},
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -228,12 +231,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.put("http://localhost:8089/tsm/delclassroom/" + row,{
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
+					_this.axios.put("http://localhost:8089/tsm/delclassroom/" + row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) { // eslint-disable-line no-unused-vars
 							var rows = _this.ClassroomData
 								.filter(d => d.classroomId != row.classroomId)
@@ -273,10 +276,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectfinds", {
-				headers: {
-					'content-type': 'application/json',
-					'jwtAuth': _this.$store.getters.token
-				},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
