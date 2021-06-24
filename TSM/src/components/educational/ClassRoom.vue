@@ -186,6 +186,7 @@
 				// 传当前行的值
 				this.form.classroomId = row.classroomId
 				this.form.classroomName = row.classroomName
+				
 				this.form.place = row.place
 				this.form.catacity = row.catacity
 				this.dialogFormVisible2 = true
