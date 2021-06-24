@@ -123,7 +123,7 @@
 				},
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 10,
+					pagesize: 8,
 					total: 0,
 					flag: ""
 				},
@@ -235,7 +235,7 @@
 									'jwtAuth': _this.$store.getters.token
 								},
 
-								params: this.pageInfo
+								params: _this.pageInfo
 							})
 							.then(function(response) {
 								_this.CourseData = response.data.list
