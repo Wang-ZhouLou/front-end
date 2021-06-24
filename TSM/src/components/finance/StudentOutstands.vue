@@ -2,12 +2,13 @@
 	<div>
 		<div>
 			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
-			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-				</el-option>
+			<el-select placeholder="请选择" size=mini v-model="select">
+				<el-option label="所有" value=""></el-option>
+				<el-option label="未审核" value="1"></el-option>
+				<el-option label="已审核" value="2"></el-option>
 			</el-select>&nbsp;
 			<el-input v-model="input" style="width: 140px;" size="mini"></el-input>&nbsp;
-			<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
+			<el-button style="background-color: #009688;color: white;" size="mini" @click="selall">查询</el-button>
 		</div>&nbsp;
 
 		<div class="zxdj">
@@ -35,7 +36,7 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button @click="xfbjxs(scope.row)" type="text" size="small">学费补缴</el-button>
+						<el-button @click="upapprovaltype(scope.row)" type="text" size="small">审核</el-button>
 					</template>
 				</el-table-column>
 			</el-table>&nbsp;
@@ -58,46 +59,99 @@
 	import qs from 'qs'
 	export default {
 		methods: {
+			//修改审核状态
+			upapprovaltype(row) {
+				const _this = this
+				row.approvalType = 1
+				this.axios.put("http://localhost:8089/tsm/upapprovaltype", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) { // eslint-disable-line no-unused-vars
+						_this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
+								params: _this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) {
+								_this.studentoutsData = response.data.list
+								_this.pageInfo.total = response.data.total
+								console.log(response.data.list)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					})
+			},
+			//模糊查询
+			selall() {
+				if (this.select == 1) {
+					const _this = this
+					this.axios.get("http://localhost:8089/tsm/seleWapprovaltype", {
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) {
+							_this.studentoutsData = response.data.list
+							_this.pageInfo.total = response.data.total
+							console.log(response.data.list)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				} else if (this.select == 2) {
+					const _this = this
+					this.axios.get("http://localhost:8089/tsm/seleYapprovaltype", {
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) {
+							_this.studentoutsData = response.data.list
+							_this.pageInfo.total = response.data.total
+							console.log(response.data.list)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				} else {
+					const _this = this
+					this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) {
+							_this.studentoutsData = response.data.list
+							_this.pageInfo.total = response.data.total
+							console.log(response.data.list)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}
+			},
 			//分页大小
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.studentoutsData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
+				this.selall()
 			},
 			//当前页数
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.studentoutsData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleClick(row) {
-				console.log(row);
+				this.selall()
 			}
 		},
 		data() {
@@ -108,6 +162,7 @@
 					total: 0, //总记录条数，数据库查出来的
 					flag: ""
 				},
+				select: '',
 				dialogFormVisible: false,
 				form: {},
 				options: [],
@@ -145,21 +200,13 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/seleAllstudentout", {
-					params: this.pageInfo,
+			this.selall()
+			this.axios.get("http://localhost:8089/tsm/WjselectAllentryfees", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				})
-				.then(function(response) {
-					_this.studentoutsData = response.data.list
-					_this.pageInfo.total = response.data.total
-					console.log(response.data.list)
-				}).catch(function(error) {
-					console.log(error)
-				}),
-				this.axios.get("http://localhost:8089/tsm/WjselectAllentryfees")
 				.then(function(response) {
 					console.log(response.data)
 					_this.entryfeesData = response.data

@@ -66,19 +66,23 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			//修改教务
 			upjwisexamine(row) {
-				const _this = this
-				row.jwisexamine = 1
-				this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.selall()
-					})
+				if (row.zsisexamine == 1) {
+					const _this = this
+					//修改教务
+					row.jwisexamine = 1
+					this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) { // eslint-disable-line no-unused-vars
+							_this.selall()
+						})
+				} else {
+					this.jwsh();
+				}
 			},
 			//修改缴费状态
 			upzsisexamine(row) {
@@ -214,6 +218,13 @@
 		},
 		data() {
 			return {
+				jwsh() {
+					ElMessage({
+						showClose: true,
+						message: '招生人员未审核!',
+						type: 'error'
+					});
+				},
 				deld() {
 					ElMessage({
 						showClose: true,

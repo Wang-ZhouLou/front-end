@@ -141,9 +141,18 @@
 		methods: {
 			addclasses(){
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addClasses", this.form)
+				this.axios.post("http://localhost:8089/tsm/addClasses", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectClassesAll", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -169,7 +178,12 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteClasses", row)
+					_this.axios.put("http://localhost:8089/tsm/deleteClasses", row,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.classesData
@@ -189,9 +203,18 @@
 
 			updateClasses(){
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updateClasses", this.form)
+				this.axios.put("http://localhost:8089/tsm/updateClasses", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectClassesAll", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -284,6 +307,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectClassesAll", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				},
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -294,14 +321,24 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse")
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.courseData = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/tsm/wjselectAllEmp")
+				this.axios.get("http://localhost:8089/tsm/wjselectAllEmp",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.empData = response.data
 					_this.emp2Data = response.data

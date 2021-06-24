@@ -123,6 +123,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/selectfinds", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -137,6 +141,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectfinds", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -147,9 +155,18 @@
 			},
 			addClassromm() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addclassroom", this.form)
+				this.axios.post("http://localhost:8089/tsm/addclassroom", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectfinds", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 								params: _this.pageInfo})
 							.then(function(response) {
 								_this.ClassroomData = response.data.list
@@ -175,9 +192,18 @@
 			},
 			updateclassroom() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form)
+				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectfinds", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -202,7 +228,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.delete("http://localhost:8089/tsm/delclassroom/" + row.classroomId)
+					_this.axios.put("http://localhost:8089/tsm/delclassroom/" + row,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 						.then(function(response) { // eslint-disable-line no-unused-vars
 							var rows = _this.ClassroomData
 								.filter(d => d.classroomId != row.classroomId)
@@ -242,6 +273,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectfinds", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				},
 					params: this.pageInfo
 				})
 				.then(function(response) {
