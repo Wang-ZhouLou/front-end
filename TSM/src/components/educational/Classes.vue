@@ -123,7 +123,7 @@
 				</el-table-column>
 			</el-table>
 		</div>
-	</div>
+
 	<!-- 分页 -->
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -131,6 +131,7 @@
 			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
+</div>
 </template>
 
 <script>
