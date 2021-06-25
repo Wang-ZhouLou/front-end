@@ -64,10 +64,7 @@
 						// 		type: "error",
 						// 	});
 						// 	return false;
-						// }
-						
-						
-						
+						// }	
 						console.log("resssss:", response)
 						//sessionStorage.setItem("imgs", response.data.data.sysUser.userImgs);
 						_this.$store.commit("setrightList", response.data.data.menus);
