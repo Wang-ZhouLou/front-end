@@ -60,36 +60,7 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-<<<<<<< Updated upstream
 			//修改招生审核
-=======
-			upjwisexamine(row) {
-				if (row.zsisexamine == 1) {
-					const _this = this
-					
-					//修改教务
-					row.jwisexamine = 1
-					this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						})
-						.then(function(response) { // eslint-disable-line no-unused-vars
-							_this.selall()
-						})
-					this.axios.post("http://localhost:8089/tsm/addstudent",form2,{
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-				} else {
-					this.jwsh();
-				}
-			},
-			//修改缴费状态
->>>>>>> Stashed changes
 			upzsisexamine(row) {
 				const _this = this
 				row.zsisexamine = 1
@@ -207,20 +178,6 @@
 					potential: '',
 					already: ''
 				},
-				form2:{
-					consultant:"",
-					sex:"",
-					phone:""
-					// const fo1={
-						
-					// }
-					// fo1.consultant = this.memorandumentData.consultant
-					// fo1.sex = this.memorandumentData.sex
-					// fo1.phone = this.memorandumentData.phone
-					// this.form2=fo1
-					
-					
-				},
 				search: ref(''),
 				value: '',
 				memorandumentData: [],
@@ -230,20 +187,6 @@
 		created() {
 			//主键
 			const _this = this
-<<<<<<< Updated upstream
-=======
-			/* this.axios.get("http://localhost:8089/tsm/seleAllmemorandumatt", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					_this.memorandumentData = response.data.list
-					_this.pageInfo.total = response.data.total
-					console.log(response)
-					
-				}).catch(function(error) {
-					console.log(error)
-				}), */
->>>>>>> Stashed changes
 			this.selall()
 			//外键
 			this.axios.get("http://localhost:8089/tsm/Wjselectreturnvisit")
