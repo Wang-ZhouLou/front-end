@@ -1,8 +1,8 @@
 <template>
 	<el-breadcrumb separator-class="el-icon-arrow-right">
-			<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-			<el-breadcrumb-item>角色管理</el-breadcrumb-item>
-		</el-breadcrumb><br>
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>角色管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div class="crumbs">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
@@ -14,7 +14,8 @@
 			</el-input>&nbsp;
 			<el-button style="background-color: #5FB878;color: white; width: 50px;" size="mini" @click="selall">查询
 			</el-button>
-			<el-button style="background-color: #009688;color: white;width: 50px;" type="text" size="mini">增加
+			<el-button style="background-color: #009688;color: white;width: 50px;" @click="adddialogForm=true"
+				type="text" size="mini">增加
 			</el-button>
 			<el-button style="background-color: red;color: white;width: 50px;" type="text" size="mini"
 				@click="pldele()">删除
@@ -22,7 +23,6 @@
 
 
 			<el-dialog title="设置模块权限" v-model="dialogFormVisible">
-
 				<el-form :model="form">
 					<el-form-item>
 						<div class="custom-tree-container">
@@ -37,7 +37,27 @@
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button @click="colse()">关闭</el-button>
-						<el-button type="primary" @click="addSource">保 存</el-button>
+						<el-button type="primary" @click="updateAuter()">保 存</el-button>
+					</span>
+				</template>
+			</el-dialog>
+
+			<el-dialog title="新增角色" v-model="adddialogForm">
+				<el-form :model="form">
+					<el-form-item label="中文名">
+						<el-input v-model="role.roleName"></el-input>
+					</el-form-item>
+					<el-form-item label="英文名">
+						<el-input v-model="role.roleCode"></el-input>
+					</el-form-item>
+					<el-form-item label="角色描述">
+						<el-input v-model="role.roleDesc"></el-input>
+					</el-form-item>
+				</el-form>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button @click="colse()">关闭</el-button>
+						<el-button type="primary" @click="addrole()">保 存</el-button>
 					</span>
 				</template>
 			</el-dialog>
@@ -58,7 +78,6 @@
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
 						<el-button @click="handleClick(scope.row)" type="text" size="small">模块权限</el-button>
-						<el-button type="text" size="small" @click="quanx">操作权限</el-button>
 						<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
 					</template>
 				</el-table-column>
@@ -81,17 +100,67 @@
 	import {
 		ref
 	} from 'vue'
-	
+
 	import qs from 'qs'
 	import {
 		ElMessage
 	} from 'element-plus'
 	export default {
 		methods: {
-			colse(){
-				this.xz=[];
+			updateAuter(){
+				this.$axios.delete("http://localhost:8089/tsm/delAuthorByroleid",{
+					params:{
+						"roleid":this.roleid
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			},
+			addrole(){
+				const _this = this
+				this.axios.post("http://localhost:8089/tsm/insertrole", this.role, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					
+					_this.$notify({
+						title: '您刚刚执行了添加角色',
+						message: '角色名:' + _this.role.roleName,
+						duration: '7000'
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+				
+				this.axios.get("http://localhost:8089/tsm/selectAllrole", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.roleData = response.data.list
+						_this.pageInfo.total = response.data.total
+						//console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+				
+			},
+			colse() {
+				this.xz = [];
 				this.dialogFormVisible = false
 			},
+			//根据角色id查找权限
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
@@ -130,8 +199,9 @@
 					})
 			},
 			handleClick(row) {
-				this.xz=[];
+				this.xz = [];
 				const _this = this
+				this.roleid=row.id
 				this.axios.get("http://localhost:8089/tsm/selectMenuByroleid", {
 						params: {
 							roleid: row.id
@@ -146,27 +216,30 @@
 						console.log("----------")
 						console.log(_this.rolemuens)
 						_this.rolemuens.forEach((item) => {
-							item.asideChildren.forEach((item)=>{
-								item.asideChildren.forEach((item)=>{
+							item.asideChildren.forEach((item) => {
+								item.asideChildren.forEach((item) => {
 									_this.xz.push(item.id)
 								})
 							})
 						})
-							_this.dialogFormVisible = true
-						 _this.$nextTick(() => {
+						_this.dialogFormVisible = true
+						_this.$nextTick(() => {
 							_this.$refs.rightsTree.setCheckedKeys(_this.xz);
 						});
 						console.log(_this.xz)
-						
+
 					}).catch(function(error) {
 						console.log(error)
 					})
 
-				
+
 			}
 		},
 		data() {
 			return {
+				roleid=0,
+				//新增
+				role: {},
 				pageInfo: {
 					currentPage: 1, //当前页数，由用户指定
 					pagesize: 3, //每页显示的条数
@@ -176,6 +249,7 @@
 				select: '',
 				dialogFormVisible: false,
 				dialogFormVisible1: false,
+				adddialogForm: false,
 				form: {
 					sourceId: '',
 					sourceName: '',
@@ -189,7 +263,7 @@
 				rolemuens: [],
 				//全权限
 				muens: [],
-				xz:[],
+				xz: [],
 				//自定义
 				defaultProps: {
 					children: 'asideChildren',
@@ -228,20 +302,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-}
-		// },
-		// computed:{
-		// 	xz: {
-		// 		get: function() {
-		// 			 a=
-		// 			return a
-		// 		},
-		// 		set: function(value) {
-		// 			this.xz = value; //最后修改了msg    
-		// 		}
-		// 	}
-		// }
-		
+		}
 	}
 </script>
 
