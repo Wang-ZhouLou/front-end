@@ -120,10 +120,10 @@
 					this.updateDropJW_Approval1(row);
 
 				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消审批!'
-					});
+					// this.$message({
+					// 	type: 'error',
+					// 	message: '取消审批!'
+					// });
 				});
 			},
 			updateDropJW_Approval1(row) {
@@ -132,33 +132,32 @@
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
-						},
-					})
-					.then(function(response) {
-						console.log(response)
+						}
 					}).catch(function(error) {
-						console.log(error)
-					})
-				this.selectAllDrop();
-			},
-			selectAllDrop() {
-				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: _this.pageInfo
-					})
-					.then(function(response) {
-						console.log("+++++++++++++++++++++++++++++++++++")
-						console.log(response)
-						_this.dropData = response.data.list
-						_this.pageInfo.total = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
+							console.log(error)
+						})
+					
+					_this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+							params: _this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+							
+						})
+						.then(function(response) {
+							console.log("+++++++++++++++++++++++++++++++++++")
+							console.log(response)
+							_this.dropData = response.data.list
+							_this.pageInfo.total = response.data
+						}).catch(function(error) {
+							console.log(error)
+						})
+						
 			}
+			// selectAllDrop() {
+				
+			// }
 		},
 		data() {
 			return {
@@ -203,14 +202,28 @@
 						'jwtAuth': _this.$store.getters.token
 					}
 				})
-		.then(function(response) {
-			console.log("+++++++++++++++++++++++++++++++++++")
-			console.log(response)
+				.then(function(response) {
+					console.log("+++++++++++++++++++++++++++++++++++")
+					console.log(response)
 
-			_this.CourseRecorddetailData = response.data
-		}).catch(function(error) {
-			console.log(error)
-		})
+					_this.CourseRecorddetailData = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
+				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					console.log("+++++++++++++++++++++++++++++++++++")
+					console.log(response)
+				
+					_this.CourseRecorddetailData = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
 	}
 }
 </script>
