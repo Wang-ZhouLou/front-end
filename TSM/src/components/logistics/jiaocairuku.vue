@@ -204,7 +204,6 @@
 						<el-button @click="book  = false">关 闭</el-button>
 					</span>
 				</template>
-				
 			</el-dialog>
 		</el-tab-pane>
 	</el-tabs>
@@ -217,7 +216,6 @@
 		ElMessage
 	} from 'element-plus'
 	export default {
-
 		data() {
 			
 			return {
