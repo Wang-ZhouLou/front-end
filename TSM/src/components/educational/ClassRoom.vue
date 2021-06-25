@@ -189,18 +189,28 @@
 				// 传当前行的值
 				this.form.classroomId = row.classroomId
 				this.form.classroomName = row.classroomName
+				
 				this.form.place = row.place
 				this.form.catacity = row.catacity
 				this.dialogFormVisible2 = true
 			},
 			updateclassroom() {
 				const _this = this
+<<<<<<< HEAD
 				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
 					})
+=======
+				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+>>>>>>> 4b491294524b545662b646c23d89d6ef21b495d8
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						_this.axios.get("http://localhost:8089/tsm/selectfinds", {
 								headers: {

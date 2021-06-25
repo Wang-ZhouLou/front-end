@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div>
+		<div style="margin-left: -750px;">
 			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
 			<el-select placeholder="请选择" size=mini v-model="select">
 				<el-option label="所有" value=""></el-option>

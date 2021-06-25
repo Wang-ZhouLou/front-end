@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<div class="db1">
+			<h4>首页-咨询登记</h4>
 			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
 			<el-input v-model="pageInfo.flag" placeholder="请输入关键字" style="width: 140px;" size="mini">
 			</el-input>&nbsp;
@@ -43,8 +44,8 @@
 							<el-radio v-model="form.sex" label="女">女</el-radio>
 						</div>
 						<div style="margin: 0 0 0 34px;">
-							咨询内容:<el-input style="margin-top: 10px; width: 600px;" type="textarea"
-								:rows="2" placeholder="请输入内容" v-model="form.consultcontent">
+							咨询内容:<el-input style="margin-top: 10px; width: 600px;" type="textarea" :rows="2"
+								placeholder="请输入内容" v-model="form.consultcontent">
 							</el-input>
 						</div>
 					</el-form-item>

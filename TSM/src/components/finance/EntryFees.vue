@@ -135,7 +135,6 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
-
 					})
 				//报班点击审核通过修改缴费状态
 				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
