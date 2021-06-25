@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>学员交接</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div class="crumbs">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
@@ -91,19 +95,8 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-				
-			/* 	this.axios.post("http://localhost:8089/tsm/addstudent", this.student, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					}) */
 			},
+				
 			//模糊查询
 			selall() {
 				if (this.select == 1) { // eslint-disable-line no-unused-vars

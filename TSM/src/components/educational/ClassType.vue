@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>课类维护</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<el-button size="mini" @click="dialogFormVisible = true">新增</el-button>
 	<!-- <el-button @click="delmany" type="danger" size="mini" :disabled="this.multipleSelection.length==0">批量删除</el-button> -->
 	<!-- <el-dialog title="课类操作详情" v-model="dialogFormVisible3">

@@ -1,6 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>生源渠道</el-breadcrumb-item>
+	</el-breadcrumb>
 	<div>
-		<div class="crumbs">
+		<div class="crumbs" style="margin-left: -860px;">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
 			<!-- @change=selall -->
 			<el-input v-model="pageInfo.flag" size="mini" placeholder="生源渠道模糊搜索" style="width: 140px;">
@@ -52,6 +56,34 @@
 				</template>
 			</el-dialog>
 
+			<el-dialog title="某渠道下的学员列表信息" v-model="dialogFormVisible2">
+				<el-table :data="studnetData" border style="width: 100%" size=mini>
+					<el-table-column type="selection" align="center" width="55">
+					</el-table-column>
+					<el-table-column label="编号" align="center" prop="studentId">
+					</el-table-column>
+					<el-table-column label="报名日期" align="center" prop="studytime">
+					</el-table-column>
+					<el-table-column label="姓名" align="center" prop="studentName">
+					</el-table-column>
+					<el-table-column label="联系地址" align="center" prop="address">
+					</el-table-column>
+					<el-table-column label="联系电话" align="center" prop="studentPhone">
+					</el-table-column>
+					<el-table-column label="性别" align="center" prop="sex">
+					</el-table-column>
+					<el-table-column label="学号" align="center" prop="studentNumber">
+					</el-table-column>
+				</el-table>
+				<div style="margin-bottom: 300px;"></div>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button type="primary" @click="close1()">关闭</el-button>
+					</span>
+				</template>
+
+			</el-dialog>
+
 		</div>&nbsp;
 		<div class="qdwh">
 			<el-table :data="sourceData" border style="width: 100%" @selection-change="handleSelectionChange"
@@ -68,7 +100,7 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button @click="handleClick(scope.row)" type="text" size="small">查看学员</el-button>
+						<el-button @click="selStudent(scope.row)" type="text" size="small">查看学员</el-button>
 						<el-button type="text" size="small" @click="showEdit(scope.row)">
 							<i class="el-icon-edit"></i>编辑
 						</el-button>
@@ -101,6 +133,29 @@
 	} from 'element-plus'
 	export default {
 		methods: {
+			close1() {
+				var _this = this
+				for (var key in _this.sourceData) {
+					delete _this.sourceData[key];
+				}
+				_this.dialogFormVisible2 = false
+			},
+			selStudent(row) {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/seleSourceId?sourceId=" + row.sourceId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.studnetData = response.data
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+				this.dialogFormVisible2 = true
+			},
 			//全选复选框
 			SAll() {
 				this.$refs.multipleTable.toggleAllSelection();
@@ -343,6 +398,7 @@
 				},
 				dialogFormVisible: false,
 				dialogFormVisible1: false,
+				dialogFormVisible2: false,
 				form: {
 					sourceId: '',
 					sourceName: '',
@@ -352,6 +408,7 @@
 				search: ref(''),
 				value: '',
 				sourceData: [],
+				studnetData: [],
 			}
 		},
 		created() {

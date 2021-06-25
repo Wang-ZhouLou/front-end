@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>教材销售</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
 	<el-select v-model="value4" placeholder="校区" class="el2" size="mini">
 
@@ -11,7 +15,8 @@
 
 	<div style="margin: -27px 0 0 400px;">
 		<el-button type="primary" size="mini" icon="el-icon-search">查询</el-button>
-		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;" @click="xskd">销售开单</el-button>
+		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;" @click="xskd">
+			销售开单</el-button>
 		<el-button type="primary" size="mini" icon="el-icon-delete" @click="del()">删除</el-button>
 
 	</div>
@@ -41,69 +46,74 @@
 		</el-table-column>
 		<el-table-column fixed="right" label="操作" width="152">
 			<template #default="scope" style="width: 100%;">
-				<el-button type="text" size="medium" style="text-decoration:underline;"  @click="debookdel1(scope.row)">删除出库</el-button>
+				<el-button type="text" size="medium" style="text-decoration:underline;" @click="debookdel1(scope.row)">
+					删除出库</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
 
 
-	<el-dialog :data="xiaosData" title="" v-model="dialogTableVisible" style="margin: -30px 0 0 0; height:100%" width="100%">
+	<el-dialog :data="xiaosData" title="" v-model="dialogTableVisible" style="margin: -30px 0 0 0; height:100%"
+		width="100%">
 		<el-form :model="form">
 			<el-table :data="gridData">
 				<el-table-column property="form4.bookname" label="出售教材" width="650"></el-table-column>
 				<el-table-column property="form4.booksprice" label="教材售价" width="190"></el-table-column>
 				<el-table-column property="form4.deliverycount" label="出售数量" width="190"></el-table-column>
-				<el-table-column property="form4.tota" label="应收金额" width="260" ></el-table-column>
+				<el-table-column property="form4.tota" label="应收金额" width="260"></el-table-column>
 				<el-table-column property="cz" label="操作">
-					<el-button type="text" size="medium" style="text-decoration:underline;" @click="deleteInfo(index)">删除</el-button>
+					<el-button type="text" size="medium" style="text-decoration:underline;" @click="deleteInfo(index)">
+						删除</el-button>
 
 				</el-table-column>
 			</el-table>
 
-			<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;margin: 0px 0 0 1250px;" size="mini" @click="a1()">添加教材</el-button>
+			<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;margin: 0px 0 0 1250px;"
+				size="mini" @click="a1()">添加教材</el-button>
 			<el-form v-model="form3">
-			<div>
-				<div style="margin: 20px 0 0 370px;">
-					<a style="font-size: 16px;">单号 :</a>&nbsp;
-					<el-input placeholder="请输入单号" v-model="form.salenumber" style="width: 170px;">
-					</el-input>
-					<a style="font-size: 16px; margin: 0 0 0 300px;">录入人 :</a>&nbsp;
-					<el-input type="text" style="width: 170px;height: ;"  placeholder="梁政"></el-input>
-					<!-- <el-select v-model="form2.emp.empId" autocomplete="off" size="mini" style="width: 180px;" @change="as1">
+				<div>
+					<div style="margin: 20px 0 0 370px;">
+						<a style="font-size: 16px;">单号 :</a>&nbsp;
+						<el-input placeholder="请输入单号" v-model="form.salenumber" style="width: 170px;">
+						</el-input>
+						<a style="font-size: 16px; margin: 0 0 0 300px;">录入人 :</a>&nbsp;
+						<el-input type="text" style="width: 170px;height: ;" placeholder="梁政"></el-input>
+						<!-- <el-select v-model="form2.emp.empId" autocomplete="off" size="mini" style="width: 180px;" @change="as1">
 						<el-option v-for="item in empdata" :label="item.empName" :key="item.empId" :value="item.empId">
 						</el-option>
 					</el-select> -->
 
 
 
+					</div>
+
+					<div style="margin: 20px 0 0 339px;">
+						<a style="font-size: 16px;">支付方式 :</a>&nbsp;
+						<el-select v-model="value" placeholder="现金支付" style="width: 170px;">
+							<el-option v-for="item in options" :key="item.value2" :label="item.label1"
+								:value="item.value2">
+							</el-option>
+						</el-select>
+						<a style="font-size: 16px; margin: 0 0 0 300px;">购买者 :</a>&nbsp;
+						<el-input type="text" style="width: 170px;" v-model="form.studentName"></el-input>
+
+
+					</div>
+
+
+
+
+
 				</div>
-
-				<div style="margin: 20px 0 0 339px;">
-					<a style="font-size: 16px;">支付方式 :</a>&nbsp;
-					<el-select v-model="value" placeholder="现金支付" style="width: 170px;">
-						<el-option v-for="item in options" :key="item.value2" :label="item.label1" :value="item.value2">
-						</el-option>
-					</el-select>
-					<a style="font-size: 16px; margin: 0 0 0 300px;">购买者 :</a>&nbsp;
-					<el-input type="text" style="width: 170px;"  v-model="form.studentName"></el-input>
-
-
-				</div>
-				
-
-
-
-
-			</div>
 			</el-form>
-			
+
 			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addstu">确 定</el-button>
 			<el-button @click="dialogTableVisible=false">取 消</el-button>
 		</el-form>
-			
+
 	</el-dialog>
 	<el-dialog title="" v-model="ts" style="margin: -30px 0 0 0; height:100%" width="100%">
-		
+
 		<el-form :model="form1">
 			<div style="margin: 10px 0 0 70px;">
 
@@ -116,7 +126,8 @@
 			</div>
 			<div style="font-size: 16px; margin: -26px 0 0 620px;">
 				<span>￥: </span>&nbsp;
-				<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input> <span>/本</span>
+				<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input>
+				<span>/本</span>
 
 			</div>
 			<div style="font-size: 16px; margin: -25px 0 0 816px;">
@@ -125,8 +136,8 @@
 			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="showEdit">确 定</el-button>
 			<el-button @click="ts=false">取 消</el-button>
 		</el-form>
-	
-	
+
+
 	</el-dialog>
 	<!-- <el-dialog title="提示" v-model="dialogVisible" width="30%" :before-close="handleClose">
 		<span>确定要删除吗？</span>
@@ -142,8 +153,9 @@
 
 
 	<div class="block" style="margin:20px;display: flex;justify-content: center;">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
-		:page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+			:current-page="pageInfo.currentPage" :page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize"
+			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
 
@@ -177,7 +189,7 @@
 						type: 'success'
 					});
 				},
-				addss(){
+				addss() {
 					ElMessage({
 						showClose: true,
 						message: '新增成功!',
@@ -186,10 +198,10 @@
 				},
 				receipts: 0,
 				form2: {
-					emp:{},
+					emp: {},
 					book: {},
 					form4: {
-						
+
 					}
 				},
 				input: ref(''),
@@ -204,14 +216,14 @@
 				input13: ref('1'),
 				input14: ref(''),
 				input15: ref(''),
-				empdata:[],
+				empdata: [],
 				tableData: [],
 				xiaosData: [],
 				bookdata: [],
 				inputdata: [],
 				gridData: [],
 				form: {
-					deliveryddetailsId:'',
+					deliveryddetailsId: '',
 					bookdeliveryId: '',
 					salenumber: '',
 					deliverytime: '',
@@ -220,8 +232,8 @@
 					booksprice: '',
 					zk: '',
 					receivablemoney: '',
-					tota:'',
-					studentId:'',
+					tota: '',
+					studentId: '',
 					studentName: '',
 					empName: ''
 
@@ -235,11 +247,11 @@
 					zk: '',
 					receivablemoney: ''
 				},
-				form3:{
-					student:{},
-					salenumber:'',
-					
-					
+				form3: {
+					student: {},
+					salenumber: '',
+
+
 					empName: ''
 				},
 				value: '',
@@ -303,41 +315,41 @@
 		methods: {
 			addstu() {
 				const _this = this
-				
+
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
-				
+
 				this.axios.post("http://localhost:8089/tsm/insertstu", this.form)
 					.then(function(response) {
 						console.log(response)
-						
-							
-								
-							_this.addbookdel1(response.data.studentId)
-							
-							
+
+
+
+						_this.addbookdel1(response.data.studentId)
+
+
 						_this.dialogTableVisible = false
-			
+
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-				addbookdel1(row) {
+			addbookdel1(row) {
 				const _this = this
-				this.form.tota=this.bookdata.booksprice * this.form2.form4.deliverycount
-				this.form.studentId=row
+				this.form.tota = this.bookdata.booksprice * this.form2.form4.deliverycount
+				this.form.studentId = row
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
-				
+
 				this.axios.post("http://localhost:8089/tsm/insertz", this.form)
 					.then(function(response) {
 						console.log(response)
-						
-							
-								
-							_this.addbookdel(response.data.bookdeliveryId)
-							
-							
+
+
+
+						_this.addbookdel(response.data.bookdeliveryId)
+
+
 						_this.dialogTableVisible = false
 
 					}).catch(function(error) {
@@ -346,46 +358,46 @@
 			},
 			addbookdel(row) {
 				const _this = this
-				this.form.deliverycount=this.form2.form4.deliverycount
-				this.form.tota=this.bookdata.booksprice * this.form2.form4.deliverycount
-				this.form.receivablemoney=this.form.tota
-				this.form.bookId=this.form2.book.bookId
-				this.form.bookdeliveryId=row
+				this.form.deliverycount = this.form2.form4.deliverycount
+				this.form.tota = this.bookdata.booksprice * this.form2.form4.deliverycount
+				this.form.receivablemoney = this.form.tota
+				this.form.bookId = this.form2.book.bookId
+				this.form.bookdeliveryId = row
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
-				
+
 				this.axios.post("http://localhost:8089/tsm/insertdel", this.form)
-				.then(function(response) {
-					console.log(response)
-					_this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: _this.pageInfo
+					.then(function(response) {
+						console.log(response)
+						_this.axios.get("http://localhost:8089/tsm/findPage2", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.pageInfo.total = response.data.total
+								_this.tableData = response.data.list
+
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.dialogTableVisible = false
+						_this.addss()
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
 					})
-								.then(function(response) {
-									_this.pageInfo.total = response.data.total
-									_this.tableData = response.data.list
-									
-								}).catch(function(error) {
-									console.log(error)
-								})
-								_this.dialogTableVisible = false
-								_this.addss()
-								for (var key in _this.form) {
-									delete _this.form[key]
-								}
-						}).catch(function(error) {
-							console.log(error)
-						})
-					
+
 			},
 			showEdit2(row) {
 				this.form.deliveryddetailsId = row.deliveryddetailsId
-				this.form.tota=row.tota
+				this.form.tota = row.tota
 				this.form.bookId = row.bookId
 				this.form.bookname = row.bookname
 				// this.form.storagecount = row.storagecount
 				// this.form.storagetime = row.storagetime
 			},
-			xskd(){
+			xskd() {
 				this.dialogTableVisible = true;
 				this.selectemp();
 			},
@@ -393,15 +405,15 @@
 				this.showEdit2(row)
 				const _this = this
 				// this.dialogVisible=true
-				
+
 
 				this.axios.put("http://localhost:8089/tsm/debookdel", this.form)
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
 						params: _this.pageInfo
 					})
-								.then(function(response) {
-									_this.pageInfo.total = response.data.total
-									_this.tableData = response.data.list
+					.then(function(response) {
+						_this.pageInfo.total = response.data.total
+						_this.tableData = response.data.list
 						var rows = _this.tableData
 							.filter(d => d.deliveryddetailsId != row.deliveryddetailsId)
 						_this.tableData = rows
@@ -411,37 +423,37 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-					
-				
+
+
 			},
 			debookdel1(row) {
 				this.showEdit2(row)
 				const _this = this
 				// this.dialogVisible=true
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-									confirmButtonText: '确定',
-									cancelButtonText: '取消',
-									type: 'warning'
-								}).then(() => {
-			
-				this.axios.put("http://localhost:8089/tsm/debookdel", this.form)
-					
-				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: _this.pageInfo
-					})
-							.then(function(response) {
-								console.log(response)
-								console.log(response.data.deliveryddetailsId)
-								var rows = _this.tableData
-									.filter(d => d.deliveryddetailsId != row.deliveryddetailsId)
-									_this.pageInfo.total = _this.pageInfo.total - 1
-								_this.tableData = rows
-									_this.del = false	
-								_this.dels()
-							}).catch(function(error) {
-								console.log(error)
-							})
-					}).catch(() => {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
+					this.axios.put("http://localhost:8089/tsm/debookdel", this.form)
+
+					this.axios.get("http://localhost:8089/tsm/findPage2", {
+							params: _this.pageInfo
+						})
+						.then(function(response) {
+							console.log(response)
+							console.log(response.data.deliveryddetailsId)
+							var rows = _this.tableData
+								.filter(d => d.deliveryddetailsId != row.deliveryddetailsId)
+							_this.pageInfo.total = _this.pageInfo.total - 1
+							_this.tableData = rows
+							_this.del = false
+							_this.dels()
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
 					this.$message({
 						type: 'error',
 						message: '取消删除!'
@@ -449,7 +461,7 @@
 				});
 			},
 			del() {
-				
+
 				if (this.multipleSelection.length === 0) {
 					this.deld();
 				} else {
@@ -467,19 +479,19 @@
 				this.selectBook();
 			},
 			showEdit() {
-				
+
 				var courserecorddetails = {
 					form4: {
-						bookName:'',
+						bookName: '',
 						deliverycount: '',
 						booksprice: '',
-						
+
 						receivablemoney: '',
-						tota:''
-						
+						tota: ''
+
 					},
 				};
-				
+
 				courserecorddetails.form4.bookname = this.bookdata.bookname
 				courserecorddetails.form4.booksprice = this.bookdata.booksprice
 				courserecorddetails.form4.deliverycount = this.form2.form4.deliverycount
@@ -491,8 +503,8 @@
 				// courserecorddetails.course.deliverycount=this.form1.deliverycount
 				// courserecorddetails.course.receivablemoney=this.form1.receivablemoney
 				this.gridData.push(courserecorddetails);
-				this.ts = false 
-				
+				this.ts = false
+
 			},
 			a() {
 				const _this = this
@@ -508,12 +520,12 @@
 			},
 			as1() {
 				const _this = this
-			
+
 				this.axios.get("http://localhost:8089/tsm/selectemp/" + this.form2.emp.empId)
 					.then(function(response) {
 						console.log(response)
 						_this.empdata = response.data
-			
+
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -566,7 +578,7 @@
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo)// eslint-disable-line no-unused-vars
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
 						params: this.pageInfo
 					})
@@ -577,11 +589,11 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-			
+
 			},
 			deleteInfo(index) {
-							this.gridData.splice(index, 1);
-						},
+				this.gridData.splice(index, 1);
+			},
 		},
 		created() {
 			const _this = this
@@ -606,7 +618,7 @@
 
 
 		},
-		
+
 		computed: {
 			// 计算属性的 getter
 			price: { // eslint-disable-line no-unused-vars

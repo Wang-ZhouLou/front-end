@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>学员档案</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<el-button size="mini" @click="dialogFormVisible = true">新增</el-button>
 		<el-button size="mini">审批通过</el-button>
@@ -187,7 +191,8 @@
 				<el-table-column label="操作" align="center" width="320">
 					<template v-slot="scope">
 						<div style="display:flex;justify-content:center">
-							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info" @click="cha11(scope.row)">分班</el-button>
+							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info"
+								@click="cha11(scope.row)">分班</el-button>
 							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
 							<el-button type="info" size="mini">复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
@@ -282,34 +287,33 @@
 			</span>
 		</template>
 	</el-dialog>
-   <el-dialog  title="学员退学" v-model="dialogFormVisible12">
-	  <el-form :model="form13" >
-		  <el-form-item>
-			  <!-- <div style="margin: 16px 0 0 35px;">
+	<el-dialog title="学员退学" v-model="dialogFormVisible12">
+		<el-form :model="form13">
+			<el-form-item>
+				<!-- <div style="margin: 16px 0 0 35px;">
 			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
 			  	</el-input>
 				退学学员: <el-input v-model="form13.studentName" readonly="true"
 					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
 				</el-input>
 			  </div> -->
-			  <!-- <div style="margin: 16px 0 0 35px;">
+				<!-- <div style="margin: 16px 0 0 35px;">
 			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
 			  	</el-input>
 			  </div> -->
-			  <div style="margin: 16px 0 0 10px;">
-			  	退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2"
-			  		v-model="form13.dropReason">
-			  	</el-input>
-			  </div>
-		  </el-form-item>
-	  </el-form>
-	  <template #footer>
-	  	<span class="dialog-footer">
-	  		<el-button @click="dialogFormVisible12=false">关闭</el-button>
-	  		<el-button type="primary" @click="addDrop(row)">保 存</el-button>
-	  	</span>
-	  </template>
-   </el-dialog>
+				<div style="margin: 16px 0 0 10px;">
+					退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form13.dropReason">
+					</el-input>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible12=false">关闭</el-button>
+				<el-button type="primary" @click="addDrop(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -360,77 +364,77 @@
 				const _this = this
 				console.log("_____________++++++++++++")
 				console.log(_this.form13)
-				this.axios.post("http://localhost:8089/tsm/addDrop",this.form13, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					}).then(function(response) {
-						console.log(response)
-						_this.dialogFormVisible12=false
-					}).catch(function(error) {
-								console.log(error)
-							})
-					
-					},
-					// .then(function(response) {
-					// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-					// 		headers: {
-					// 			'content-type': 'application/json',
-					// 			'jwtAuth': _this.$store.getters.token
-					// 		}
-					// 	})
-						
-					// })
-					// .then(function(response) {
-					// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
-					// 			.studentId, {
-					// 				headers: {
-					// 					'content-type': 'application/json',
-					// 					'jwtAuth': _this.$store.getters.token
-					// 				}
-					// 			})
-					// 			})
-					// 		.then(function(response) {
-					// 			for (var key in response.data) {
-					// 				console.log(key + ":")
-					// 				console.log(response.data[key])
-					
-					// 				for (var i = 0; i < response.data[key].length; i++) {
-					// 					_this.CourseRecorddetailsData2.push(response.data[key][i])
-					// 				}
-					// 			}
-					// 			console.log(response.data)
-					// 		})
-					// 		
-			updateLearningstate5(row){
+				this.axios.post("http://localhost:8089/tsm/addDrop", this.form13, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible12 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			},
+			// .then(function(response) {
+			// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+
+			// })
+			// .then(function(response) {
+			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+			// 			.studentId, {
+			// 				headers: {
+			// 					'content-type': 'application/json',
+			// 					'jwtAuth': _this.$store.getters.token
+			// 				}
+			// 			})
+			// 			})
+			// 		.then(function(response) {
+			// 			for (var key in response.data) {
+			// 				console.log(key + ":")
+			// 				console.log(response.data[key])
+
+			// 				for (var i = 0; i < response.data[key].length; i++) {
+			// 					_this.CourseRecorddetailsData2.push(response.data[key][i])
+			// 				}
+			// 			}
+			// 			console.log(response.data)
+			// 		})
+			// 		
+			updateLearningstate5(row) {
 				const _this = this
-				
-					this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						
-						_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							}).then(function(response){
-								_this.form13=row
-								_this.dialogFormVisible12=true
-							})
-					.catch(function(error) {
-								console.log(error)
-							})
-					}).catch(() => {
-						this.$message({
-							type: 'error',
-							message: '取消操作!'
-						});
+
+				this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form13 = row
+							_this.dialogFormVisible12 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
 					});
-				},
+				});
+			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo1.pagesize = pagesize
@@ -472,7 +476,7 @@
 				const _this = this
 				console.log("_____________________________________SSSS")
 				console.log(this.form11.classesId)
-				this.axios.put("http://localhost:8089/tsm/updateclassesId",this.form11.classesId, {
+				this.axios.put("http://localhost:8089/tsm/updateclassesId", this.form11.classesId, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -480,7 +484,7 @@
 					})
 					.then(function(response) {
 						console.log(response)
-						
+
 						_this.CourseRecorddetailsData2 = response.data
 						_this.dialogFormVisible11 = false
 					}).catch(function(error) {
@@ -613,18 +617,18 @@
 			},
 			cha12(index) {
 				console.log(index)
-				const fo={
-					classesSize:0,
-					classesId:0,
-					courseName:""
+				const fo = {
+					classesSize: 0,
+					classesId: 0,
+					courseName: ""
 				}
 				fo.classesSize = this.ClassesData[index].classesSize
 				console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++")
-				
+
 				//console.log(this.ClassesData[index].classesId)
 				fo.classesId = this.ClassesData[index].classesId
 				fo.courseName = this.ClassesData[index].course.courseName
-				this.form11=fo
+				this.form11 = fo
 			},
 			close() {
 				for (var key in this.form) {
@@ -858,10 +862,10 @@
 					course: {}
 				},
 				form11: {
-					classesId:""
+					classesId: ""
 				},
 				form13: {
-					
+
 				},
 				person: "TSM",
 				dialogFormVisible: false,

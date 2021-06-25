@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>公告管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<el-tabs type="border-card">
 		<el-tab-pane label="公告管理" style="height: 530px;">
 			<div class="all" style="width: 100%;height: 100%">

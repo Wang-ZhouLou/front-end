@@ -1,19 +1,19 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>学员交接</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div class="crumbs">
+		<div class="crumbs" style="margin-left: -940px;">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
-			<!-- @change=selall -->
 			<el-select placeholder="请选择" size=mini v-model="select">
 				<el-option label="所有" value=""></el-option>
 				<el-option label="招生未审核" value="1"></el-option>
 				<el-option label="招生已审核" value="2"></el-option>
-				<!-- 				<el-option label="教务未审核" value="3"></el-option>
-				<el-option label="教务已审核" value="4"></el-option> -->
 			</el-select>
 			<el-button style="background-color: #5FB878;color: white; width: 50px;" size="mini" @click="selall">查询
 			</el-button>
-
-		</div>&nbsp;
+		</div>
 		<div class="qdwh">
 			<el-table :data="memorandumentData" border style="width: 100%">
 				<el-table-column prop="memorandumattachmentId" label="编号" width="50" align="center">

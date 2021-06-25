@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>教材入库</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<el-tabs type="border-card">
 		<el-tab-pane label="教材入库">
 			&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
@@ -200,7 +204,6 @@
 						<el-button @click="book  = false">关 闭</el-button>
 					</span>
 				</template>
-				
 			</el-dialog>
 		</el-tab-pane>
 	</el-tabs>
@@ -213,7 +216,6 @@
 		ElMessage
 	} from 'element-plus'
 	export default {
-
 		data() {
 			
 			return {

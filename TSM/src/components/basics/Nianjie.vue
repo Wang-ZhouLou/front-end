@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>年届管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div style="float: right;bottom: 10px;">
 		<el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" style="width: 110px;" @click="dialogFormVisible = true">新增</el-button>
 	</div>
