@@ -1,6 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>用户维护</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div>
+		<div style="margin-left: -760px;">
 			<font class="ksjs1" style="font-size: 13px;">所属部门:</font>&nbsp;
 			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -12,8 +16,6 @@
 				</el-option>
 			</el-select>&nbsp;
 			<el-button style="background-color: #009688;color: white;margin-bottom: 10px;" size="mini">查询</el-button>
-			<br>
-
 			<el-button style="background-color: #5FB878;color: white;" @click="addEmpVisible = true" size="mini">新增</el-button>
 			<el-button style="background-color:  #FF5722;color: white;width: 50px;" type="text" @click="open"
 				size="mini">删除</el-button>

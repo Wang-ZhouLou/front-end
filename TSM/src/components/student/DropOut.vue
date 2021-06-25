@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>退学管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div>
 			<input type="text" placeholder="输入关键字搜索" v-model="search" />

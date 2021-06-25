@@ -1,6 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>生源渠道</el-breadcrumb-item>
+	</el-breadcrumb>
 	<div>
-		<div class="crumbs">
+		<div class="crumbs" style="margin-left: -860px;">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
 			<!-- @change=selall -->
 			<el-input v-model="pageInfo.flag" size="mini" placeholder="生源渠道模糊搜索" style="width: 140px;">

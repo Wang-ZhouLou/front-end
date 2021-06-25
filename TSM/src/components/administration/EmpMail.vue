@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>职工通讯录</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div class="all" style="width: 100%;height: 100%;">
 		<div class="time" style="display: flex;justify-content: center;">
 			<el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="width: 500px;">

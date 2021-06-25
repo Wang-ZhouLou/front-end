@@ -1,15 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>报班缴费管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div>
-			<font class="ksjs1" style="font-size: 13px;">审核:</font>&nbsp;
-			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
-				<el-option v-for="item in optionss" :key="item.value" :label="item.label" :value="item.value">
-				</el-option>
-			</el-select>&nbsp;
-			<font class="ksjs1" style="font-size: 13px;">学员:</font>&nbsp;
-			<el-input v-model="input" style="width: 140px;" size="mini"></el-input>&nbsp;
-		</div>&nbsp;
-		<div class="db1">
+		<div class="db1" style="margin-left: -785px;">
 			<font class="ksjs1" style="font-size: 13px;">缴费日期:</font>&nbsp;
 			<el-date-picker v-model="value1" type="daterange" size="mini" style="width: 200px;" range-separator="至"
 				start-placeholder="开始日期" end-placeholder="结束日期">

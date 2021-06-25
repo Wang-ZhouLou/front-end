@@ -1,7 +1,11 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>角色管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div class="crumbs">
-			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
+		<div class="crumbs" style="margin-left: -672px;">
+			<font style="font-size: 13px;">快速检索:</font>&nbsp;
 			<el-select v-model="value" placeholder="请选择" size=mini style="width: 180px;">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 				</el-option>
@@ -16,103 +20,101 @@
 				@click="pldele()">删除
 			</el-button>
 
-
-			<el-dialog title="设置模块权限" v-model="dialogFormVisible">
-				<el-form :model="form">
-					<el-form-item>
-						<div class="custom-tree-container">
-							<div class="block">
-								<el-tree :data="data" show-checkbox node-key="id" default-expand-all
-									:expand-on-click-node="false">
-									<template #default="{ node, data }">
-										<span class="custom-tree-node">
-											<span>{{ node.label }}</span>
-											<span>
-												<a @click="append(data)">
-													Append
-												</a>
-												<a @click="remove(node, data)">
-													Delete
-												</a>
-											</span>
+		<el-dialog title="设置模块权限" v-model="dialogFormVisible">
+			<el-form :model="form">
+				<el-form-item>
+					<div class="custom-tree-container">
+						<div class="block">
+							<el-tree :data="data" show-checkbox node-key="id" default-expand-all
+								:expand-on-click-node="false">
+								<template #default="{ node, data }">
+									<span class="custom-tree-node">
+										<span>{{ node.label }}</span>
+										<span>
+											<a @click="append(data)">
+												Append
+											</a>
+											<a @click="remove(node, data)">
+												Delete
+											</a>
 										</span>
-									</template>
-								</el-tree>
-							</div>
+									</span>
+								</template>
+							</el-tree>
 						</div>
-					</el-form-item>
-				</el-form>
-				<template #footer>
-					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible = false">关闭</el-button>
-						<el-button type="primary" @click="addSource">保 存</el-button>
-					</span>
-				</template>
-			</el-dialog>
+					</div>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="dialogFormVisible = false">关闭</el-button>
+					<el-button type="primary" @click="addSource">保 存</el-button>
+				</span>
+			</template>
+		</el-dialog>
 
-			<el-dialog title="设置操作权限" v-model="dialogFormVisible1">
-				<el-form :model="form">
-					<el-form-item>
-						<div class="custom-tree-container">
-							<div class="block">
-								<el-tree :data="data" show-checkbox node-key="id" default-expand-all
-									:expand-on-click-node="false">
-									<template #default="{ node, data }">
-										<span class="custom-tree-node">
-											<span>{{ node.label }}</span>
-											<span>
-												<a @click="append(data)">
-													Append
-												</a>
-												<a>
-													<el-checkbox v-model="checked">备选项</el-checkbox>
-													<el-checkbox v-model="checked1">备选项</el-checkbox>
-													<el-checkbox v-model="checked2">备选项</el-checkbox>
-													<el-checkbox v-model="checked3">备选项</el-checkbox>
-												</a>
-												<a @click="remove(node, data)">
-													Delete
-												</a>
-											</span>
+		<el-dialog title="设置操作权限" v-model="dialogFormVisible1">
+			<el-form :model="form">
+				<el-form-item>
+					<div class="custom-tree-container">
+						<div class="block">
+							<el-tree :data="data" show-checkbox node-key="id" default-expand-all
+								:expand-on-click-node="false">
+								<template #default="{ node, data }">
+									<span class="custom-tree-node">
+										<span>{{ node.label }}</span>
+										<span>
+											<a @click="append(data)">
+												Append
+											</a>
+											<a>
+												<el-checkbox v-model="checked">备选项</el-checkbox>
+												<el-checkbox v-model="checked1">备选项</el-checkbox>
+												<el-checkbox v-model="checked2">备选项</el-checkbox>
+												<el-checkbox v-model="checked3">备选项</el-checkbox>
+											</a>
+											<a @click="remove(node, data)">
+												Delete
+											</a>
 										</span>
-									</template>
-								</el-tree>
-							</div>
+									</span>
+								</template>
+							</el-tree>
 						</div>
-					</el-form-item>
-				</el-form>
-				<template #footer>
-					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible1 = false">关闭</el-button>
-						<el-button type="primary" @click="addSource">保 存</el-button>
-					</span>
+					</div>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="dialogFormVisible1 = false">关闭</el-button>
+					<el-button type="primary" @click="addSource">保 存</el-button>
+				</span>
+			</template>
+		</el-dialog>
+
+
+	</div>&nbsp;
+	<div class="qdwh">
+		<el-table :data="roleData" border @selection-change="handleSelectionChange" ref="multipleTable">
+			<el-table-column type="selection" width="55">
+			</el-table-column>
+			<el-table-column prop="id" label="编号" width="50" align="center">
+			</el-table-column>
+			<el-table-column prop="roleName" label="角色名称" align="center">
+			</el-table-column>
+			<el-table-column prop="roleCode" label="英文名" align="center">
+			</el-table-column>
+			<el-table-column prop="status" label="状态" align="center">
+			</el-table-column>
+			<el-table-column fixed="right" label="操作" align="center">
+				<template #default="scope">
+					<el-button @click="handleClick" type="text" size="small">模块权限</el-button>
+					<el-button type="text" size="small" @click="quanx">操作权限</el-button>
+					<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
 				</template>
-			</el-dialog>
-
-
-		</div>&nbsp;
-		<div class="qdwh">
-			<el-table :data="roleData" border  @selection-change="handleSelectionChange"
-				ref="multipleTable">
-				<el-table-column type="selection"  width="55">
-				</el-table-column>
-				<el-table-column prop="id" label="编号" width="50" align="center">
-				</el-table-column>
-				<el-table-column prop="roleName" label="角色名称" align="center">
-				</el-table-column>
-				<el-table-column prop="roleCode" label="英文名"  align="center">
-				</el-table-column>
-				<el-table-column prop="status" label="状态" align="center">
-				</el-table-column>
-				<el-table-column fixed="right" label="操作" align="center">
-					<template #default="scope">
-						<el-button @click="handleClick" type="text" size="small">模块权限</el-button>
-						<el-button type="text" size="small" @click="quanx">操作权限</el-button>
-						<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-		</div>
+			</el-table-column>
+		</el-table>
+	</div>
 	</div>
 	<!-- 分页 -->
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
@@ -216,7 +218,7 @@
 			}
 		},
 		data() {
-			const menus=this.$store.state.rightList
+			const menus = this.$store.state.rightList
 			const data = [{ //层级
 				id: 1,
 				label: '一级 1',
@@ -314,7 +316,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				
+
 		}
 	}
 </script>
