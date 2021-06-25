@@ -285,13 +285,13 @@
    <el-dialog  title="学员退学" v-model="dialogFormVisible12">
 	  <el-form :model="form13" >
 		  <el-form-item>
-			  <div style="margin: 16px 0 0 35px;">
+			  <!-- <div style="margin: 16px 0 0 35px;">
 			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
 			  	</el-input>
 				退学学员: <el-input v-model="form13.studentName" readonly="true"
 					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
 				</el-input>
-			  </div>
+			  </div> -->
 			  <!-- <div style="margin: 16px 0 0 35px;">
 			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
 			  	</el-input>
