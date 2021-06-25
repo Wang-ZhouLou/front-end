@@ -285,25 +285,6 @@
    <el-dialog  title="学员退学" v-model="dialogFormVisible12">
 	  <el-form :model="form13" >
 		  <el-form-item>
-<<<<<<< Updated upstream
-			  <!-- <div style="margin: 16px 0 0 35px;">
-=======
-			  <div style="margin: 16px 0 0 35px;">
->>>>>>> Stashed changes
-			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
-			  	</el-input>
-				退学学员: <el-input v-model="form13.studentName" readonly="true"
-					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
-				</el-input>
-<<<<<<< Updated upstream
-			  </div> -->
-=======
-			  </div>
->>>>>>> Stashed changes
-			  <!-- <div style="margin: 16px 0 0 35px;">
-			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
-			  	</el-input>
-			  </div> -->
 			  <div style="margin: 16px 0 0 10px;">
 			  	退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2"
 			  		v-model="form13.dropReason">

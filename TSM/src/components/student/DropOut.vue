@@ -1,6 +1,5 @@
 <template>
 	<div>
-<<<<<<< Updated upstream
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
 	</div>&nbsp;
@@ -44,53 +43,49 @@
 
 		</el-table>&nbsp;
 	</div>
-=======
-		<div>
-			<input type="text" placeholder="输入关键字搜索" v-model="search" />
-			<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
-			<el-button style="background-color: #5FB878;color: white;" size="mini">审核通过</el-button>
-		</div>&nbsp;
-		<div>
-			<el-table
-				:data="dropData"
-				border style="width: 100%">
-				<el-table-column type="selection" width="55" align="center">
-				</el-table-column>
-				<el-table-column label="" prop="dropId" width="80" align="center">
-				</el-table-column>
-				<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
-				</el-table-column>
-				<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
-				</el-table-column>
-				<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
-				</el-table-column>
-				<el-table-column label="退学时间" prop="dropRime" width="150" align="center">
-				</el-table-column>
-				<el-table-column label="退学理由" prop="dropReason" width="140" align="center">
-				</el-table-column>
-				<el-table-column label="退学办理人" prop="dropHandler" width="140" align="center">
-				</el-table-column>
-				<el-table-column label="退费状态" prop="ispay" width="140" align="center">
-					<template v-slot="scope">
-						<p v-if="scope.row.ispay==0">未缴费</p>
-						<p v-if="scope.row.ispay==1">待缴费</p>
-						<p v-if="scope.row.ispay==2">已缴费</p>
-					</template>
-				</el-table-column>
-				<el-table-column label="审核状态" prop="jwApproval" width="140" align="center">
-					<template v-slot="scope">
-						<p v-if="scope.row.jwApproval==0">未审核</p>
-						<p v-if="scope.row.jwApproval==1">已审核</p>
-					</template>
-				</el-table-column>
-			</el-table>&nbsp;
-			<!-- <el-pagination style="text-align: center;" background :page-size="5" layout="prev, pager, next" :total="50"> -->
-				<!-- 总条数 -->
-			<!-- </el-pagination> -->
-		</div>
 
-	</div><!-- 分页 -->
->>>>>>> Stashed changes
+	<div>
+		<input type="text" placeholder="输入关键字搜索" v-model="search" />
+		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
+		<el-button style="background-color: #5FB878;color: white;" size="mini">审核通过</el-button>
+	</div>&nbsp;
+	<div>
+		<el-table :data="dropData" border style="width: 100%">
+			<el-table-column type="selection" width="55" align="center">
+			</el-table-column>
+			<el-table-column label="" prop="dropId" width="80" align="center">
+			</el-table-column>
+			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
+			</el-table-column>
+			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="退学时间" prop="dropRime" width="150" align="center">
+			</el-table-column>
+			<el-table-column label="退学理由" prop="dropReason" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="退学办理人" prop="dropHandler" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="退费状态" prop="ispay" width="140" align="center">
+				<template v-slot="scope">
+					<p v-if="scope.row.ispay==0">未缴费</p>
+					<p v-if="scope.row.ispay==1">待缴费</p>
+					<p v-if="scope.row.ispay==2">已缴费</p>
+				</template>
+			</el-table-column>
+			<el-table-column label="审核状态" prop="jwApproval" width="140" align="center">
+				<template v-slot="scope">
+					<p v-if="scope.row.jwApproval==0">未审核</p>
+					<p v-if="scope.row.jwApproval==1">已审核</p>
+				</template>
+			</el-table-column>
+		</el-table>&nbsp;
+		<!-- <el-pagination style="text-align: center;" background :page-size="5" layout="prev, pager, next" :total="50"> -->
+		<!-- 总条数 -->
+		<!-- </el-pagination> -->
+	</div>
+
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
 			:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
@@ -114,8 +109,7 @@
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
-					type: 'warning',
-					
+					type: 'warning'
 				}).then(() => {
 					console.log(row);
 					_this.axios.put("http://localhost:8089/tsm/deleteDrop", row, {
@@ -127,7 +121,7 @@
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.dropData
-								.filter( a => a.dropId != row.dropId)
+								.filter(a => a.dropId != row.dropId)
 							_this.dropData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
@@ -148,7 +142,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					
+
 					console.log(row.courserecorddetailsVo.courserecorddetailsId);
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstate6", row.courserecorddetailsVo, {
 							headers: {
@@ -157,16 +151,16 @@
 							}
 						})
 						.then(function(response) {
-							 console.log(response)
+							console.log(response)
 							// console.log("+++++++++++++++++++++")
 							// console.log(row)
-							
+
 							//_this.dropData = rows
 						}).catch(function(error) {
 							console.log(error)
 						})
-						this.updateDropJW_Approval1(row);
-						
+					this.updateDropJW_Approval1(row);
+
 				}).catch(() => {
 					this.$message({
 						type: 'error',
@@ -176,48 +170,45 @@
 			},
 			updateDropJW_Approval1(row) {
 				const _this = this
-					this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							},
-						})
-						.then(function(response) {
-							console.log(response)
-						}).catch(function(error) {
-							console.log(error)
-						})
-						this.selectAllDrop();
-				 },
-				 selectAllDrop(){
-					 const _this = this
-					 this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
-					 		headers: {
-					 			'content-type': 'application/json',
-					 			'jwtAuth': _this.$store.getters.token
-					 		},
-					 		params: _this.pageInfo
-					 	})
-					 	.then(function(response) {
-					 		console.log("+++++++++++++++++++++++++++++++++++")
-					 		console.log(response)
-					 		_this.dropData = response.data.list
-					 		_this.pageInfo.total = response.data
-					 	}).catch(function(error) {
-					 		console.log(error)
-					 	})
-				 }
+				this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+					})
+					.then(function(response) {
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+				this.selectAllDrop();
+			},
+			selectAllDrop() {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: _this.pageInfo
+					})
+					.then(function(response) {
+						console.log("+++++++++++++++++++++++++++++++++++")
+						console.log(response)
+						_this.dropData = response.data.list
+						_this.pageInfo.total = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}
 		},
 		data() {
 			return {
 				dropData: [],
-<<<<<<< Updated upstream
+
 				CourseRecorddetailData: [],
-=======
-				CourseRecorddetailData:[
-					
-				],
->>>>>>> Stashed changes
+
+
 				search: '',
 				dialogFormVisible3: false,
 				formLabelWidth: '120px',
@@ -225,81 +216,45 @@
 					currentPage: 1,
 					pagesize: 3,
 					total: 0
-<<<<<<< Updated upstream
+
 				}
-=======
-				},
->>>>>>> Stashed changes
+
 			}
 		},
-		created() {
-			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
-<<<<<<< Updated upstream
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					},
-					params: _this.pageInfo
-				})
-				.then(function(response) {
-					console.log("+++++++++++++++++++++++++++++++++++")
-					console.log(response)
-					_this.dropData = response.data.list
-					_this.pageInfo.total = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
-			this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+			created() {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: _this.pageInfo
+					})
+					.then(function(response) {
+						console.log("+++++++++++++++++++++++++++++++++++")
+						console.log(response)
+						_this.dropData = response.data.list
+						_this.pageInfo.total = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
+				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				})
-=======
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							},
-								params: _this.pageInfo
-							})
->>>>>>> Stashed changes
-				.then(function(response) {
-					console.log("+++++++++++++++++++++++++++++++++++")
-					console.log(response)
-<<<<<<< Updated upstream
-					_this.CourseRecorddetailData = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
-		}
+		.then(function(response) {
+			console.log("+++++++++++++++++++++++++++++++++++")
+			console.log(response)
 
-
-=======
-					_this.dropData = response.data.list
-					_this.pageInfo.total = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						console.log(response)
-						_this.CourseRecorddetailData = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
-			
-				
-			 }
-			
-			
->>>>>>> Stashed changes
+			_this.CourseRecorddetailData = response.data
+		}).catch(function(error) {
+			console.log(error)
+		})
 	}
+}
 </script>
 
 <style>
