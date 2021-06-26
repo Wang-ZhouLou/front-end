@@ -7,7 +7,7 @@
 		<el-table :data="dropData" border style="width: 100%">
 			<el-table-column type="selection" width="55" align="center">
 			</el-table-column>
-			<el-table-column label="退学编号" prop="dropId" width="80" align="center">
+			<el-table-column label="停课编号" prop="suspendId" width="80" align="center">
 			</el-table-column>
 			<el-table-column label="学号" prop="courserecorddetailsVo.studentVo.studentId" width="130" align="center">
 			</el-table-column>
@@ -15,29 +15,22 @@
 			</el-table-column>
 			<el-table-column label="班级" prop="courserecorddetailsVo.classesVo.classesName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="退学时间" prop="dropRime" width="150" align="center">
+			<el-table-column label="停课时间" prop="suspendRime" width="150" align="center">
 			</el-table-column>
-			<el-table-column label="退学理由" prop="dropReason" width="140" align="center">
+			<el-table-column label="停课理由" prop="suspendReason" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="退学办理人" prop="dropHandler" width="140" align="center">
+			<el-table-column label="停课办理人" prop="suspendHandler" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="退费状态" prop="ispay" width="140" align="center">
+			<el-table-column label="审核状态" prop="suspendApproval" width="140" align="center">
 				<template v-slot="scope">
-					<p v-if="scope.row.ispay==0">未缴费</p>
-					<p v-if="scope.row.ispay==1">待缴费</p>
-					<p v-if="scope.row.ispay==2">已缴费</p>
-				</template>
-			</el-table-column>
-			<el-table-column label="审核状态" prop="jwApproval" width="140" align="center">
-				<template v-slot="scope">
-					<p v-if="scope.row.jwApproval==0">未审核</p>
-					<p v-if="scope.row.jwApproval==1">已审核</p>
+					<p v-if="scope.row.suspendApproval==0">未审核</p>
+					<p v-if="scope.row.suspendApproval==1">已审核</p>
 				</template>
 			</el-table-column>
 			<el-table-column fixed="right" label="操作" align="center">
 				<template #default="scope">
 					<el-button @click="updateLearningstate6(scope.row)" type="text" size="small">审核通过</el-button>
-					<el-button @click="deleteDrop(scope.row)" type="text" size="small">删除</el-button>
+					<el-button @click="deleteSuspend(scope.row)" type="text" size="small">删除</el-button>
 				</template>
 			</el-table-column>
 
@@ -61,7 +54,7 @@
 			handleDelete(index, row) {
 				console.log(index, row);
 			},
-			deleteDrop(row) {
+			deleteSuspend(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -70,7 +63,7 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteDrop", row, {
+					_this.axios.put("http://localhost:8089/tsm/deleteSuspend", row, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -78,9 +71,9 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							var rows = _this.dropData
+							var rows = _this.suspendData
 								.filter(a => a.dropId != row.dropId)
-							_this.dropData = rows
+							_this.suspendData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
 							console.log(error)
@@ -92,7 +85,7 @@
 					});
 				});
 			},
-			updateLearningstate6(row) {
+			updateLearningstate4(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将审批学员, 是否继续?', '提示', {
@@ -102,7 +95,7 @@
 				}).then(() => {
 
 					console.log(row.courserecorddetailsVo.courserecorddetailsId);
-					_this.axios.put("http://localhost:8089/tsm/updateLearningstate6", row.courserecorddetailsVo, {
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate4", row.courserecorddetailsVo, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -117,7 +110,7 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
-					this.updateDropJW_Approval1(row);
+					this.updateSuspend_Approval1(row);
 
 				}).catch(() => {
 					// this.$message({
@@ -126,10 +119,10 @@
 					// });
 				});
 			},
-			updateDropJW_Approval1(row) {
+			updateSuspend_Approval1(row) {
 				const _this = this
 				console.log(params)
-				this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
+				this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -138,7 +131,7 @@
 							console.log(error)
 						})
 					
-					_this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+					_this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
 							params: _this.pageInfo,
 							headers: {
 								'content-type': 'application/json',
@@ -149,7 +142,7 @@
 						.then(function(response) {
 							console.log("+++++++++++++++++++++++++++++++++++")
 							console.log(response)
-							_this.dropData = response.data.list
+							_this.suspendData = response.data.list
 							_this.pageInfo.total = response.data
 						}).catch(function(error) {
 							console.log(error)
@@ -162,7 +155,7 @@
 		},
 		data() {
 			return {
-				dropData: [],
+				suspendData: [],
 
 				CourseRecorddetailData: [],
 
@@ -181,7 +174,7 @@
 		},
 			created() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
 
 						headers: {
 							'content-type': 'application/json',
@@ -192,7 +185,7 @@
 					.then(function(response) {
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
-						_this.dropData = response.data.list
+						_this.suspendData = response.data.list
 						_this.pageInfo.total = response.data
 					}).catch(function(error) {
 						console.log(error)
@@ -211,6 +204,18 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					_this.courseData = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				}),
 				
 	}
 }
