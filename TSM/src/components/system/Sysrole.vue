@@ -27,8 +27,8 @@
 					<el-form-item>
 						<div class="custom-tree-container">
 							<div class="block">
-								<el-tree :data="muens" show-checkbox node-key="id" :default-expanded-keys="[]"
-									:default-checked-keys="xz" :props="defaultProps" ref="rightsTree">
+								<el-tree :data="muens" show-checkbox node-key="id" :default-expanded-keys="xz"
+									:default-checked-keys="xz" :props="defaultProps"  ref="tree">
 								</el-tree>
 							</div>
 						</div>
@@ -107,22 +107,26 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			updateAuter(){
-				this.$axios.delete("http://localhost:8089/tsm/delAuthorByroleid",{
-					params:{
-						"roleid":this.roleid
+			updateAuter() {
+				const _this = this
+				this.axios.delete("http://localhost:8089/tsm/delAuthorByroleid", {
+					params: {
+						"roleid": this.roleid,
+						"Authors":qs.stringify(this.$refs.tree.getCheckedKeys())
 					},
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				}).then(function(response) {
-					console.log(response)
+					console.log(response.data)
+					console.log(_this.$store.getters.token)
 				}).catch(function(error) {
 					console.log(error)
 				})
+				this.dialogFormVisible = false
 			},
-			addrole(){
+			addrole() {
 				const _this = this
 				this.axios.post("http://localhost:8089/tsm/insertrole", this.role, {
 					headers: {
@@ -130,7 +134,7 @@
 						'jwtAuth': _this.$store.getters.token
 					}
 				}).then(function(response) {
-					
+
 					_this.$notify({
 						title: '您刚刚执行了添加角色',
 						message: '角色名:' + _this.role.roleName,
@@ -139,7 +143,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				
+
 				this.axios.get("http://localhost:8089/tsm/selectAllrole", {
 						params: this.pageInfo,
 						headers: {
@@ -154,13 +158,13 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-				
+
 			},
+			//清空f
 			colse() {
 				this.xz = [];
 				this.dialogFormVisible = false
 			},
-			//根据角色id查找权限
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
@@ -198,10 +202,11 @@
 						console.log(error)
 					})
 			},
+			//根据角色id查找权限
 			handleClick(row) {
 				this.xz = [];
 				const _this = this
-				this.roleid=row.id
+				this.roleid = row.id
 				this.axios.get("http://localhost:8089/tsm/selectMenuByroleid", {
 						params: {
 							roleid: row.id
@@ -215,18 +220,21 @@
 						_this.rolemuens = response.data.data
 						console.log("----------")
 						console.log(_this.rolemuens)
+						// _this.rolemuens.forEach((item) => {
+						// 	item.asideChildren.forEach((item) => {
+						// 		item.asideChildren.forEach((item) => {
+						// 			_this.xz.push(item.id)
+						// 		})
+						// 	})
+						// })
 						_this.rolemuens.forEach((item) => {
-							item.asideChildren.forEach((item) => {
-								item.asideChildren.forEach((item) => {
-									_this.xz.push(item.id)
-								})
-							})
+							_this.xz.push(item.id)
 						})
 						_this.dialogFormVisible = true
 						_this.$nextTick(() => {
 							_this.$refs.rightsTree.setCheckedKeys(_this.xz);
 						});
-						console.log(_this.xz)
+						console.log(_this.xz)	
 
 					}).catch(function(error) {
 						console.log(error)
@@ -237,7 +245,7 @@
 		},
 		data() {
 			return {
-				roleid=0,
+				roleid: 0,
 				//新增
 				role: {},
 				pageInfo: {

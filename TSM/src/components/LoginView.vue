@@ -68,7 +68,7 @@
 						//sessionStorage.setItem("adminid", response.data.data.sysUser.userId);
 						sessionStorage.setItem("token", response.data.data.token);
 						initFind();
-						_this.$router.push("dashboard");
+						_this.$router.push("/");
 						
 						
 					})

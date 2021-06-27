@@ -26,7 +26,7 @@ const routes = [
 		component: HomeView,
 		children: [
 			{
-				path: "/dashboard",
+				path: "/",
 				name: "dashboard",
 				meta: {
 					title: '系统首页'

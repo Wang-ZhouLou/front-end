@@ -1,23 +1,18 @@
 <template>
 	<el-breadcrumb separator-class="el-icon-arrow-right">
-			<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-			<el-breadcrumb-item>用户维护</el-breadcrumb-item>
-		</el-breadcrumb><br>
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>用户维护</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div>
 			<font class="ksjs1" style="font-size: 13px;">所属部门:</font>&nbsp;
-			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+			<el-select v-model="empForm.deptId" placeholder="请选择部门" size="mini">
+				<el-option :key="item.deptId" :label="item.deptName" :value="item.deptId"
+					v-for="item in deptData">
 				</el-option>
 			</el-select>&nbsp;
-			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
-			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-				</el-option>
-			</el-select>&nbsp;
+			
 			<el-button style="background-color: #009688;color: white;margin-bottom: 10px;" size="mini">查询</el-button>
-			<br>
-
 			<el-button style="background-color: #5FB878;color: white;" @click="addEmpVisible = true" size="mini">新增
 			</el-button>
 			<el-button style="background-color:  #FF5722;color: white;width: 50px;" type="text" @click="open"
@@ -28,9 +23,9 @@
 			<el-table :data="empData" border @selection-change="handleSelectionChange" ref="multipleTable" align>
 				<el-table-column type="selection" width="55" align="center">
 				</el-table-column>
-				<el-table-column prop="empId" label="编号" align="center">
+				<el-table-column prop="username" label="用户名" align="center">
 				</el-table-column>
-				<el-table-column prop="empName" label="姓名" align="center">
+				<el-table-column prop="empName" label="用户名" align="center">
 				</el-table-column>
 				<el-table-column prop="dept.deptName" label="部门" align="center">
 				</el-table-column>
@@ -52,6 +47,7 @@
 							size="small" style="color: green;">复职</el-button>
 
 						<el-button @click="selectEmpOpen(scope.row)" type="text" size="small">查看</el-button>
+						<el-button @click="updateAuth()" type="text" size="small">更改权限组</el-button>
 						<el-button @click="updateEmpOpen(scope.row)" type="text" size="small" style="color: gold;">编辑
 						</el-button>
 					</template>
@@ -325,7 +321,7 @@
 				empData: [],
 				deptData: [],
 				//初次查询
-				roleData:[],
+				roleData: [],
 				pageInfo: {
 					currentPage: 1, //当前页数，由用户指定
 					pagesize: 5, //每页显示的条数
@@ -334,7 +330,7 @@
 				},
 				empForm: {},
 				//保存初次
-				user_role:{},
+				user_role: {},
 				selectEmpVisible: false,
 				updateEmpVisible: false,
 				addEmpVisible: false
@@ -348,23 +344,21 @@
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
-				}).then(function(
-					response) {
-						
-						_this.user_role.userId=response.data.empId
-						_this.axios.post("http://localhost:8089/tsm/insertuserrole", _this.user_role, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}).then(function(response) {
-							console.log("新增用户角色中间表")
-							}).catch(function(error) {
-								console.log(error)
-							})
-						
-						
-						
+				}).then(function(response) {
+					_this.user_role.userId = response.data.empId
+					_this.axios.post("http://localhost:8089/tsm/insertuserrole", _this.user_role, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
+						console.log("新增用户角色中间表")
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+
+
 					_this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
 						params: _this.pageInfo,
 						headers: {
@@ -385,7 +379,7 @@
 							.empName,
 						duration: '7000'
 					})
-					
+
 					console.log(response)
 					_this.addEmpVisible = false
 					for (var key in _this.empForm) {
@@ -520,7 +514,7 @@
 				}
 				this.updateEmpVisible = false
 				this.selectEmpVisible = false
-				this.addEmpVisible=false
+				this.addEmpVisible = false
 			}
 		},
 		created() {
@@ -538,33 +532,33 @@
 			}).catch(function(error) {
 				console.log(error)
 			})
-			
-			this.axios.get("http://localhost:8089/tsm/selectAllDept",{
-				params: this.pageInfo,
-				headers: {
-					'content-type': 'application/json',
-					'jwtAuth': _this.$store.getters.token
-				}
-			})
-			.then(function(response) {
-				console.log(response)
-				_this.deptData = response.data
-			}).catch(function(error) {
-				console.log(error)
-			})
-			
-			this.axios.get("http://localhost:8089/tsm/selectArole",{
-				headers: {
-					'content-type': 'application/json',
-					'jwtAuth': _this.$store.getters.token
-				}
-			})
-			.then(function(response) {
-				console.log(response)
-				_this.roleData = response.data
-			}).catch(function(error) {
-				console.log(error)
-			})
+
+			this.axios.get("http://localhost:8089/tsm/selectAllDept", {
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.deptData = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			this.axios.get("http://localhost:8089/tsm/selectArole", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.roleData = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
 
 		}
 	}
