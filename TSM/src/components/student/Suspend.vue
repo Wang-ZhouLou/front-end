@@ -4,7 +4,7 @@
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
 	</div>&nbsp;
 	<div>
-		<el-table :data="dropData" border style="width: 100%">
+		<el-table :data="suspendData" border style="width: 100%">
 			<el-table-column type="selection" width="55" align="center">
 			</el-table-column>
 			<el-table-column label="停课编号" prop="suspendId" width="80" align="center">
@@ -29,7 +29,7 @@
 			</el-table-column>
 			<el-table-column fixed="right" label="操作" align="center">
 				<template #default="scope">
-					<el-button @click="updateLearningstate6(scope.row)" type="text" size="small">审核通过</el-button>
+					<el-button @click="updateLearningstate4(scope.row)" type="text" size="small">审核通过</el-button>
 					<el-button @click="deleteSuspend(scope.row)" type="text" size="small">删除</el-button>
 				</template>
 			</el-table-column>
@@ -48,12 +48,7 @@
 <script>
 	export default {
 		methods: {
-			handleEdit(index, row) {
-				console.log(index, row);
-			},
-			handleDelete(index, row) {
-				console.log(index, row);
-			},
+			
 			deleteSuspend(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
@@ -72,7 +67,7 @@
 						.then(function(response) {
 							console.log(response)
 							var rows = _this.suspendData
-								.filter(a => a.dropId != row.dropId)
+								.filter(s => s.suspendId != row.suspendId)
 							_this.suspendData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
@@ -131,22 +126,23 @@
 							console.log(error)
 						})
 					
-					_this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-							params: _this.pageInfo,
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
+					// _this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+					// 	headers: {
+					// 		'content-type': 'application/json',
+					// 		'jwtAuth': _this.$store.getters.token
+					// 	},
+					// 		params: _this.pageInfo
 							
-						})
-						.then(function(response) {
-							console.log("+++++++++++++++++++++++++++++++++++")
-							console.log(response)
-							_this.suspendData = response.data.list
-							_this.pageInfo.total = response.data
-						}).catch(function(error) {
-							console.log(error)
-						})
+							
+					// 	})
+					// 	.then(function(response) {
+					// 		console.log("+++++++++++++++++++++++++++++++++++")
+					// 		console.log(response)
+					// 		_this.suspendData = response.data.list
+					// 		_this.pageInfo.total = response.data
+					// 	}).catch(function(error) {
+					// 		console.log(error)
+					// 	})
 						
 			}
 			// selectAllDrop() {
@@ -159,6 +155,8 @@
 
 				CourseRecorddetailData: [],
 
+				courseData:[],
+				ClassesData:[],
 
 				search: '',
 				dialogFormVisible3: false,
@@ -204,21 +202,34 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse",{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					_this.courseData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				}),
+				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.courseData = response.data
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+				this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.ClassesData = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
 				
 	}
-}
+	
+	}
+
 </script>
 
 <style>

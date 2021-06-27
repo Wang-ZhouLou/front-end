@@ -9,11 +9,11 @@
 			</el-table-column>
 			<el-table-column label="退学编号" prop="dropId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="courserecorddetailsVo.studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courserecorddetailsVo.courseVo.courseName" width="140" align="center">
+			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="courserecorddetailsVo.classesVo.classesName" width="140" align="center">
+			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
 			</el-table-column>
 			<el-table-column label="退学时间" prop="dropRime" width="150" align="center">
 			</el-table-column>
@@ -130,34 +130,34 @@
 				const _this = this
 				console.log(params)
 				this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+				_this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+						params: _this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
+
+					})
+					.then(function(response) {
+						console.log("+++++++++++++++++++++++++++++++++++")
+						console.log(response)
+						_this.dropData = response.data.list
+						_this.pageInfo.total = response.data
 					}).catch(function(error) {
-							console.log(error)
-						})
-					
-					_this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
-							params: _this.pageInfo,
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-							
-						})
-						.then(function(response) {
-							console.log("+++++++++++++++++++++++++++++++++++")
-							console.log(response)
-							_this.dropData = response.data.list
-							_this.pageInfo.total = response.data
-						}).catch(function(error) {
-							console.log(error)
-						})
-						
+						console.log(error)
+					})
+
 			}
 			// selectAllDrop() {
-				
+
 			// }
 		},
 		data() {
@@ -165,7 +165,8 @@
 				dropData: [],
 
 				CourseRecorddetailData: [],
-
+				courseData:[],
+				ClassesData:[],
 
 				search: '',
 				dialogFormVisible3: false,
@@ -179,25 +180,25 @@
 
 			}
 		},
-			created() {
-				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
 
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: _this.pageInfo
-					})
-					.then(function(response) {
-						console.log("+++++++++++++++++++++++++++++++++++")
-						console.log(response)
-						_this.dropData = response.data.list
-						_this.pageInfo.total = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: _this.pageInfo
+				})
+				.then(function(response) {
+					console.log("+++++++++++++++++++++++++++++++++++")
+					console.log(response)
+					_this.dropData = response.data.list
+					_this.pageInfo.total = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
+			this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -211,9 +212,33 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				
+			this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					_this.courseData = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					_this.ClassesData = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+		}
 	}
-}
 </script>
 
 <style>

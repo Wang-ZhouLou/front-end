@@ -193,7 +193,7 @@
 						<div style="display:flex;justify-content:center">
 							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info"
 								@click="cha11(scope.row)">分班</el-button>
-							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
+							<el-button size="mini" type="info" @click="updateLearningstate3(scope.row)">停课</el-button>
 							<el-button type="info" size="mini">复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
 							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
@@ -314,6 +314,34 @@
 			</span>
 		</template>
 	</el-dialog>
+	
+	<el-dialog title="学员停课" v-model="dialogFormVisible22">
+		<el-form :model="form23">
+			<el-form-item>
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
+			  	</el-input>
+				退学学员: <el-input v-model="form13.studentName" readonly="true"
+					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
+				</el-input>
+			  </div> -->
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
+			  	</el-input>
+			  </div> -->
+			  <div style="margin: 16px 0 0 10px;">
+					停课理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form23.suspendReason">
+					</el-input>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible22=false">关闭</el-button>
+				<el-button type="primary" @click="addSuspend(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -424,6 +452,51 @@
 						}).then(function(response) {
 							_this.form13 = row
 							_this.dialogFormVisible12 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					});
+				});
+			},
+			addSuspend(row) {
+				const _this = this
+				console.log("_____________++++++++++++")
+				console.log(_this.form23)
+				this.axios.post("http://localhost:8089/tsm/addSuspend", this.form23, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible22 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+			
+			},
+			updateLearningstate3(row) {
+				const _this = this
+			
+				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+			
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form23 = row
+							_this.dialogFormVisible22 = true
 						})
 						.catch(function(error) {
 							console.log(error)
@@ -867,6 +940,9 @@
 				form13: {
 
 				},
+				form23: {
+				
+				},
 				person: "TSM",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -874,6 +950,7 @@
 				dialogFormVisible10: false,
 				dialogFormVisible11: false,
 				dialogFormVisible12: false,
+				dialogFormVisible22: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],
