@@ -295,7 +295,7 @@
 									}).then(() => {
 					
 					this.axios.put("http://localhost:8089/tsm/delectback", this.form)
-					this.axios.get("http://localhost:8089/tsm/findPage1", {
+					this.axios.get("http://localhost:8089/tsm/findPage3", {
 							params: this.pageInfo
 						})
 						.then(function(response) {
