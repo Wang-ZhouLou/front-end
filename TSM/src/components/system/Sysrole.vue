@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>角色管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div class="crumbs">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
@@ -10,7 +14,8 @@
 			</el-input>&nbsp;
 			<el-button style="background-color: #5FB878;color: white; width: 50px;" size="mini" @click="selall">查询
 			</el-button>
-			<el-button style="background-color: #009688;color: white;width: 50px;" type="text" size="mini">增加
+			<el-button style="background-color: #009688;color: white;width: 50px;" @click="adddialogForm=true"
+				type="text" size="mini">增加
 			</el-button>
 			<el-button style="background-color: red;color: white;width: 50px;" type="text" size="mini"
 				@click="pldele()">删除
@@ -22,21 +27,8 @@
 					<el-form-item>
 						<div class="custom-tree-container">
 							<div class="block">
-								<el-tree :data="data" show-checkbox node-key="id" default-expand-all
-									:expand-on-click-node="false">
-									<template #default="{ node, data }">
-										<span class="custom-tree-node">
-											<span>{{ node.label }}</span>
-											<span>
-												<a @click="append(data)">
-													Append
-												</a>
-												<a @click="remove(node, data)">
-													Delete
-												</a>
-											</span>
-										</span>
-									</template>
+								<el-tree :data="muens" show-checkbox node-key="id" :default-expanded-keys="xz"
+									:default-checked-keys="xz" :props="defaultProps"  ref="tree">
 								</el-tree>
 							</div>
 						</div>
@@ -44,70 +36,48 @@
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible = false">关闭</el-button>
-						<el-button type="primary" @click="addSource">保 存</el-button>
+						<el-button @click="colse()">关闭</el-button>
+						<el-button type="primary" @click="updateAuter()">保 存</el-button>
 					</span>
 				</template>
 			</el-dialog>
 
-			<el-dialog title="设置操作权限" v-model="dialogFormVisible1">
+			<el-dialog title="新增角色" v-model="adddialogForm">
 				<el-form :model="form">
-					<el-form-item>
-						<div class="custom-tree-container">
-							<div class="block">
-								<el-tree :data="data" show-checkbox node-key="id" default-expand-all
-									:expand-on-click-node="false">
-									<template #default="{ node, data }">
-										<span class="custom-tree-node">
-											<span>{{ node.label }}</span>
-											<span>
-												<a @click="append(data)">
-													Append
-												</a>
-												<a>
-													<el-checkbox v-model="checked">备选项</el-checkbox>
-													<el-checkbox v-model="checked1">备选项</el-checkbox>
-													<el-checkbox v-model="checked2">备选项</el-checkbox>
-													<el-checkbox v-model="checked3">备选项</el-checkbox>
-												</a>
-												<a @click="remove(node, data)">
-													Delete
-												</a>
-											</span>
-										</span>
-									</template>
-								</el-tree>
-							</div>
-						</div>
+					<el-form-item label="中文名">
+						<el-input v-model="role.roleName"></el-input>
+					</el-form-item>
+					<el-form-item label="英文名">
+						<el-input v-model="role.roleCode"></el-input>
+					</el-form-item>
+					<el-form-item label="角色描述">
+						<el-input v-model="role.roleDesc"></el-input>
 					</el-form-item>
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible1 = false">关闭</el-button>
-						<el-button type="primary" @click="addSource">保 存</el-button>
+						<el-button @click="colse()">关闭</el-button>
+						<el-button type="primary" @click="addrole()">保 存</el-button>
 					</span>
 				</template>
 			</el-dialog>
-
 
 		</div>&nbsp;
 		<div class="qdwh">
-			<el-table :data="roleData" border  @selection-change="handleSelectionChange"
-				ref="multipleTable">
-				<el-table-column type="selection"  width="55">
+			<el-table :data="roleData" border @selection-change="handleSelectionChange" ref="multipleTable">
+				<el-table-column type="selection" width="55">
 				</el-table-column>
 				<el-table-column prop="id" label="编号" width="50" align="center">
 				</el-table-column>
 				<el-table-column prop="roleName" label="角色名称" align="center">
 				</el-table-column>
-				<el-table-column prop="roleCode" label="英文名"  align="center">
+				<el-table-column prop="roleCode" label="英文名" align="center">
 				</el-table-column>
 				<el-table-column prop="status" label="状态" align="center">
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button @click="handleClick" type="text" size="small">模块权限</el-button>
-						<el-button type="text" size="small" @click="quanx">操作权限</el-button>
+						<el-button @click="handleClick(scope.row)" type="text" size="small">模块权限</el-button>
 						<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
 					</template>
 				</el-table-column>
@@ -130,12 +100,71 @@
 	import {
 		ref
 	} from 'vue'
+
 	import qs from 'qs'
 	import {
 		ElMessage
 	} from 'element-plus'
 	export default {
 		methods: {
+			updateAuter() {
+				const _this = this
+				this.axios.delete("http://localhost:8089/tsm/delAuthorByroleid", {
+					params: {
+						"roleid": this.roleid,
+						"Authors":qs.stringify(this.$refs.tree.getCheckedKeys())
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response.data)
+					console.log(_this.$store.getters.token)
+				}).catch(function(error) {
+					console.log(error)
+				})
+				this.dialogFormVisible = false
+			},
+			addrole() {
+				const _this = this
+				this.axios.post("http://localhost:8089/tsm/insertrole", this.role, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+
+					_this.$notify({
+						title: '您刚刚执行了添加角色',
+						message: '角色名:' + _this.role.roleName,
+						duration: '7000'
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+				this.axios.get("http://localhost:8089/tsm/selectAllrole", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.roleData = response.data.list
+						_this.pageInfo.total = response.data.total
+						//console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+			},
+			//清空f
+			colse() {
+				this.xz = [];
+				this.dialogFormVisible = false
+			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
@@ -173,106 +202,52 @@
 						console.log(error)
 					})
 			},
-			handleClick() {
-				this.dialogFormVisible = true
-			},
-			quanx() {
-				this.dialogFormVisible1 = true
-			},
-			//级别新增
-			append(data) {
-				const newChild = {
-					id: id++,
-					label: 'testtest',
-					children: []
-				};
-				if (!data.children) {
-					data.children = []
-				}
-				data.children.push(newChild);
-				this.data = [...this.data]
-			},
-			//级别删除
-			remove(node, data) {
-				const parent = node.parent;
-				const children = parent.data.children || parent.data;
-				const index = children.findIndex(d => d.id === data.id);
-				children.splice(index, 1);
-				this.data = [...this.data]
-			},
-			//级别
-			renderContent(h, {
-				node,
-				data,
-				store // eslint-disable-line no-unused-vars
-			}) {
-				return h("span", {
-					class: "custom-tree-node"
-				}, h("span", null, node.label), h("span", null, h("a", {
-					onClick: () => this.append(data)
-				}, "Append "), h("a", {
-					onClick: () => this.remove(node, data)
-				}, "Delete")));
+			//根据角色id查找权限
+			handleClick(row) {
+				this.xz = [];
+				const _this = this
+				this.roleid = row.id
+				this.axios.get("http://localhost:8089/tsm/selectMenuByroleid", {
+						params: {
+							roleid: row.id
+						},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.rolemuens = response.data.data
+						console.log("----------")
+						console.log(_this.rolemuens)
+						// _this.rolemuens.forEach((item) => {
+						// 	item.asideChildren.forEach((item) => {
+						// 		item.asideChildren.forEach((item) => {
+						// 			_this.xz.push(item.id)
+						// 		})
+						// 	})
+						// })
+						_this.rolemuens.forEach((item) => {
+							_this.xz.push(item.id)
+						})
+						_this.dialogFormVisible = true
+						_this.$nextTick(() => {
+							_this.$refs.rightsTree.setCheckedKeys(_this.xz);
+						});
+						console.log(_this.xz)	
+
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+
 			}
 		},
 		data() {
-			const menus=this.$store.state.rightList
-			const data = [{ //层级
-				id: 1,
-				label: '一级 1',
-				children: [{
-					id: 4,
-					label: '二级 1-1',
-					children: [{
-						id: 9,
-						label: '三级 1-1-1'
-					}, {
-						id: 10,
-						label: '三级 1-1-2'
-					}]
-				}]
-			}, {
-				id: 2,
-				label: '一级 2',
-				children: [{
-					id: 5,
-					label: '二级 2-1'
-				}, {
-					id: 6,
-					label: '二级 2-2'
-				}]
-			}];
 			return {
-				options: [{
-					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '双皮奶'
-				}, {
-					value: '选项3',
-					label: '蚵仔煎'
-				}],
-				value: '',
-				data: JSON.parse(JSON.stringify(data)), //层级
-				checked: false,
-				checked1: false,
-				checked2: false,
-				checked3: false,
-				deld() {
-					ElMessage({
-						showClose: true,
-						message: '请选择删除内容!',
-						type: 'error'
-					});
-				},
-				dels() {
-					ElMessage({
-						showClose: true,
-						message: '删除成功!',
-						type: 'success'
-					});
-				},
+				roleid: 0,
+				//新增
+				role: {},
 				pageInfo: {
 					currentPage: 1, //当前页数，由用户指定
 					pagesize: 3, //每页显示的条数
@@ -282,6 +257,7 @@
 				select: '',
 				dialogFormVisible: false,
 				dialogFormVisible1: false,
+				adddialogForm: false,
 				form: {
 					sourceId: '',
 					sourceName: '',
@@ -289,16 +265,21 @@
 					already: ''
 				},
 				search: ref(''),
+				//角色
 				roleData: [],
-				caozuoData: [{
-					name: '王小虎',
-					province: '上海'
-				}],
-
+				//权限单角色
+				rolemuens: [],
+				//全权限
+				muens: [],
+				xz: [],
+				//自定义
+				defaultProps: {
+					children: 'asideChildren',
+					label: 'menuName'
+				}
 			}
 		},
 		created() {
-			console.log(this.$store.state.rightList)
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/selectAllrole", {
 					params: this.pageInfo,
@@ -314,7 +295,21 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				
+
+
+
+			this.axios.get("http://localhost:8089/tsm/selectMenus", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					_this.muens = response.data.data
+					console.log(_this.muens)
+				}).catch(function(error) {
+					console.log(error)
+				})
 		}
 	}
 </script>

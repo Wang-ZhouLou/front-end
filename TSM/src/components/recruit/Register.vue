@@ -1,7 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>咨询登记</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div class="db1">
-			<h4>首页-咨询登记</h4>
+		<div class="db1" style="margin-left: -650px;">
 			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
 			<el-input v-model="pageInfo.flag" placeholder="请输入关键字" style="width: 140px;" size="mini">
 			</el-input>&nbsp;

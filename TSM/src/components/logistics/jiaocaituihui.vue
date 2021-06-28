@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>教材回退</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
 	<el-select v-model="value" placeholder="校区" class="el2" size="mini">
 
@@ -11,7 +15,8 @@
 
 	<div style="margin: -27px 0 0 400px;">
 		<el-button type="primary" size="mini" icon="el-icon-search">查询</el-button>
-		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;" @click="dialogTableVisible  = true">退回开单</el-button>
+		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;"
+			@click="dialogTableVisible  = true">退回开单</el-button>
 		<el-button type="primary" size="mini" icon="el-icon-delete" @click="del()">删除</el-button>
 
 	</div>
@@ -21,12 +26,12 @@
 		</el-table-column>
 		<el-table-column type="selection" width="50">
 		</el-table-column>
-		
+
 		<el-table-column prop="storagetime" label="退回日期" width="120">
 		</el-table-column>
 		<el-table-column prop="book.bookname" label="教材名称" width="390">
 		</el-table-column>
-		<el-table-column prop="backSl" label="数量" width="80"> 
+		<el-table-column prop="backSl" label="数量" width="80">
 		</el-table-column>
 		<el-table-column prop="book.booksprice" label="售价" width="80">
 		</el-table-column>
@@ -40,72 +45,79 @@
 		</el-table-column>
 		<el-table-column fixed="right" label="操作" width="152">
 			<template #default="scope" style="width: 100%;">
-				<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deleteback1(scope.row)">删除出库</el-button>
+				<el-button type="text" size="medium" style="text-decoration:underline;" @click="deleteback1(scope.row)">
+					删除出库</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
-	
+
 
 	<el-dialog title="" v-model="dialogTableVisible" style="margin: -30px 0 0 0; height:100%" width="100%">
 		<el-form :model="form">
-		<el-table :data="gridData">
-			<el-table-column property="form4.bookname" label="退回教材" width="650"></el-table-column>
-			<el-table-column property="form4.booksprice" label="教材售价" width="160"></el-table-column>
-			<el-table-column property="form4.backSl" label="出售数量" width="160"></el-table-column>
-			<el-table-column property="form4.backSprice" label="应收金额" width="260"></el-table-column>
-			<el-table-column property="cz" label="操作">
-				<template #default="" style="width: 100%;">
-					<el-button type="text" size="medium" style="text-decoration:underline;"  @click="delform2()">删除</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		
-		<div style="margin: 3px 0 0 1260px;">
-			<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;" size="mini" @click="a1()">添加教材</el-button>
-		</div>
+			<el-table :data="gridData">
+				<el-table-column property="form4.bookname" label="退回教材" width="650"></el-table-column>
+				<el-table-column property="form4.booksprice" label="教材售价" width="160"></el-table-column>
+				<el-table-column property="form4.backSl" label="出售数量" width="160"></el-table-column>
+				<el-table-column property="form4.backSprice" label="应收金额" width="260"></el-table-column>
+				<el-table-column property="cz" label="操作">
+					<template #default="" style="width: 100%;">
+						<el-button type="text" size="medium" style="text-decoration:underline;" @click="delform2()">删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
 
-		<div>
-			<div style="margin: 20px 0 0 80px;">
-				
-				<a style="font-size: 16px; margin: 0 0 0 390px;">退回总额 :</a> <el-input v-model="form.backSprice" placeholder="0.00" style="width: 170px;"></el-input>
-				<a style="margin: 0 0 0 230px;">退回日期 :</a> <el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期">
-				</el-date-picker>
-				
-			</div>
-			
-			<div style="margin: -38px 0 0 -251px;">
-				
-				<a style="font-size: 16px; margin: 0 0 0 315px;">录入人 :</a> <el-input placeholder="梁政"  v-model="form.empName"  style="width: 170px;">
-				</el-input>
-				
-				
+			<div style="margin: 3px 0 0 1260px;">
+				<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;" size="mini"
+					@click="a1()">添加教材</el-button>
 			</div>
 
-		</div>
-		<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addback()">确 定</el-button>
-		<el-button @click="dialogTableVisible=false">取 消</el-button>
+			<div>
+				<div style="margin: 20px 0 0 80px;">
+
+					<a style="font-size: 16px; margin: 0 0 0 390px;">退回总额 :</a>
+					<el-input v-model="form.backSprice" placeholder="0.00" style="width: 170px;"></el-input>
+					<a style="margin: 0 0 0 230px;">退回日期 :</a>
+					<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期">
+					</el-date-picker>
+
+				</div>
+
+				<div style="margin: -38px 0 0 -251px;">
+
+					<a style="font-size: 16px; margin: 0 0 0 315px;">录入人 :</a>
+					<el-input placeholder="梁政" v-model="form.empName" style="width: 170px;">
+					</el-input>
+
+
+				</div>
+
+			</div>
+			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addback()">确 定</el-button>
+			<el-button @click="dialogTableVisible=false">取 消</el-button>
 		</el-form>
 	</el-dialog>
 	<el-dialog title="" v-model="tss" style="margin: -30px 0 0 0; height:100%" width="100%">
-				<div style="margin: 10px 0 0 70px;">
-			
-			
-				<el-select v-model="form2.book.bookId" autocomplete="off" size="mini" style="width: 180px;" @change="a">
-					<el-option v-for="item in bookdata" :label="item.bookname" :key="item.bookId" :value="item.bookId">
-					</el-option>
-				</el-select>
-			
-			</div>
-			<div style="font-size: 16px; margin: -26px 0 0 620px;">
-				<span>￥: </span>&nbsp;
-				<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input> <span>/本</span>
-			
-			</div>
-			<div style="font-size: 16px; margin: -25px 0 0 816px;">
-				<el-input type="text" style="width: 50px;" size="mini" v-model="form2.form4.backSl"></el-input> 本
-			</div>
-			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="showEdit">确 定</el-button>
-			<el-button @click="tss=false">取 消</el-button>
+		<div style="margin: 10px 0 0 70px;">
+
+
+			<el-select v-model="form2.book.bookId" autocomplete="off" size="mini" style="width: 180px;" @change="a">
+				<el-option v-for="item in bookdata" :label="item.bookname" :key="item.bookId" :value="item.bookId">
+				</el-option>
+			</el-select>
+
+		</div>
+		<div style="font-size: 16px; margin: -26px 0 0 620px;">
+			<span>￥: </span>&nbsp;
+			<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input>
+			<span>/本</span>
+
+		</div>
+		<div style="font-size: 16px; margin: -25px 0 0 816px;">
+			<el-input type="text" style="width: 50px;" size="mini" v-model="form2.form4.backSl"></el-input> 本
+		</div>
+		<el-button type="primary" style="margin: 20px 0 0 650px;" @click="showEdit">确 定</el-button>
+		<el-button @click="tss=false">取 消</el-button>
 	</el-dialog>
 
 	<!-- <el-dialog title="提示" v-model="dialogVisible" width="30%" :before-close="handleClose">
@@ -123,9 +135,10 @@
 		
 	</el-dialog> -->
 
-<div class="block" style="margin:20px;display: flex;justify-content: center;">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
-		:page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+	<div class="block" style="margin:20px;display: flex;justify-content: center;">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+			:current-page="pageInfo.currentPage" :page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize"
+			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
 
@@ -159,7 +172,7 @@
 						type: 'success'
 					});
 				},
-				addss(){
+				addss() {
 					ElMessage({
 						showClose: true,
 						message: '新增成功!',
@@ -171,7 +184,7 @@
 				input2: ref(''),
 				input3: ref(''),
 				tableData: [],
-				bookdata:[],
+				bookdata: [],
 				options: [{
 					value: '1',
 					label: '校区'
@@ -189,22 +202,22 @@
 
 				dialogVisible: false,
 				tss: false,
-				form:{
-					bookId:'',
-					bookbackId:'',
-					storagetime:'',
-					bookname:'',
-					booksprice:'',
-					backSl:'',
-					backSprice:'',
-					studentName:'',
+				form: {
+					bookId: '',
+					bookbackId: '',
+					storagetime: '',
+					bookname: '',
+					booksprice: '',
+					backSl: '',
+					backSprice: '',
+					studentName: '',
 					// studentname:'',
-					empName:''
-					
+					empName: ''
+
 				},
-				form2:{
-					book:{},
-					form4:{},
+				form2: {
+					book: {},
+					form4: {},
 				},
 				gridData: [],
 				dialogTableVisible: false,
@@ -227,73 +240,73 @@
 					value: '3',
 					label: '80'
 				}],
-				
-				
-				
 
-				}
-			},
-			methods:{
-				addback() {
-					const _this = this
-					this.form.backSl=this.form2.form4.backSl
-					this.form.backSprice=this.bookdata.booksprice * this.form2.form4.backSl
-					this.form.bookId=this.form2.book.bookId
-					this.axios.post("http://localhost:8089/tsm/insertback", this.form)
+
+
+
+			}
+		},
+		methods: {
+			addback() {
+				const _this = this
+				this.form.backSl = this.form2.form4.backSl
+				this.form.backSprice = this.bookdata.booksprice * this.form2.form4.backSl
+				this.form.bookId = this.form2.book.bookId
+				this.axios.post("http://localhost:8089/tsm/insertback", this.form)
 					.then(function(response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/findPage3", {
 								params: _this.pageInfo
 							})
-										.then(function(response) {
-											_this.pageInfo.total = response.data.total
-											_this.tableData = response.data.list
-											
-										}).catch(function(error) {
-											console.log(error)
-										})
-										_this.dialogTableVisible = false
-										_this.addss()
+							.then(function(response) {
+								_this.pageInfo.total = response.data.total
+								_this.tableData = response.data.list
+
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.dialogTableVisible = false
+						_this.addss()
 						for (var key in _this.form) {
-								delete _this.form[key]
-							}
-						}).catch(function(error) {
-							console.log(error)
-						})
-						
-				},
-				del() {
-					console.log(this.multipleSelection.length)
-					if (this.multipleSelection.length === 0) {
-						this.deld();
-					} else {
-						this.multipleSelection.forEach(item => {
-							this.deleteback1(item)
-						});
-						
-					}
-				},
-				handleSelectionChange(val) {
-					this.multipleSelection = val;
-				},
-				showEdit2(row) {
-					this.form.bookbackId = row.bookbackId
-					this.form.bookId = row.bookId
-					this.form.bookname = row.bookname
-					this.form.backSl = row.backSl 
-					this.form.storagetime = row.storagetime
-				},
-				
-				deleteback1(row) {
-					this.showEdit2(row)
-					const _this = this
-					this.dialogVisible=true
-					this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-										confirmButtonText: '确定',
-										cancelButtonText: '取消',
-										type: 'warning'
-									}).then(() => {
-					
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+			},
+			del() {
+				console.log(this.multipleSelection.length)
+				if (this.multipleSelection.length === 0) {
+					this.deld();
+				} else {
+					this.multipleSelection.forEach(item => {
+						this.deleteback1(item)
+					});
+
+				}
+			},
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+			},
+			showEdit2(row) {
+				this.form.bookbackId = row.bookbackId
+				this.form.bookId = row.bookId
+				this.form.bookname = row.bookname
+				this.form.backSl = row.backSl
+				this.form.storagetime = row.storagetime
+			},
+
+			deleteback1(row) {
+				this.showEdit2(row)
+				const _this = this
+				this.dialogVisible = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
 					this.axios.put("http://localhost:8089/tsm/delectback", this.form)
 					this.axios.get("http://localhost:8089/tsm/findPage3", {
 							params: this.pageInfo
@@ -305,119 +318,119 @@
 								.filter(d => d.bookbackId != row.bookbackId)
 							_this.tableData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
-				
+
 							_this.dialogFormVisible2 = false
 							_this.dels()
 						}).catch(function(error) {
 							console.log(error)
 						})
-						}).catch(() => {
-							this.$message({
-								type: 'error',
-								message: '取消删除!'
-							});
-						});
-				},
-				a() {
-					const _this = this
-				
-					this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId)
-						.then(function(response) {
-							console.log(response)
-							_this.bookdata = response.data
-				
-						}).catch(function(error) {
-							console.log(error)
-						})
-				},
-				selectBook() {
-					const _this = this
-					this.axios.get("http://localhost:8089/tsm/selectbook")
-						.then(function(response) {
-							console.log(response)
-							_this.bookdata = response.data
-							console.log(_this.bookdata)
-						}).catch(function(error) {
-							console.log(error)
-						})
-				},
-				showEdit() {
-					
-					var courserecorddetails = {
-						form4: {
-							bookName:'',
-							backSl:'',
-							backSprice: '',
-							booksprice: '',
-							
-							
-						},
-					};
-					
-					courserecorddetails.form4.bookname = this.bookdata.bookname
-					courserecorddetails.form4.booksprice = this.bookdata.booksprice
-					courserecorddetails.form4.backSl = this.form2.form4.backSl
-					// this.form2.course.deliverycount=1
-					courserecorddetails.form4.backSprice = this.bookdata.booksprice * this.form2.form4.backSl
-					// this.form1.bookId=this.course.bookId
-					// courserecorddetails.course.bookName=this.form1.bookName
-					// courserecorddetails.course.bookjprice=this.form1.bookjprice
-					// courserecorddetails.course.deliverycount=this.form1.deliverycount
-					// courserecorddetails.course.receivablemoney=this.form1.receivablemoney
-					this.gridData.push(courserecorddetails);
-					this.tss = false 
-					
-				},
-				delform2(){
-					this.form2.form4.bookname=null
-					this.form2.form4.booksprice=null
-					this.form2.form4.backSl=null
-					this.form2.form4.backSprice=null
-				},
-				a1() {
-					this.tss = true;
-					this.selectBook();
-				},
-				handleCurrentChange(currentPage) {
-					var _this = this
-					this.pageInfo.currentPage = currentPage
-					var ps = qs.stringify(this.pageInfo)
-					console.log(ps)
-					this.axios.get("http://localhost:8089/tsm/findPage3", {
-							params: this.pageInfo
-						})
-						.then(function(response) {
-							console.log(response.data)
-							_this.pageInfo.total = response.data.total
-							_this.tableData = response.data.list
-						}).catch(function(error) {
-							console.log(error)
-						})
-				},
-				handleSizeChange(pagesize) {
-					var _this = this
-					this.pageInfo.pagesize = pagesize
-					var ps = qs.stringify(this.pageInfo)// eslint-disable-line no-unused-vars
-					this.axios.get("http://localhost:8089/tsm/findPage3", {
-							params: this.pageInfo
-						})
-						.then(function(response) {
-							console.log(response.data)
-							_this.pageInfo.total = response.data.total
-							_this.tableData = response.data.list
-						}).catch(function(error) {
-							console.log(error)
-						})
-				
-				},
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
 			},
-			
-			
+			a() {
+				const _this = this
 
-		
-		created(){
+				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId)
+					.then(function(response) {
+						console.log(response)
+						_this.bookdata = response.data
+
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			selectBook() {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/selectbook")
+					.then(function(response) {
+						console.log(response)
+						_this.bookdata = response.data
+						console.log(_this.bookdata)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			showEdit() {
+
+				var courserecorddetails = {
+					form4: {
+						bookName: '',
+						backSl: '',
+						backSprice: '',
+						booksprice: '',
+
+
+					},
+				};
+
+				courserecorddetails.form4.bookname = this.bookdata.bookname
+				courserecorddetails.form4.booksprice = this.bookdata.booksprice
+				courserecorddetails.form4.backSl = this.form2.form4.backSl
+				// this.form2.course.deliverycount=1
+				courserecorddetails.form4.backSprice = this.bookdata.booksprice * this.form2.form4.backSl
+				// this.form1.bookId=this.course.bookId
+				// courserecorddetails.course.bookName=this.form1.bookName
+				// courserecorddetails.course.bookjprice=this.form1.bookjprice
+				// courserecorddetails.course.deliverycount=this.form1.deliverycount
+				// courserecorddetails.course.receivablemoney=this.form1.receivablemoney
+				this.gridData.push(courserecorddetails);
+				this.tss = false
+
+			},
+			delform2() {
+				this.form2.form4.bookname = null
+				this.form2.form4.booksprice = null
+				this.form2.form4.backSl = null
+				this.form2.form4.backSprice = null
+			},
+			a1() {
+				this.tss = true;
+				this.selectBook();
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/findPage3", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.pageInfo.total = response.data.total
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/findPage3", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.pageInfo.total = response.data.total
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+			},
+		},
+
+
+
+
+		created() {
 			const _this = this
-			
+
 			this.axios.get("http://localhost:8089/tsm/selectback")
 				.then(function(response) {
 					console.log(response)
@@ -435,11 +448,11 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				
-				
-		
-		
-		
+
+
+
+
+
 		},
 
 	})

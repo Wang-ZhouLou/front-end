@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>登录限制</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<el-tabs v-model="activeName" @tab-click="handleClick">
 			<el-tab-pane label="已限制用户" name="first">

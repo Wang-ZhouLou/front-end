@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>公告管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<el-tabs type="border-card">
 		<el-tab-pane label="公告管理" style="height: 530px;">
 			<div class="all" style="width: 100%;height: 100%">
@@ -513,6 +517,10 @@
 			selectAllAnType() {
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo2
 				}).then(function(response) {
 					console.log(response)
@@ -533,6 +541,10 @@
 			selectAnTypeByWhat() {
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/selectAnTypeByName", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo2
 				}).then(function(
 					response) {
@@ -556,6 +568,10 @@
 				const _this = this
 				if (this.selectCondition == "1") {
 					this.axios.get("http://localhost:8089/tsm/selectAnByTheme", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo1
 					}).then(function(
 						response) {
@@ -576,6 +592,10 @@
 					})
 				} else if (this.selectCondition == "2") {
 					this.axios.get("http://localhost:8089/tsm/selectAnByType", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo1
 					}).then(function(
 						response) {
@@ -621,10 +641,19 @@
 					type: 'warning'
 				}).then(() => {
 					this.axios.put("http://localhost:8089/tsm/deleteAnMany/" + ids + "/" +
-						updatename).then(function(
+						updatename, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(
 						response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 							params: _this.pageInfo1
 						}).then(function(response) {
 							console.log(response)
@@ -669,10 +698,19 @@
 					type: 'warning'
 				}).then(() => {
 					this.axios.put("http://localhost:8089/tsm/deleteAnTypeMany/" + ids + "/" +
-						updatename).then(function(
+						updatename, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(
 						response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 							params: _this.pageInfo2
 						}).then(function(response) {
 							console.log(response)
@@ -717,10 +755,19 @@
 					type: 'warning'
 				}).then(() => {
 					this.axios.put("http://localhost:8089/tsm/updateAnStateStopMany/" + ids + "/" +
-						updatename).then(function(
+						updatename, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(
 						response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/selectAnByStateYES", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 							params: _this.pageInfo1
 						}).then(function(response) {
 							console.log(response)
@@ -765,10 +812,19 @@
 					type: 'warning'
 				}).then(() => {
 					this.axios.put("http://localhost:8089/tsm/updateAnStateGoMany/" + ids + "/" +
-						updatename).then(function(
+						updatename, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(
 						response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/selectAnByStateNO", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 							params: _this.pageInfo1
 						}).then(function(response) {
 							console.log(response)
@@ -805,6 +861,10 @@
 				const _this = this
 				this.YesOrNoCondition = 1
 				this.axios.get("http://localhost:8089/tsm/selectAnByStateNO", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo1
 				}).then(function(response) {
 					console.log(response)
@@ -818,6 +878,10 @@
 				const _this = this
 				this.YesOrNoCondition = 2
 				this.axios.get("http://localhost:8089/tsm/selectAnByStateYES", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo1
 				}).then(function(response) {
 					console.log(response)
@@ -831,6 +895,10 @@
 				const _this = this
 				this.YesOrNoCondition = 0
 				this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo1
 				}).then(function(response) {
 					console.log(response)
@@ -851,10 +919,19 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.axios.put("http://localhost:8089/tsm/deleteAn", this.anForm).then(
+					this.axios.put("http://localhost:8089/tsm/deleteAn", this.anForm, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(
 						function(response) {
 							console.log(response)
 							_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo1
 							}).then(function(response) {
 								console.log(response)
@@ -906,10 +983,19 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.axios.put("http://localhost:8089/tsm/deleteAnType", this.anTypeForm).then(
+					this.axios.put("http://localhost:8089/tsm/deleteAnType", this.anTypeForm, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(
 						function(response) {
 							console.log(response)
 							_this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo2
 							}).then(function(response) {
 								console.log(response)
@@ -973,7 +1059,12 @@
 				this.anForm.announcementTheme = row.announcementTheme
 				this.anForm.announcementContent = row.announcementContent
 				this.axios.get("http://localhost:8089/tsm/selectEmpIdByAnId/" + this.anForm
-						.announcementId)
+						.announcementId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						console.log(response)
 						_this.anSelectWho = response.data
@@ -1013,6 +1104,10 @@
 				var ps = qs.stringify(this.pageInfo1)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo1
 					})
 					.then(function(response) {
@@ -1027,6 +1122,10 @@
 				this.pageInfo1.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo1) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo1
 					})
 					.then(function(response) {
@@ -1041,6 +1140,10 @@
 				var ps = qs.stringify(this.pageInfo2)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo2
 					})
 					.then(function(response) {
@@ -1055,6 +1158,10 @@
 				this.pageInfo2.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo2) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo2
 					})
 					.then(function(response) {
@@ -1067,10 +1174,19 @@
 				const _this = this
 				this.login.loginName = "梁政"
 				this.anForm.updatename = this.login.loginName
-				this.axios.put("http://localhost:8089/tsm/updateAn", this.anForm).then(function(
+				this.axios.put("http://localhost:8089/tsm/updateAn", this.anForm, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(
 					response) {
 					console.log(response)
 					_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: _this.pageInfo1
 					}).then(function(response) {
 						console.log(response)
@@ -1107,10 +1223,19 @@
 				const _this = this
 				this.login.loginName = "梁政"
 				this.anTypeForm.updatename = this.login.loginName
-				this.axios.put("http://localhost:8089/tsm/updateAnTypeName", this.anTypeForm).then(function(
+				this.axios.put("http://localhost:8089/tsm/updateAnTypeName", this.anTypeForm, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(
 					response) {
 					console.log(response)
 					_this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: _this.pageInfo12
 					}).then(function(response) {
 						console.log(response)
@@ -1154,10 +1279,19 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.axios.put("http://localhost:8089/tsm/updateAnStateGo", this.anForm).then(
+					this.axios.put("http://localhost:8089/tsm/updateAnStateGo", this.anForm, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(
 						function(response) {
 							console.log(response)
 							_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo1
 							}).then(function(response) {
 								console.log(response)
@@ -1175,6 +1309,9 @@
 								type: 'success',
 								message: '发布成功'
 							});
+							for (var key in _this.anForm) {
+								delete _this.anForm[key]
+							}
 						}).catch(function(error) {
 						console.log(error)
 						for (var key in _this.anForm) {
@@ -1206,11 +1343,20 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.axios.put("http://localhost:8089/tsm/updateAnStateStop", this.anForm)
+					this.axios.put("http://localhost:8089/tsm/updateAnStateStop", this.anForm, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(
 							function(response) {
 								console.log(response)
 								_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
 									params: _this.pageInfo1
 								}).then(function(response) {
 									console.log(response)
@@ -1228,6 +1374,9 @@
 									type: 'success',
 									message: '暂停成功'
 								});
+								for (var key in _this.anForm) {
+									delete _this.anForm[key]
+								}
 							}).catch(function(error) {
 							console.log(error)
 							for (var key in _this.anForm) {
@@ -1252,11 +1401,20 @@
 				const _this = this
 				// this.$store.userInfo.userName
 				this.login.loginName = "梁政"
-				this.anForm.addname = this.login.loginName
-				this.axios.post("http://localhost:8089/tsm/insertAnType", this.anTypeForm).then(function(
+				this.anTypeForm.addname = this.login.loginName
+				this.axios.post("http://localhost:8089/tsm/insertAnType", this.anTypeForm, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(
 					response) {
 					console.log(response)
 					_this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: _this.pageInfo2
 					}).then(function(response) {
 						console.log(response)
@@ -1274,6 +1432,9 @@
 						message: "公告类型名称：" + _this.anTypeForm.announcementtypeName,
 						duration: '7000'
 					})
+					for (var key in _this.anTypeForm) {
+						delete _this.anTypeForm[key]
+					}
 					_this.addAnTypeVisible = false
 				}).catch(function(error) {
 					console.log(error)
@@ -1290,11 +1451,21 @@
 				const _this = this
 				this.login.loginName = "梁政"
 				this.anForm.addname = this.login.loginName
-				this.axios.post("http://localhost:8089/tsm/insertAn", this.anForm).then(function(
+				this.axios.post("http://localhost:8089/tsm/insertAn", this.anForm, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(
 					response) {
 					console.log(response)
 					_this.axios.post("http://localhost:8089/tsm/insertAnSelect/" + response.data
-						.announcementId + "/" + _this.anSelectYes).then(function(
+						.announcementId + "/" + _this.anSelectYes, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(
 						response) {
 						console.log(response)
 						for (var key in _this.anSelectYes) {
@@ -1307,6 +1478,10 @@
 						}
 					})
 					_this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: _this.pageInfo1
 					}).then(function(response) {
 						console.log(response)
@@ -1343,6 +1518,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/tsm/SelectAllAnPageInfo", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				},
 				params: this.pageInfo1
 			}).then(function(response) {
 				console.log(response)
@@ -1352,6 +1531,10 @@
 				console.log(error)
 			})
 			this.axios.get("http://localhost:8089/tsm/selectAllAnTypePageInfo", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				},
 				params: this.pageInfo2
 			}).then(function(response) {
 				console.log(response)
@@ -1360,13 +1543,23 @@
 			}).catch(function(error) {
 				console.log(error)
 			})
-			this.axios.get("http://localhost:8089/tsm/selectAllAnType").then(function(response) {
+			this.axios.get("http://localhost:8089/tsm/selectAllAnType", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
 				console.log(response)
 				_this.anTypeData2 = response.data
 			}).catch(function(error) {
 				console.log(error)
 			})
-			this.axios.get("http://localhost:8089/tsm/selectAllDept").then(function(response) {
+			this.axios.get("http://localhost:8089/tsm/selectAllDept", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
 				console.log(response)
 				_this.deptData = response.data
 				_this.anSelectNo = response.data

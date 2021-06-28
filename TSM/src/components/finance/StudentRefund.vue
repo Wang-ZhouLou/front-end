@@ -1,6 +1,10 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>教材收支管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
-		<div>
+		<div style="margin-left: -506px;">
 			<font class="ksjs1" style="font-size: 13px;">审核:</font>&nbsp;
 			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
 				<el-option v-for="item in optionss" :key="item.value" :label="item.label" :value="item.value">

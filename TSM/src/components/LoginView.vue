@@ -58,16 +58,6 @@
 				//return
 				this.axios.post("http://localhost:8089/tsm/login", this.loginData)
 					.then(function(response) {
-						// if (res.data.data.sysUser == null) {
-						// 	ElMessage({
-						// 		message: res.data.data,
-						// 		type: "error",
-						// 	});
-						// 	return false;
-						// }
-						
-						
-						
 						console.log("resssss:", response)
 						//sessionStorage.setItem("imgs", response.data.data.sysUser.userImgs);
 						_this.$store.commit("setrightList", response.data.data.menus);
@@ -78,44 +68,9 @@
 						//sessionStorage.setItem("adminid", response.data.data.sysUser.userId);
 						sessionStorage.setItem("token", response.data.data.token);
 						initFind();
-						_this.$router.push("dashboard");
+						_this.$router.push("/");
 						
 						
-						//console.log(res)
-						// console.log("----------------------------")
-						// console.log(res.data.data)
-						// _this.$store.commit("updateUserInfo", res.data.data)
-						// for (var i = 0; i < _this.$store.state.userInfo.menus.length; i++) {
-						// 	let comp = '../components/' + _this.$store.state.userInfo.menus[i].componentPath
-						// 	//console.log("comp=%s", comp)
-						// 	const rou = {
-						// 		path: _this.$store.state.userInfo.menus[i].url,
-						// 		name: _this.$store.state.userInfo.menus[i].componentName,
-						// 		meta: {
-						// 			title: _this.$store.state.userInfo.menus[i].menuName,
-						// 		},
-						// 		component: modules[`${comp}`],
-						// 		children: []
-						// 	}
-						// 	let chm = _this.$store.state.userInfo.menus[i].asideChildren
-						// 	for (var k = 0; k < chm.length; k++) {
-						// 		let cpath = '../components/' + chm[k].componentPath
-						// 		//console.log("有子菜单哦:%o", chm[k])
-						// 		const rouc = {
-						// 			path: chm[k].url,
-						// 			name: chm[k].componentName,
-						// 			meta: {
-						// 				title: chm[k].menuName
-						// 			},
-						// 			component: modules[`${cpath}`]
-						// 		}
-						// 		rou.children.push(rouc)
-						// 	}
-						// 	_this.rouw.children.push(rou);
-						// }
-						// _this.$router.addRoute(_this.rouw)
-						// console.log("pppppppppppppp,%o", _this.rouw)
-						// _this.$router.push("/dashboard");
 					})
 					.catch(function(err) {
 						console.log(err)

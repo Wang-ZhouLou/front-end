@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>学员档案</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<el-button size="mini" @click="dialogFormVisible = true">新增</el-button>
 		<el-button size="mini">审批通过</el-button>
@@ -93,24 +97,18 @@
 
 	<el-dialog title="学员分班信息" v-model="dialogFormVisible11">
 		<el-form :model="form11">
-			<!-- <el-form-item label="课程名称" width="120">
-				<el-input v-model="form11.courseName" autocomplete="off" width="90" disabled></el-input>
-			</el-form-item>
-			&nbsp; -->
+			&nbsp;
 			班级名称：
-			<el-select v-model="form11" :index='index' size=mini style="width: 90px;">
+			<el-select v-model="form11" :index='index' size=mini style="width: 120px;">
 				<el-option v-for="(items,index) in  ClassesData" v-on:click.enter="cha12(index)" :key="items.classesId"
 					:label="items.classesName" :value="items.classesId"></el-option>
 			</el-select>
-			<!-- <el-form-item label="班主任名称">
-				<el-input v-model="form11.empName" autocomplete="off" width="90" disabled> </el-input>
+			<el-form-item label="课程名称" width="120">
+				<el-input v-model="form11.courseName" autocomplete="off" width="90" disabled></el-input>
 			</el-form-item>
-			<el-form-item label="教员名称">
-				<el-input v-model="form11.teacherName" autocomplete="off" width="90" disabled></el-input>
-			</el-form-item>
-			<el-form-item label="班级人数" width="formLabelWidth">
+			<el-form-item label="班级人数" width="120">
 				<el-input v-model="form11.classesSize" type="text" autocomplete="off" disabled></el-input>
-			</el-form-item> -->
+			</el-form-item>
 		</el-form>
 		<template #footer>
 			<span class="dialog-footer">
@@ -190,14 +188,15 @@
 				</el-table-column>
 				<el-table-column label="备注" align="center" prop="remarks">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="280">
+				<el-table-column label="操作" align="center" width="320">
 					<template v-slot="scope">
 						<div style="display:flex;justify-content:center">
-							<el-button size="mini" type="info" @click="cha11(scope.row)">分班</el-button>
-							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
-							<el-button type="info" size="mini" >复课</el-button>
+							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info"
+								@click="cha11(scope.row)">分班</el-button>
+							<el-button size="mini" type="info" @click="updateLearningstate3(scope.row)">停课</el-button>
+							<el-button type="info" size="mini">复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
-							<el-button type="info" size="mini" @click="dialogFormVisible12=true">退学</el-button>
+							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
 						</div>
 					</template>
 				</el-table-column>
@@ -288,34 +287,61 @@
 			</span>
 		</template>
 	</el-dialog>
-   <el-dialog  title="学员退学" v-model="dialogFormVisible12">
-	  <el-form :model="form13" >
-		  <el-form-item>
-			  <!-- <div style="margin: 16px 0 0 35px;">
-			  	学号: <el-input v-model="form12.row.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
+	<el-dialog title="学员退学" v-model="dialogFormVisible12">
+		<el-form :model="form13">
+			<el-form-item>
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
 			  	</el-input>
-				退学学员: <el-input v-model="form12.row.studentName" readonly="true"
+				退学学员: <el-input v-model="form13.studentName" readonly="true"
 					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
 				</el-input>
 			  </div> -->
-			  <div style="margin: 16px 0 0 35px;">
+				<!-- <div style="margin: 16px 0 0 35px;">
 			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
 			  	</el-input>
-			  </div>
-			  <div style="margin: 16px 0 0 10px;">
-			  	退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2"
-			  		v-model="form13.dropReason">
+			  </div> -->
+				<div style="margin: 16px 0 0 10px;">
+					退学理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form13.dropReason">
+					</el-input>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible12=false">关闭</el-button>
+				<el-button type="primary" @click="addDrop(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
+	
+	<el-dialog title="学员停课" v-model="dialogFormVisible22">
+		<el-form :model="form23">
+			<el-form-item>
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
 			  	</el-input>
-			  </div>
-		  </el-form-item>
-	  </el-form>
-	  <template #footer>
-	  	<span class="dialog-footer">
-	  		<el-button @click="dialogFormVisible12=false">关闭</el-button>
-	  		<el-button type="primary" @click="addDrop(row)">保 存</el-button>
-	  	</span>
-	  </template>
-   </el-dialog>
+				退学学员: <el-input v-model="form13.studentName" readonly="true"
+					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
+				</el-input>
+			  </div> -->
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
+			  	</el-input>
+			  </div> -->
+			  <div style="margin: 16px 0 0 10px;">
+					停课理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form23.suspendReason">
+					</el-input>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible22=false">关闭</el-button>
+				<el-button type="primary" @click="addSuspend(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -364,68 +390,124 @@
 		methods: {
 			addDrop(row) {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/addDrop",this.form13, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
+				console.log("_____________++++++++++++")
+				console.log(_this.form13)
+				this.axios.post("http://localhost:8089/tsm/addDrop", this.form13, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible12 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			},
+			// .then(function(response) {
+			// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+
+			// })
+			// .then(function(response) {
+			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+			// 			.studentId, {
+			// 				headers: {
+			// 					'content-type': 'application/json',
+			// 					'jwtAuth': _this.$store.getters.token
+			// 				}
+			// 			})
+			// 			})
+			// 		.then(function(response) {
+			// 			for (var key in response.data) {
+			// 				console.log(key + ":")
+			// 				console.log(response.data[key])
+
+			// 				for (var i = 0; i < response.data[key].length; i++) {
+			// 					_this.CourseRecorddetailsData2.push(response.data[key][i])
+			// 				}
+			// 			}
+			// 			console.log(response.data)
+			// 		})
+			// 		
+			updateLearningstate5(row) {
+				const _this = this
+
+				this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
+						}).then(function(response) {
+							_this.form13 = row
+							_this.dialogFormVisible12 = true
 						})
-					.then(function(response) {
-					this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
-								.studentId, {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									}
-								})
-							.then(function(response) {
-								for (var key in response.data) {
-									console.log(key + ":")
-									console.log(response.data[key])
-					
-									for (var i = 0; i < response.data[key].length; i++) {
-										_this.CourseRecorddetailsData2.push(response.data[key][i])
-									}
-								}
-								console.log(response.data)
-							})
-							})
-							})
-							.catch(function(error) {
-								console.log(error)
-							})
-					
-					},
-			// updateLearningstate5(row){
-			// 	const _this = this
-			// 		this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
-			// 			confirmButtonText: '确定',
-			// 			cancelButtonText: '取消',
-			// 			type: 'warning'
-			// 		}).then(() => {
-			// 			_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-			// 					headers: {
-			// 						'content-type': 'application/json',
-			// 						'jwtAuth': _this.$store.getters.token
-			// 					}
-			// 				})
-			// 		.catch(function(error) {
-			// 					console.log(error)
-			// 				})
-			// 		}).catch(() => {
-			// 			this.$message({
-			// 				type: 'error',
-			// 				message: '取消操作!'
-			// 			});
-			// 		});
-			// 	},
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					});
+				});
+			},
+			addSuspend(row) {
+				const _this = this
+				console.log("_____________++++++++++++")
+				console.log(_this.form23)
+				this.axios.post("http://localhost:8089/tsm/addSuspend", this.form23, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible22 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+			
+			},
+			updateLearningstate3(row) {
+				const _this = this
+			
+				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+			
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form23 = row
+							_this.dialogFormVisible22 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					});
+				});
+			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo1.pagesize = pagesize
@@ -467,7 +549,7 @@
 				const _this = this
 				console.log("_____________________________________SSSS")
 				console.log(this.form11.classesId)
-				this.axios.put("http://localhost:8089/tsm/updateclassesId",this.form11.classesId, {
+				this.axios.put("http://localhost:8089/tsm/updateclassesId", this.form11.classesId, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -475,7 +557,7 @@
 					})
 					.then(function(response) {
 						console.log(response)
-						
+
 						_this.CourseRecorddetailsData2 = response.data
 						_this.dialogFormVisible11 = false
 					}).catch(function(error) {
@@ -595,11 +677,11 @@
 					)
 					.then(function(response) {
 						_this.ClassesData = response.data
-						// _this.form11.empId = _this.ClassesData[0].empId
-						// _this.form11.teacherId = _this.ClassesData[0].teacherId
-						// _this.form11.classesSize = _this.ClassesData[0].classesSize
+						_this.form11.empId = _this.ClassesData[0].empId
+						_this.form11.teacherId = _this.ClassesData[0].teacherId
+						_this.form11.classesSize = _this.ClassesData[0].classesSize
 						_this.form11.classesId = _this.ClassesData[0].classesId
-						// _this.form11.courseName = _this.ClassesData[0].course.courseName
+						_this.form11.courseName = _this.ClassesData[0].course.courseName
 						console.log(_this.ClassesData[0])
 					}).catch(function(error) {
 						console.log(error)
@@ -607,13 +689,19 @@
 
 			},
 			cha12(index) {
-				// this.form11.empId = this.ClassesData[index].empId
-				// this.form11.teacherId = this.ClassesData[index].teacherId
-				// this.form11.classesSize = this.ClassesData[index].classesSize
-				console.log("sadsadbaskdsadsabjdba")
-				console.log(this.ClassesData[index].classesId)
-				this.form11.classesId = this.ClassesData[index].classesId
-				// this.form11.courseName = this.ClassesData[index].course.courseName
+				console.log(index)
+				const fo = {
+					classesSize: 0,
+					classesId: 0,
+					courseName: ""
+				}
+				fo.classesSize = this.ClassesData[index].classesSize
+				console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+				//console.log(this.ClassesData[index].classesId)
+				fo.classesId = this.ClassesData[index].classesId
+				fo.courseName = this.ClassesData[index].course.courseName
+				this.form11 = fo
 			},
 			close() {
 				for (var key in this.form) {
@@ -847,10 +935,13 @@
 					course: {}
 				},
 				form11: {
-					classesId:""
+					classesId: ""
 				},
 				form13: {
-					
+
+				},
+				form23: {
+				
 				},
 				person: "TSM",
 				dialogFormVisible: false,
@@ -859,6 +950,7 @@
 				dialogFormVisible10: false,
 				dialogFormVisible11: false,
 				dialogFormVisible12: false,
+				dialogFormVisible22: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],

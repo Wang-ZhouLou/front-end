@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>班级管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<div class="crumbs">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
