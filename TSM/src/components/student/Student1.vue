@@ -412,7 +412,7 @@
 			// 		}
 			// 	})
 
-			// })
+			// }),
 			// .then(function(response) {
 			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
 			// 			.studentId, {
@@ -567,6 +567,7 @@
 			addSource() {
 				const _this = this
 				this.courserecord.studentId = this.form.studentId
+				this.courserecord.addname=this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
 						headers: {
 							'content-type': 'application/json',
@@ -575,15 +576,16 @@
 					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						var c = response.data.data
-						_this.courserecordId = c.courserecordId
 						console.log(c.courserecordId)
+						_this.courserecordId = c.courserecordId
+						
 
 						_this.CourserecorddetailsData.forEach((item) => {
 							//遍历courserecordId这个字段，并累加
 							console.log(_this.courserecordId);
 							item.courserecordId = _this.courserecordId
 						})
-
+						
 						_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
 								.CourserecorddetailsData, {
 									headers: {
@@ -801,6 +803,7 @@
 			},
 			add() {
 				const _this = this
+				
 				this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -948,7 +951,8 @@
 				courserecord: {
 					studentId: 0,
 					receipts: 0,
-					empId: 1
+					empId: 1,
+					addname:""
 				},
 				courserecorddetails: {
 					course: {
