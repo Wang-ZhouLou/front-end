@@ -71,27 +71,19 @@
 				<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;" size="mini"
 					@click="a1()">添加教材</el-button>
 			</div>
-
 			<div>
 				<div style="margin: 20px 0 0 80px;">
-
 					<a style="font-size: 16px; margin: 0 0 0 390px;">退回总额 :</a>
 					<el-input v-model="form.backSprice" placeholder="0.00" style="width: 170px;"></el-input>
 					<a style="margin: 0 0 0 230px;">退回日期 :</a>
 					<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期">
 					</el-date-picker>
-
 				</div>
-
 				<div style="margin: -38px 0 0 -251px;">
-
 					<a style="font-size: 16px; margin: 0 0 0 315px;">录入人 :</a>
 					<el-input placeholder="梁政" v-model="form.empName" style="width: 170px;">
 					</el-input>
-
-
 				</div>
-
 			</div>
 			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addback()">确 定</el-button>
 			<el-button @click="dialogTableVisible=false">取 消</el-button>
@@ -99,19 +91,15 @@
 	</el-dialog>
 	<el-dialog title="" v-model="tss" style="margin: -30px 0 0 0; height:100%" width="100%">
 		<div style="margin: 10px 0 0 70px;">
-
-
 			<el-select v-model="form2.book.bookId" autocomplete="off" size="mini" style="width: 180px;" @change="a">
 				<el-option v-for="item in bookdata" :label="item.bookname" :key="item.bookId" :value="item.bookId">
 				</el-option>
 			</el-select>
-
 		</div>
 		<div style="font-size: 16px; margin: -26px 0 0 620px;">
 			<span>￥: </span>&nbsp;
 			<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input>
 			<span>/本</span>
-
 		</div>
 		<div style="font-size: 16px; margin: -25px 0 0 816px;">
 			<el-input type="text" style="width: 50px;" size="mini" v-model="form2.form4.backSl"></el-input> 本
@@ -119,33 +107,24 @@
 		<el-button type="primary" style="margin: 20px 0 0 650px;" @click="showEdit">确 定</el-button>
 		<el-button @click="tss=false">取 消</el-button>
 	</el-dialog>
-
 	<!-- <el-dialog title="提示" v-model="dialogVisible" width="30%" :before-close="handleClose">
 		<span>确定要删除吗？</span>
 		<template #footer>
 			<span class="dialog-footer">
-
 				<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 				<el-button @click="dialogVisible = false">取 消</el-button>
 			</span>
 		</template>
-		
-		
-		
-		
 	</el-dialog> -->
-
 	<div class="block" style="margin:20px;display: flex;justify-content: center;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
 			:current-page="pageInfo.currentPage" :page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize"
 			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
-
 </template>
-
 <script>
-	import qs from "qs" // eslint-disable-line no-unused-vars
+	import qs from "qs" 
 	import {
 		defineComponent,
 		ref
@@ -153,9 +132,7 @@
 	import {
 		ElMessage
 	} from 'element-plus'
-
 	export default defineComponent({
-
 		data() {
 			return {
 				deld() {
@@ -239,11 +216,7 @@
 				}, {
 					value: '3',
 					label: '80'
-				}],
-
-
-
-
+				}]
 			}
 		},
 		methods: {
@@ -273,7 +246,6 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-
 			},
 			del() {
 				console.log(this.multipleSelection.length)
@@ -296,7 +268,6 @@
 				this.form.backSl = row.backSl
 				this.form.storagetime = row.storagetime
 			},
-
 			deleteback1(row) {
 				this.showEdit2(row)
 				const _this = this
@@ -333,7 +304,6 @@
 			},
 			a() {
 				const _this = this
-
 				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId)
 					.then(function(response) {
 						console.log(response)
@@ -348,7 +318,7 @@
 				this.axios.get("http://localhost:8089/tsm/selectbook")
 					.then(function(response) {
 						console.log(response)
-						_this.bookdata = response.data
+						_this.bookdata = response.data.list
 						console.log(_this.bookdata)
 					}).catch(function(error) {
 						console.log(error)
@@ -431,13 +401,7 @@
 		created() {
 			const _this = this
 
-			this.axios.get("http://localhost:8089/tsm/selectback")
-				.then(function(response) {
-					console.log(response)
-					_this.tableData = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
+			
 			this.axios.get("http://localhost:8089/tsm/findPage3", {
 					params: this.pageInfo
 				})

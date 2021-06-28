@@ -79,7 +79,7 @@
 			this.axios.get("http://localhost:8089/tsm/selectSession")
 				.then(function(response) {
 					console.log(response)
-					_this.SessionData = response.data
+					_this.SessionData = response.data.list
 				}).catch(function(error) {
 					console.log(error)
 				})

@@ -241,7 +241,7 @@
 				},
 				form1: {
 					bookId: '',
-					bookName: '',
+					bookname: '',
 					booksprice: '',
 					deliverycount: '',
 					zk: '',
@@ -482,7 +482,7 @@
 
 				var courserecorddetails = {
 					form4: {
-						bookName: '',
+						bookname: '',
 						deliverycount: '',
 						booksprice: '',
 
