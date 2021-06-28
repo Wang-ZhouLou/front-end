@@ -9,13 +9,13 @@
 			</el-table-column>
 			<el-table-column label="停课编号" prop="suspendId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="courserecorddetailsVo.studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courserecorddetailsVo.courseVo.courseName" width="140" align="center">
+			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="courserecorddetailsVo.classesVo.classesName" width="140" align="center">
+			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="停课时间" prop="suspendRime" width="150" align="center">
+			<el-table-column label="停课时间" prop="suspendTime" width="150" align="center">
 			</el-table-column>
 			<el-table-column label="停课理由" prop="suspendReason" width="140" align="center">
 			</el-table-column>
@@ -90,7 +90,7 @@
 				}).then(() => {
 
 					console.log(row.courserecorddetailsVo.courserecorddetailsId);
-					_this.axios.put("http://localhost:8089/tsm/updateLearningstate4", row.courserecorddetailsVo, {
+					this.axios.put("http://localhost:8089/tsm/updateLearningstate4", row.courserecorddetailsVo, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -105,7 +105,18 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
-					this.updateSuspend_Approval1(row);
+						this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) {
+							console.log(response)
+							
+						}).catch(function(error) {
+									console.log(error)
+								})
+					// this.updateSuspend_Approval1(row);
 
 				}).catch(() => {
 					// this.$message({
@@ -114,17 +125,17 @@
 					// });
 				});
 			},
-			updateSuspend_Approval1(row) {
-				const _this = this
-				console.log(params)
-				this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					}).catch(function(error) {
-							console.log(error)
-						})
+			// updateSuspend_Approval1(row) {
+			// 	const _this = this
+			// 	console.log(params)
+			// 	this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
+			// 			headers: {
+			// 				'content-type': 'application/json',
+			// 				'jwtAuth': _this.$store.getters.token
+			// 			}
+			// 		}).catch(function(error) {
+			// 				console.log(error)
+			// 			})
 					
 					// _this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
 					// 	headers: {
@@ -144,7 +155,7 @@
 					// 		console.log(error)
 					// 	})
 						
-			}
+			// }
 			// selectAllDrop() {
 				
 			// }
@@ -163,7 +174,7 @@
 				formLabelWidth: '120px',
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 3,
+					pagesize: 10,
 					total: 0
 
 				}

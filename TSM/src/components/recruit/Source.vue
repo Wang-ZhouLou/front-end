@@ -56,26 +56,33 @@
 				</template>
 			</el-dialog>
 
-			<el-dialog title="某渠道下的学员列表信息" v-model="dialogFormVisible2">
-				<el-table :data="studnetData" border style="width: 100%" size=mini>
-					<el-table-column type="selection" align="center" width="55">
-					</el-table-column>
-					<el-table-column label="编号" align="center" prop="studentId">
-					</el-table-column>
-					<el-table-column label="报名日期" align="center" prop="studytime">
-					</el-table-column>
-					<el-table-column label="姓名" align="center" prop="studentName">
-					</el-table-column>
-					<el-table-column label="联系地址" align="center" prop="address">
-					</el-table-column>
-					<el-table-column label="联系电话" align="center" prop="studentPhone">
-					</el-table-column>
-					<el-table-column label="性别" align="center" prop="sex">
-					</el-table-column>
-					<el-table-column label="学号" align="center" prop="studentNumber">
-					</el-table-column>
-				</el-table>
-				<div style="margin-bottom: 300px;"></div>
+			<el-dialog v-model="dialogFormVisible2">
+				<el-form :model="form1">
+					<el-form-item>
+						<div style="font-size: 16px;margin-top: -20px;">
+							<b>{{form.sourceName}}的学员列表信息</b>
+						</div>
+					</el-form-item>
+					<el-table :data="studnetData" border style="width: 100%" size=mini>
+						<el-table-column type="selection" align="center" width="55">
+						</el-table-column>
+						<el-table-column label="编号" align="center" prop="studentId">
+						</el-table-column>
+						<el-table-column label="报名日期" align="center" prop="studytime">
+						</el-table-column>
+						<el-table-column label="姓名" align="center" prop="studentName">
+						</el-table-column>
+						<el-table-column label="联系地址" align="center" prop="address">
+						</el-table-column>
+						<el-table-column label="联系电话" align="center" prop="studentPhone">
+						</el-table-column>
+						<el-table-column label="性别" align="center" prop="sex">
+						</el-table-column>
+						<el-table-column label="学号" align="center" prop="studentNumber">
+						</el-table-column>
+					</el-table>
+				</el-form>
+				<div style="margin-bottom: 200px;"></div>
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button type="primary" @click="close1()">关闭</el-button>
@@ -135,8 +142,8 @@
 		methods: {
 			close1() {
 				var _this = this
-				for (var key in _this.sourceData) {
-					delete _this.sourceData[key];
+				for (var key in _this.studnetData) {
+					delete _this.studnetData[key];
 				}
 				_this.dialogFormVisible2 = false
 			},
@@ -154,6 +161,7 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
+				this.form.sourceName = row.sourceName
 				this.dialogFormVisible2 = true
 			},
 			//全选复选框
@@ -401,7 +409,7 @@
 				dialogFormVisible2: false,
 				form: {
 					sourceId: '',
-					sourceName: '',
+					sourceName: "",
 					potential: '',
 					already: ''
 				},
