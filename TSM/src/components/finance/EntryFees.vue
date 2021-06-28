@@ -108,7 +108,7 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			//修改缴费方式修改咨询登记中的缴费状态（未/待/已）
+			//修改缴费方式修改咨询登记中的缴费状态（已）
 			upPayState(row) {
 				const _this = this
 				row.paystate = 2

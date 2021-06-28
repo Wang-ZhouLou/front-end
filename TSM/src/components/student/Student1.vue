@@ -249,13 +249,13 @@
 						</el-input>
 
 						课类选择: <el-select id="aa" v-model="form2.classtype.classtypeId" size=mini style="width: 90px;">
-							<el-option v-for="item in  ClasstypesData" :key="item.classtypeId"
+							<el-option v-for="item in ClasstypesData" :key="item.classtypeId" v-on:click.enter="cha1()"
 								:label="item.classtypeName" :value="item.classtypeId"></el-option>
 						</el-select>
 
 						&nbsp;
 						<el-select v-model="form2.course.courseId" :index='index' size=mini style="width: 90px;">
-							<el-option v-for="(items,index) in  CourseData" v-on:click.enter="cha2(index)"
+							<el-option v-for="(items,index) in CourseData" v-on:click.enter="cha2(index)"
 								:key="items.courseId" :label="items.courseName" :value="items.courseId"></el-option>
 						</el-select>
 
@@ -287,6 +287,7 @@
 			</span>
 		</template>
 	</el-dialog>
+	
 	<el-dialog title="学员退学" v-model="dialogFormVisible12">
 		<el-form :model="form13">
 			<el-form-item>
@@ -367,7 +368,7 @@
 		<el-table-column label="操作" align="center" width="250">
 			<template v-slot="scope">
 				<div style="display:flex;justify-content:center">
-					<el-button size="mini" type="info" @click="showEdit2(scope.row)">报课</el-button>
+					<el-button size="mini" type="info" @click="showEdit2(scope.row)">补报</el-button>
 					<el-button size="mini" type="info" @click="showEdit(scope.row)">编辑</el-button>
 					<el-button type="info" size="mini" @click="selectAllCourseRecorddetails(scope.row)">详情</el-button>
 					<el-button type="info" size="mini" @click="delete1(scope.row)">删除</el-button>
@@ -386,7 +387,6 @@
 
 <script>
 	export default {
-
 		methods: {
 			addDrop(row) {
 				const _this = this
@@ -403,7 +403,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
 			},
 			// .then(function(response) {
 			// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
@@ -564,6 +563,7 @@
 						console.log(error)
 					});
 			},
+			//新增预报
 			addSource() {
 				const _this = this
 				this.courserecord.studentId = this.form.studentId
@@ -596,25 +596,9 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
-
-						/* 		this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2)
-							.then(function(response) { // eslint-disable-line no-unused-vars
-								console.log(response)
-								for (var key in _this.form2) {
-									delete _this.form2[key];
-								}
-							}).catch(function(error) {
-								console.log(error)
-							})
- */
-
 					}).catch(function(error) {
 						console.log(error)
 					})
-
-
-
-
 			},
 
 			delCourserecorddetails(row) {
@@ -647,6 +631,7 @@
 			},
 			cha1() {
 				var _this = this
+				console.log("aaaaaaaaaaaaaa")
 				this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
 						this.form2.classtype.classtypeId, {
 							headers: {

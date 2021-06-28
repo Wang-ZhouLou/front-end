@@ -117,8 +117,28 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
-					this.updateDropJW_Approval1(row);
-
+					this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					//新增退费记录
+					this.refund.dropId = row.dropId
+					this.refund.courseId = row.courseId
+					this.refund.detailcourseId = row.detailcourseId
+					this.refund.classesId = row.classesId
+					this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) { // eslint-disable-line no-unused-vars
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
 				}).catch(() => {
 					// this.$message({
 					// 	type: 'error',
@@ -126,7 +146,7 @@
 					// });
 				});
 			},
-			updateDropJW_Approval1(row) {
+			/* updateDropJW_Approval1(row) {
 				const _this = this
 				console.log(params)
 				this.axios.put("http://localhost:8089/tsm/updateDropJW_Approval1", row, {
@@ -137,7 +157,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
 				_this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
 						params: _this.pageInfo,
 						headers: {
@@ -150,25 +169,27 @@
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
 						_this.dropData = response.data.list
-						_this.pageInfo.total = response.data
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
-
 			}
-			// selectAllDrop() {
-
-			// }
+ */
 		},
 		data() {
 			return {
 				dropData: [],
-
 				CourseRecorddetailData: [],
-				courseData:[],
-				ClassesData:[],
+				courseData: [],
+				ClassesData: [],
 
 				search: '',
+				refund: {
+					dropId: "",
+					courseId: "",
+					classesId: "",
+					detailcourseId: ""
+				},
 				dialogFormVisible3: false,
 				formLabelWidth: '120px',
 				pageInfo: {
