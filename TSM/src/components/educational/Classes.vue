@@ -117,11 +117,12 @@
 				</el-table-column>
 				<el-table-column prop="starteddate" label="开班时间" width="150" align="center">
 				</el-table-column>
-				<el-table-column fixed="right" label="操作" align="center">
+				<el-table-column fixed="right" label="操作" align="center" width="200">
 					<template #default="scope">
+						<el-button @click="updateClassesOpen(scope.row)" type="text" size="small">开报/停报</el-button>
 						<el-button @click="deleteClasses(scope.row)" type="text" size="small">删除</el-button>
-						<el-button type="text" size="small" @click="showEdit(scope.row)">
-							<i class="el-icon-edit"></i>编辑
+						<el-button type="info" size="small" @click="showEdit(scope.row)">
+						编辑
 						</el-button>
 					</template>
 				</el-table-column>
@@ -143,8 +144,60 @@
 	} from 'vue'
 	export default {
 		methods: {
+			updateClassesOpen(row) {
+				const _this = this
+				if (this.classesOpen == "0") {
+				this.$confirm('此操作将会将开班, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+			
+					_this.axios.put("http://localhost:8089/tsm/updateClassesOpen1", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							console.log(response)
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					})
+				})
+				}else if(this.classesOpen == "1") {
+				this.$confirm('此操作将会将停班, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.put("http://localhost:8089/tsm/updateClassesOpen0", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							console.log(response)
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					})
+				})
+				}
+			},
 			addclasses(){
 				const _this = this
+				this.form.addname=this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addClasses", this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -175,6 +228,7 @@
 			},
 			deleteClasses(row) {
 				const _this = this
+				this.row.deletename=this.$store.state.userInfo.userName;
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -207,6 +261,7 @@
 
 			updateClasses(){
 				const _this = this
+				this.form.updatename=this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updateClasses", this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -282,6 +337,8 @@
 					empId: "",
 					teacherId:"",
 					courseId:"",
+					addname:"",
+					updatename:"",
 					classesName: "",
 					classesOpen: "",
 					classesSize:"",
@@ -295,7 +352,7 @@
 				},
 				pageInfo: {
 					currentPage: 1, //当前页数，由用户指定
-					pagesize: 3, //每页显示的条数
+					pagesize: 10, //每页显示的条数
 					total: 0, //总记录条数，数据库查出来的
 					flag: ""
 				},

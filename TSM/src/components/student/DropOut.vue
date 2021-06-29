@@ -23,9 +23,9 @@
 			</el-table-column>
 			<el-table-column label="退费状态" prop="ispay" width="140" align="center">
 				<template v-slot="scope">
-					<p v-if="scope.row.ispay==0">未缴费</p>
-					<p v-if="scope.row.ispay==1">待缴费</p>
-					<p v-if="scope.row.ispay==2">已缴费</p>
+					<p v-if="scope.row.ispay==0">未退费</p>
+					<p v-if="scope.row.ispay==1">待退费</p>
+					<p v-if="scope.row.ispay==2">已退费</p>
 				</template>
 			</el-table-column>
 			<el-table-column label="审核状态" prop="jwApproval" width="140" align="center">
