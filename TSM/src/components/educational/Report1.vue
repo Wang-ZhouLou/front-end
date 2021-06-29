@@ -29,7 +29,7 @@
 					},
 					tooltip: {},
 					xAxis: {
-						data: [this.Consultationmods[0], this.Consultationmods[1], this.Consultationmods[1], ]
+						data: ["aa", this.Consultationmods[1], this.Consultationmods[2] ]
 					},
 					yAxis: {},
 					series: [{
@@ -58,7 +58,7 @@
 			},
 			sum() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/ConsultationmodeStatistics", {
+				this.axios.get("http://localhost:8089/tsm/selBbzxfs", {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -71,7 +71,8 @@
 						console.log(_this.ConsultationmodeData);
 						_this.ConsultationmodeData.forEach((item) => {
 							_this.totals.push(item.total)
-							_this.Consultationmods.push(item.Consultationmode)
+							console.log(item.empId)
+							_this.Consultationmods.push(item.empId)
 						})
 						console.log(_this.totals)
 						console.log(_this.Consultationmods)
