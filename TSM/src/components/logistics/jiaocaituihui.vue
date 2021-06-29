@@ -98,7 +98,7 @@
 		</div>
 		<div style="font-size: 16px; margin: -26px 0 0 620px;">
 			<span>￥: </span>&nbsp;
-			<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input>
+			<el-input type="text" style="width: 60px;" size="mini" v-model="form2.form4.booksprice"></el-input>
 			<span>/本</span>
 		</div>
 		<div style="font-size: 16px; margin: -25px 0 0 816px;">
@@ -225,11 +225,20 @@
 				this.form.backSl = this.form2.form4.backSl
 				this.form.backSprice = this.bookdata.booksprice * this.form2.form4.backSl
 				this.form.bookId = this.form2.book.bookId
-				this.axios.post("http://localhost:8089/tsm/insertback", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertback", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/findPage3", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
 							})
 							.then(function(response) {
 								_this.pageInfo.total = response.data.total
@@ -278,9 +287,18 @@
 					type: 'warning'
 				}).then(() => {
 
-					this.axios.put("http://localhost:8089/tsm/delectback", this.form)
+					this.axios.put("http://localhost:8089/tsm/delectback", this.form,{
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+					})
 					this.axios.get("http://localhost:8089/tsm/findPage3", {
-							params: this.pageInfo
+							params: this.pageInfo,
+							headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 						})
 						.then(function(response) {
 							console.log(response)
@@ -304,7 +322,12 @@
 			},
 			a() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId)
+				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -315,10 +338,15 @@
 			},
 			selectBook() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectbook")
+				this.axios.get("http://localhost:8089/tsm/selectbook",{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
-						_this.bookdata = response.data.list
+						_this.bookdata = response.data
 						console.log(_this.bookdata)
 					}).catch(function(error) {
 						console.log(error)
@@ -367,7 +395,11 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/findPage3", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -382,7 +414,11 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage3", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -403,7 +439,11 @@
 
 			
 			this.axios.get("http://localhost:8089/tsm/findPage3", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 				})
 				.then(function(response) {
 					console.log(response.data)

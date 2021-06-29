@@ -27,9 +27,9 @@
 				</el-table-column>
 				<el-table-column prop="register.consultant" label="姓名" width="110" align="center">
 				</el-table-column>
-				<el-table-column prop="classes.classesName" label="退学班级" width="210" align="center">
+				<el-table-column prop="classes.classesName" label="所在班级" width="210" align="center">
 				</el-table-column>
-				<el-table-column prop="course.courseName" label="退费课程" width="100" align="center">
+				<el-table-column prop="course.courseName" label="课程" width="100" align="center">
 				</el-table-column>
 				<el-table-column prop="course.courseMoney" label="退还金额" width="140" align="center">
 				</el-table-column>

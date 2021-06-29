@@ -218,7 +218,6 @@
 					学号: {{form.studentId}}
 					&nbsp;
 					姓名: {{form.studentName}}
-					咨询id：{{form.registerId}}
 				</div>
 				<div class="qdwh">
 					<p style="text-align: center; font-size: 13px;">预报课程</p>
