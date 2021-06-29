@@ -217,6 +217,8 @@
 				</el-table-column>
 				<el-table-column prop="sourceVo.sourceName" label="生源渠道" width="90" align="center">
 				</el-table-column>
+				<el-table-column prop="total" label="回访次数" width="90" align="center">
+				</el-table-column>
 				<el-table-column prop="empVo.empName" label="接待人" width="100" align="center">
 				</el-table-column>
 				<el-table-column prop="attentstate" label="状态" width="50" align="center">

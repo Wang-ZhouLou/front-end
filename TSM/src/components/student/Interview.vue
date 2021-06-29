@@ -64,15 +64,15 @@
 				</el-table-column>
 				<el-table-column prop="studentId" label="编号" width="50" align="center">
 				</el-table-column>
-				<el-table-column prop="studentName" label="姓名" width="110" align="center">
+				<el-table-column prop="studentName" label="姓名" width="180" align="center">
 				</el-table-column>
-				<el-table-column prop="studytime" label="报名日期" width="150" align="center">
+				<el-table-column prop="studytime" label="报名日期" width="200" align="center">
 				</el-table-column>
-				<el-table-column prop="studentPhone" label="联系电话" width="130" align="center">
+				<el-table-column prop="studentPhone" label="联系电话" width="180" align="center">
 				</el-table-column>
-				<el-table-column prop="classes.classesName" label="班级名称" width="130" align="center">
+				<el-table-column prop="classes.classesName" label="班级名称" width="160" align="center">
 				</el-table-column>
-				<el-table-column prop="sex" label="性别" width="130" align="center">
+				<el-table-column prop="sex" label="性别" width="140" align="center">
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
@@ -162,7 +162,6 @@
 				this.intervie.studentId = this.form.studentId
 				this.intervie.classesId = this.form.classesId
 				this.intervie.interviewname = this.$store.state.userInfo.userName; //获取当前登记人员名称
-				console.log("================")
 				console.log(this.form.studentId)
 				console.log(this.form.classesId)
 				this.axios.post("http://localhost:8089/tsm/addinterview", this.intervie, {

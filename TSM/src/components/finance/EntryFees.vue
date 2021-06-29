@@ -85,9 +85,6 @@
 			</el-table>
 		</div>
 	</div>
-	<div style="float: left;margin-top: 10px;">
-		<i class="el-icon-date">缴费总额</i>
-	</div>
 	<!-- 分页 -->
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
