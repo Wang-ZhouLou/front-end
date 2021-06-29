@@ -590,8 +590,6 @@
 									'jwtAuth': _this.$store.getters.token
 								}
 							}).then(function(response) { // eslint-disable-line no-unused-vars
-							//_this.addentryfees()
-
 							_this.refund.courseId = _this.form2.course.courseId
 							console.log(_this.form2.course.courseId)
 							_this.refund.registerId = _this.form.registerId
@@ -611,37 +609,6 @@
 						console.log(error)
 					})
 			},
-			//新增一条报班缴费数据
-			/* addentryfees() {
-				const _this = this
-				var cre = response.data.data //定義容器
-				this.courseId = cre.courseId
-				this.refund.forEach((item) => {
-					//遍历courseId这个字段，并累加
-					console.log(this.courseId);
-					item.courseId = this.courseId
-				})
-				this.refund.registerId = this.form.registerId
-				console.log("+++++++++++++++++++++++++++++++++++++")
-				console.log(this.form.registerId)
-				//this.refund.courseId = 1
-				this.refund.addname = this.$store.state.userInfo.userName;
-				this.axios.post("http://localhost:8089/tsm/addentryfees", this.refund, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						console.log(response)
-						for (var key in _this.refund) {
-							delete _this.refund[key];
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
-			}, */
-
 			delCourserecorddetails(row) {
 				this.CourserecorddetailsData.splice(this.CourserecorddetailsData.indexOf(row), 1)
 			},
