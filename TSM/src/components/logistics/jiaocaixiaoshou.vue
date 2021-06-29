@@ -319,7 +319,12 @@
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
 
-				this.axios.post("http://localhost:8089/tsm/insertstu", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertstu", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 
@@ -341,7 +346,12 @@
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
 
-				this.axios.post("http://localhost:8089/tsm/insertz", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertz", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 
@@ -366,11 +376,20 @@
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
 
-				this.axios.post("http://localhost:8089/tsm/insertdel", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertdel", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.axios.get("http://localhost:8089/tsm/findPage2", {
-								params: _this.pageInfo
+								params: _this.pageInfo,
+								headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
 							})
 							.then(function(response) {
 								_this.pageInfo.total = response.data.total
@@ -407,9 +426,18 @@
 				// this.dialogVisible=true
 
 
-				this.axios.put("http://localhost:8089/tsm/debookdel", this.form)
+				this.axios.put("http://localhost:8089/tsm/debookdel", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: _this.pageInfo
+						params: _this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 					})
 					.then(function(response) {
 						_this.pageInfo.total = response.data.total
@@ -436,10 +464,19 @@
 					type: 'warning'
 				}).then(() => {
 
-					this.axios.put("http://localhost:8089/tsm/debookdel", this.form)
+					this.axios.put("http://localhost:8089/tsm/debookdel", this.form,{
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+					})
 
 					this.axios.get("http://localhost:8089/tsm/findPage2", {
-							params: _this.pageInfo
+							params: _this.pageInfo,
+							headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 						})
 						.then(function(response) {
 							console.log(response)
@@ -509,7 +546,12 @@
 			a() {
 				const _this = this
 
-				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId)
+				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -521,7 +563,12 @@
 			as1() {
 				const _this = this
 
-				this.axios.get("http://localhost:8089/tsm/selectemp/" + this.form2.emp.empId)
+				this.axios.get("http://localhost:8089/tsm/selectemp/" + this.form2.emp.empId,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.empdata = response.data
@@ -539,7 +586,12 @@
 			},
 			selectBook() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectbook")
+				this.axios.get("http://localhost:8089/tsm/selectbook",{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -550,7 +602,12 @@
 			},
 			selectemp() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectemp")
+				this.axios.get("http://localhost:8089/tsm/selectemp",{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.empdata = response.data
@@ -565,7 +622,11 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -580,7 +641,11 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: this.pageInfo
+						params: this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 					})
 					.then(function(response) {
 						console.log(response.data)
@@ -605,7 +670,11 @@
 			// 		console.log(error)
 			// 	})
 			this.axios.get("http://localhost:8089/tsm/findPage2", {
-					params: this.pageInfo
+					params: this.pageInfo,
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 				})
 				.then(function(response) {
 					console.log(response.data)
