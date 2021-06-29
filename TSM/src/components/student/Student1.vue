@@ -193,7 +193,7 @@
 						<div style="display:flex;justify-content:center">
 							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info"
 								@click="cha11(scope.row)">分班</el-button>
-							<el-button size="mini" type="info" @click="showEdit2(scope.row)">停课</el-button>
+							<el-button size="mini" type="info" @click="updateLearningstate3(scope.row)">停课</el-button>
 							<el-button type="info" size="mini">复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
 							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
@@ -249,13 +249,13 @@
 						</el-input>
 
 						课类选择: <el-select id="aa" v-model="form2.classtype.classtypeId" size=mini style="width: 90px;">
-							<el-option v-for="item in  ClasstypesData" :key="item.classtypeId"
+							<el-option v-for="item in ClasstypesData" :key="item.classtypeId" v-on:click.enter="cha1()"
 								:label="item.classtypeName" :value="item.classtypeId"></el-option>
 						</el-select>
 
 						&nbsp;
 						<el-select v-model="form2.course.courseId" :index='index' size=mini style="width: 90px;">
-							<el-option v-for="(items,index) in  CourseData" v-on:click.enter="cha2(index)"
+							<el-option v-for="(items,index) in CourseData" v-on:click.enter="cha2(index)"
 								:key="items.courseId" :label="items.courseName" :value="items.courseId"></el-option>
 						</el-select>
 
@@ -287,6 +287,7 @@
 			</span>
 		</template>
 	</el-dialog>
+	
 	<el-dialog title="学员退学" v-model="dialogFormVisible12">
 		<el-form :model="form13">
 			<el-form-item>
@@ -311,6 +312,34 @@
 			<span class="dialog-footer">
 				<el-button @click="dialogFormVisible12=false">关闭</el-button>
 				<el-button type="primary" @click="addDrop(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
+	
+	<el-dialog title="学员停课" v-model="dialogFormVisible22">
+		<el-form :model="form23">
+			<el-form-item>
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	学号: <el-input v-model="form13.studentId" style="width: 190px;margin-bottom: 10px;" readonly="true">
+			  	</el-input>
+				退学学员: <el-input v-model="form13.studentName" readonly="true"
+					style="width: 190px;margin-bottom: 10px;margin-right: 140px;">
+				</el-input>
+			  </div> -->
+				<!-- <div style="margin: 16px 0 0 35px;">
+			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
+			  	</el-input>
+			  </div> -->
+			  <div style="margin: 16px 0 0 10px;">
+					停课理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form23.suspendReason">
+					</el-input>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible22=false">关闭</el-button>
+				<el-button type="primary" @click="addSuspend(row)">保 存</el-button>
 			</span>
 		</template>
 	</el-dialog>
@@ -339,7 +368,7 @@
 		<el-table-column label="操作" align="center" width="250">
 			<template v-slot="scope">
 				<div style="display:flex;justify-content:center">
-					<el-button size="mini" type="info" @click="showEdit2(scope.row)">报课</el-button>
+					<el-button size="mini" type="info" @click="showEdit2(scope.row)">补报</el-button>
 					<el-button size="mini" type="info" @click="showEdit(scope.row)">编辑</el-button>
 					<el-button type="info" size="mini" @click="selectAllCourseRecorddetails(scope.row)">详情</el-button>
 					<el-button type="info" size="mini" @click="delete1(scope.row)">删除</el-button>
@@ -358,7 +387,6 @@
 
 <script>
 	export default {
-
 		methods: {
 			addDrop(row) {
 				const _this = this
@@ -375,7 +403,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
 			},
 			// .then(function(response) {
 			// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
@@ -385,7 +412,7 @@
 			// 		}
 			// 	})
 
-			// })
+			// }),
 			// .then(function(response) {
 			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
 			// 			.studentId, {
@@ -424,6 +451,51 @@
 						}).then(function(response) {
 							_this.form13 = row
 							_this.dialogFormVisible12 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					});
+				});
+			},
+			addSuspend(row) {
+				const _this = this
+				console.log("_____________++++++++++++")
+				console.log(_this.form23)
+				this.axios.post("http://localhost:8089/tsm/addSuspend", this.form23, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible22 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+			
+			},
+			updateLearningstate3(row) {
+				const _this = this
+			
+				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+			
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form23 = row
+							_this.dialogFormVisible22 = true
 						})
 						.catch(function(error) {
 							console.log(error)
@@ -491,9 +563,11 @@
 						console.log(error)
 					});
 			},
+			//新增预报
 			addSource() {
 				const _this = this
 				this.courserecord.studentId = this.form.studentId
+				this.courserecord.addname=this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
 						headers: {
 							'content-type': 'application/json',
@@ -502,15 +576,16 @@
 					})
 					.then(function(response) { // eslint-disable-line no-unused-vars
 						var c = response.data.data
-						_this.courserecordId = c.courserecordId
 						console.log(c.courserecordId)
+						_this.courserecordId = c.courserecordId
+						
 
 						_this.CourserecorddetailsData.forEach((item) => {
 							//遍历courserecordId这个字段，并累加
 							console.log(_this.courserecordId);
 							item.courserecordId = _this.courserecordId
 						})
-
+						
 						_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
 								.CourserecorddetailsData, {
 									headers: {
@@ -523,25 +598,9 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
-
-						/* 		this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2)
-							.then(function(response) { // eslint-disable-line no-unused-vars
-								console.log(response)
-								for (var key in _this.form2) {
-									delete _this.form2[key];
-								}
-							}).catch(function(error) {
-								console.log(error)
-							})
- */
-
 					}).catch(function(error) {
 						console.log(error)
 					})
-
-
-
-
 			},
 
 			delCourserecorddetails(row) {
@@ -574,6 +633,7 @@
 			},
 			cha1() {
 				var _this = this
+				console.log("aaaaaaaaaaaaaa")
 				this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
 						this.form2.classtype.classtypeId, {
 							headers: {
@@ -743,6 +803,7 @@
 			},
 			add() {
 				const _this = this
+				
 				this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -867,6 +928,9 @@
 				form13: {
 
 				},
+				form23: {
+				
+				},
 				person: "TSM",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -874,6 +938,7 @@
 				dialogFormVisible10: false,
 				dialogFormVisible11: false,
 				dialogFormVisible12: false,
+				dialogFormVisible22: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],
@@ -886,7 +951,8 @@
 				courserecord: {
 					studentId: 0,
 					receipts: 0,
-					empId: 1
+					empId: 1,
+					addname:""
 				},
 				courserecorddetails: {
 					course: {

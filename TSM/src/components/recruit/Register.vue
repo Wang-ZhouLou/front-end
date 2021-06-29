@@ -28,7 +28,8 @@
 								<el-option v-for="items in empData" :key="items.empId" :label="items.empName"
 									:value="items"></el-option>
 							</el-select>
-							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
+							联系电话: <el-input maxlength="11" oninput="value=value.replace(/[^\d]/g,'')"
+								v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
 						<div style="margin: 16px 0 0 30px;">
 							信息渠道: <el-select v-model="form.sourceId" style="margin-right: 160px; width: 190px;">

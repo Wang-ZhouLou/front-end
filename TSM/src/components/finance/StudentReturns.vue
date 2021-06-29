@@ -25,7 +25,7 @@
 				</el-table-column>
 				<el-table-column prop="addtime" label="退费日期" width="140" align="center">
 				</el-table-column>
-				<el-table-column prop="xm" label="姓名" width="110" align="center">
+				<el-table-column prop="register.consultant" label="姓名" width="110" align="center">
 				</el-table-column>
 				<el-table-column prop="classes.classesName" label="退学班级" width="210" align="center">
 				</el-table-column>

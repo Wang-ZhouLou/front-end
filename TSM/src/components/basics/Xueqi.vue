@@ -74,7 +74,7 @@
 			this.axios.get("http://localhost:8089/tsm/selectByPrimaryKey")
 				.then(function(response) {
 					console.log(response)
-					_this.SemData = response.data
+					_this.SemData = response.data.list
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -83,7 +83,12 @@
 		methods: {
 			addsem() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/insertSelective", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertSelective", this.form,{
+					headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+				})
 					.then(function(response) {
 						console.log("111")
 						console.log(response)
