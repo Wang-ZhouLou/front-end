@@ -12,8 +12,8 @@
 			</el-select>
 			<el-input v-model="pageInfo.flag" size="mini" placeholder="请输入内容" style="width: 140px;">
 			</el-input>&nbsp;
-			<el-button style="background-color: #5FB878;color: white; width: 50px;" size="mini" @click="selall">查询
-			</el-button>
+			<!-- <el-button style="background-color: #5FB878;color: white; width: 50px;" size="mini" @click="selall">查询
+			</el-button> -->
 			<el-button style="background-color: #009688;color: white;width: 50px;" @click="adddialogForm=true"
 				type="text" size="mini">增加
 			</el-button>
@@ -27,7 +27,7 @@
 					<el-form-item>
 						<div class="custom-tree-container">
 							<div class="block">
-								<el-tree :data="muens" show-checkbox node-key="id" :default-expanded-keys="xz"
+								<el-tree :data="muens" show-checkbox node-key="id" :default-expanded-keys="xz" :check-strictly="true"
 									:default-checked-keys="xz" :props="defaultProps"  ref="tree">
 								</el-tree>
 							</div>
@@ -232,7 +232,7 @@
 						})
 						_this.dialogFormVisible = true
 						_this.$nextTick(() => {
-							_this.$refs.rightsTree.setCheckedKeys(_this.xz);
+							_this.$refs.tree.setCheckedKeys(_this.xz);
 						});
 						console.log(_this.xz)	
 

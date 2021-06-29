@@ -87,7 +87,8 @@
 		<el-form label-width="100px" class="demo-ruleForm">
 			<el-form-item label="可用教室">
 				<el-checkbox-group v-model="form.classRoom">
-					<el-checkbox v-for="item in classRoom" :label="item.classroomId" name="type" checked>
+					<el-checkbox v-for="item in classRoom" :model-value="item" :label="item.classroomId" name="type"
+						checked>
 						{{item.classroomName}}
 					</el-checkbox>
 				</el-checkbox-group>
@@ -162,7 +163,7 @@
 			handleCurrentChange(page) {
 				this.pageInfo.currentPage = page;
 				const _this = this
-				this.axios.get("http://localhost:8080/Training/selectAllBooks", {
+				this.axios.get("http://localhost:8089/tsm/selectAllBooks", {
 						params: this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
@@ -179,7 +180,7 @@
 			handleSizeChange(size) {
 				this.pageInfo.pagesize = size;
 				const _this = this
-				this.axios.get("http://localhost:8080/Training/selectAllBooks", {
+				this.axios.get("http://localhost:8080/tsm/selectAllBooks", {
 						params: this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
@@ -200,30 +201,29 @@
 				console.log(this.form);
 				var arrange = [];
 				for (var i = 0; i < this.form.classRoom.length; i++) {
-					for (var j = 0; j < this.form.classes.length; j++) {
-						for (var h = 0; h < this.form.options.length; h++) {
-							var select = {
-								classRoomId: "",
-								classesId: "",
-								date: "",
-								periodId: ""
-							};
-							select.classRoomId = this.form.classRoom[i];
-							select.classesId = this.form.classes[j];
-							select.date = this.form.options[h][0];
-							select.periodId = this.form.options[h][1];
-							arrange.push(select)
-						}
+					for (var h = 0; h < this.form.options.length; h++) {
+						var select = {
+							classRoomId: "",
+							classesId: [],
+							date: "",
+							periodId: ""
+						};
+						select.classRoomId = this.form.classRoom[i];
+						select.date = this.form.options[h][0];
+						select.classesId = this.form.classes;
+						select.periodId = this.form.options[h][1];
+						arrange.push(select)
 					}
 				}
 				console.log(arrange);
 				const _this = this
-				this.axios.post("http://localhost:8080/Training/checkedArrange", arrange,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				//console.log(arrange)
+				this.axios.post("http://localhost:8089/tsm/checkedArrange", arrange, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log("-------------")
 					}).catch(function(error) {
@@ -233,12 +233,12 @@
 			},
 			selectAllTrainingPeriodList() {
 				const _this = this
-				this.axios.get("http://localhost:8080/Training/selectAllTrainingPeriodList",{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriodList", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.thisTime = response.data
 						var arr = [];
@@ -266,29 +266,29 @@
 			},
 			selectAllClassRoomsByState() {
 				const _this = this
-				this.axios.get("http://localhost:8080/Training/selectAllClassRoomsByState",{
-					params:{
-						"state":0
-					},
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/tsm/selectAllClassRoomsByState", {
+						params: {
+							"state": 0
+						},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
-						_this.classRoom = response.data
+						_this.classRoom = response.data.data
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			selectAllClassesByState() {
 				const _this = this
-				this.axios.get("http://localhost:8080/Training/selectAllClassesByState2",{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.classes = response.data
 					}).catch(function(error) {
@@ -499,6 +499,7 @@
 	.el-table .cell {
 		padding-left: 9px;
 	}
+
 	.el-button {
 		width: min-content;
 	}

@@ -546,6 +546,7 @@
 				this.form2.registerId = row.registerId
 				this.form2.courseId = row.courseId
 				this.form2.course = row.course //新增一条报班缴费数据
+				this.form2.addname = this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2, {
 						headers: {
 							'content-type': 'application/json',
@@ -759,6 +760,7 @@
 					source: [],
 				},
 				form2: {
+					addname: '',
 					receipts: '',
 					registerId: '',
 					courseId: '',

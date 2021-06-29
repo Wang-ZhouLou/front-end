@@ -218,6 +218,7 @@
 					学号: {{form.studentId}}
 					&nbsp;
 					姓名: {{form.studentName}}
+					咨询id：{{form.registerId}}
 				</div>
 				<div class="qdwh">
 					<p style="text-align: center; font-size: 13px;">预报课程</p>
@@ -268,8 +269,6 @@
 							备注: <el-input style="width: 180px;" v-model="form2.course.remarks" size=mini>
 							</el-input>
 						</div>
-
-
 					</div>
 					<el-button size=mini @click="yubao()" style="margin-left: 584px;">添加预报</el-button>
 				</div>
@@ -287,7 +286,7 @@
 			</span>
 		</template>
 	</el-dialog>
-	
+
 	<el-dialog title="学员退学" v-model="dialogFormVisible12">
 		<el-form :model="form13">
 			<el-form-item>
@@ -315,7 +314,7 @@
 			</span>
 		</template>
 	</el-dialog>
-	
+
 	<el-dialog title="学员停课" v-model="dialogFormVisible22">
 		<el-form :model="form23">
 			<el-form-item>
@@ -330,8 +329,9 @@
 			  	报读课程编号: <el-input v-model="form13.courserecorddetailsId" style="width: 190px;margin-bottom: 10px;">
 			  	</el-input>
 			  </div> -->
-			  <div style="margin: 16px 0 0 10px;">
-					停课理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2" v-model="form23.suspendReason">
+				<div style="margin: 16px 0 0 10px;">
+					停课理由:<el-input style="margin-bottom: 10px;" type="textarea" :rows="2"
+						v-model="form23.suspendReason">
 					</el-input>
 				</div>
 			</el-form-item>
@@ -477,17 +477,17 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-			
+
 			},
 			updateLearningstate3(row) {
 				const _this = this
-			
+
 				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-			
+
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
 							headers: {
 								'content-type': 'application/json',
@@ -567,7 +567,7 @@
 			addSource() {
 				const _this = this
 				this.courserecord.studentId = this.form.studentId
-				this.courserecord.addname=this.$store.state.userInfo.userName;
+				this.courserecord.addname = this.$store.state.userInfo.userName; //获取当前登记人员名称
 				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
 						headers: {
 							'content-type': 'application/json',
@@ -578,31 +578,37 @@
 						var c = response.data.data
 						console.log(c.courserecordId)
 						_this.courserecordId = c.courserecordId
-						
-
 						_this.CourserecorddetailsData.forEach((item) => {
 							//遍历courserecordId这个字段，并累加
 							console.log(_this.courserecordId);
 							item.courserecordId = _this.courserecordId
 						})
-						
 						_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
-								.CourserecorddetailsData, {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									}
-								})
-							.then(function(response) { // eslint-disable-line no-unused-vars
-								_this.dialogFormVisible3 = false
-							}).catch(function(error) {
-								console.log(error)
+							.CourserecorddetailsData, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) { // eslint-disable-line no-unused-vars
+							_this.refund.courseId = _this.form2.course.courseId
+							console.log(_this.form2.course.courseId)
+							_this.refund.registerId = _this.form.registerId
+							console.log(_this.form.registerId)
+							_this.refund.addname = _this.$store.state.userInfo.userName;
+							_this.axios.post("http://localhost:8089/tsm/addentryfees", _this.refund, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
+							_this.dialogFormVisible3 = false
+						}).catch(function(error) {
+							console.log(error)
+						})
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-
 			delCourserecorddetails(row) {
 				this.CourserecorddetailsData.splice(this.CourserecorddetailsData.indexOf(row), 1)
 			},
@@ -613,7 +619,6 @@
 						classhours: 0,
 						courseMoney: 0,
 						courseName: "",
-
 					},
 					remarks: ""
 				};
@@ -622,7 +627,12 @@
 				courserecorddetails.course.courseName = this.form2.course.courseName
 				courserecorddetails.remarks = this.form2.course.remarks
 				courserecorddetails.courseId = this.form2.course.courseId
-				this.CourserecorddetailsData.push(courserecorddetails);
+				this.CourserecorddetailsData.push(courserecorddetails)
+
+
+				refund.courseId = this.form2.course.courseId
+				this.refunData.push(refund);
+
 			},
 			//?
 			cha2(index) {
@@ -729,6 +739,7 @@
 			},
 			//补报
 			showEdit2(row) {
+				this.form.registerId = row.register.registerId //新增报课获取咨询id
 				this.form.studentId = row.studentId
 				this.form.studentName = row.studentName
 				this.dialogFormVisible3 = true
@@ -803,7 +814,7 @@
 			},
 			add() {
 				const _this = this
-				
+
 				this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -929,7 +940,7 @@
 
 				},
 				form23: {
-				
+
 				},
 				person: "TSM",
 				dialogFormVisible: false,
@@ -946,13 +957,14 @@
 				ClassesData: [],
 				CourseRecorddetailsData: [],
 				CourserecorddetailsData: [],
+				refunData: [],
 				CourseRecorddetailsData2: [],
 				//报课总表信息
 				courserecord: {
 					studentId: 0,
 					receipts: 0,
 					empId: 1,
-					addname:""
+					addname: ""
 				},
 				courserecorddetails: {
 					course: {
@@ -963,8 +975,17 @@
 					},
 					remarks: ""
 				},
+				//报课
+				refund: {
+					registerId: '',
+					courseId: '',
+					addname: ""
+				},
 				//学生信息
 				form: {
+					register: '',
+					registerId: '',
+					courseId: '',
 					studentId: 0,
 					studentName: "",
 					studentPhone: "",
