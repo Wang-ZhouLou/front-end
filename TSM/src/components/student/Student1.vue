@@ -349,7 +349,7 @@
 					缺课节数: <el-input v-model="form33.absent" style="width: 90px;margin-bottom: 10px;">
 					</el-input>
 					<br />
-					
+
 					<!-- 请选择复课意向:<el-select  size=mini v-model="form33.intention">
 						<el-option value="0" label="跟班"></option>
 						<el-option value="1" label="转班"></option>
@@ -618,20 +618,32 @@
 				const _this = this
 				console.log("_____________________________________SSSS")
 				console.log(this.form11.classesId)
-				this.axios.put("http://localhost:8089/tsm/updateclassesId", this.form11.classesId, {
+				console.log(this.form11.courserecorddetailsId)
+				this.axios.delete("http://localhost:8089/tsm/updateclassesId",{
+						params: {
+							"courserecorddetailsId": this.form11.courserecorddetailsId,
+							"classesId": this.form11.classesId
+						},
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
 					})
 					.then(function(response) {
-						console.log(response)
-
+						_this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) {
 						_this.CourseRecorddetailsData2 = response.data
 						_this.dialogFormVisible11 = false
 					}).catch(function(error) {
 						console.log(error)
-					});
+						})
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			//新增预报
 			addSource() {
@@ -732,6 +744,8 @@
 			cha11(row) {
 				var _this = this
 				console.log(row)
+				_this.form11.classesId = row.classesId
+				_this.form11.courserecorddetailsId = row.courserecorddetailsId
 				console.log("1111111111111111111111111111111")
 				this.dialogFormVisible11 = true
 				this.axios.get("http://localhost:8089/tsm/selClasses2?courseId=" +
@@ -772,7 +786,7 @@
 			},
 			close() {
 				for (var key in this.form) {
-					delete this.form[key];                                                
+					delete this.form[key];
 				}
 				this.dialogFormVisible = false
 				this.dialogFormVisible2 = false
@@ -1007,13 +1021,13 @@
 					classesId: ""
 				},
 				form13: {
-					addname:""
+					addname: ""
 				},
 				form23: {
-					addname:""
+					addname: ""
 				},
 				form33: {
-					addname:""
+					addname: ""
 				},
 				person: "TSM",
 				dialogFormVisible: false,

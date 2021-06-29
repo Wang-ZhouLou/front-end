@@ -161,6 +161,7 @@
 			},
 			addClassromm() {
 				const _this = this
+				this.form.addname=this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addclassroom", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -200,6 +201,7 @@
 			},
 			updateclassroom() {
 				const _this = this
+				this.form.updatename=this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updclassroom", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -231,6 +233,7 @@
 			},
 			delclassroom(row) {
 				const _this = this
+				this.row.deletename=this.$store.state.userInfo.userName;
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -268,7 +271,9 @@
 					classroomId: '',
 					classroomName: '',
 					place: '',
-					Capacity: ''
+					Capacity: '',
+					addname:"",
+					updatename:""
 				},
 				pageInfo: {
 					currentPage: 1,
