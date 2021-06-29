@@ -47,7 +47,6 @@
 							size="small" style="color: green;">复职</el-button>
 
 						<el-button @click="selectEmpOpen(scope.row)" type="text" size="small">查看</el-button>
-						<el-button @click="updateAuth()" type="text" size="small">更改权限组</el-button>
 						<el-button @click="updateEmpOpen(scope.row)" type="text" size="small" style="color: gold;">编辑
 						</el-button>
 					</template>
@@ -63,8 +62,8 @@
 			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
-
-
+	
+	
 
 	<el-dialog title="添加职工信息" v-model="addEmpVisible" width="950px" top="10vh">
 		<el-form :model="empForm" :rules="rules" ref="empForm" label-width="100px" class="demo-ruleForm" size="mini"
@@ -288,6 +287,7 @@
 							<el-input v-model="empForm.address"></el-input>
 						</el-form-item>
 					</div>
+					
 					<div class="addcontent_line">
 						<el-form-item label="备注">
 							<el-input type="textarea" v-model="empForm.remarks" :rows="7"></el-input>
@@ -333,7 +333,8 @@
 				user_role: {},
 				selectEmpVisible: false,
 				updateEmpVisible: false,
-				addEmpVisible: false
+				addEmpVisible: false,
+				updateroleVisible:false
 			}
 		},
 		methods: {
@@ -356,9 +357,7 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-
-
-
+					
 					_this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
 						params: _this.pageInfo,
 						headers: {
@@ -515,6 +514,7 @@
 				this.updateEmpVisible = false
 				this.selectEmpVisible = false
 				this.addEmpVisible = false
+				this.updateroleVisible=false
 			}
 		},
 		created() {

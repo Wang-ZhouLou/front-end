@@ -165,7 +165,6 @@
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								},
-
 								params: this.pageInfo
 							})
 							.then(function(response) {

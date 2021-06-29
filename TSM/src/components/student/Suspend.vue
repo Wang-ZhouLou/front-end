@@ -123,64 +123,20 @@
 				const _this = this
 				console.log(params)
 				this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+				_this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+						params: _this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-					}).catch(function(error) {
-							console.log(error)
-						})
-					
-					_this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-							params: _this.pageInfo,
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-							
-						})
-						.then(function(response) {
-							console.log("+++++++++++++++++++++++++++++++++++")
-							console.log(response)
-							_this.suspendData = response.data.list
-							_this.pageInfo.total = response.data
-						}).catch(function(error) {
-							console.log(error)
-						})
-						
-			}
-			// selectAllDrop() {
-				
-			// }
-		},
-		data() {
-			return {
-				suspendData: [],
-
-				CourseRecorddetailData: [],
-
-
-				search: '',
-				dialogFormVisible3: false,
-				formLabelWidth: '120px',
-				pageInfo: {
-					currentPage: 1,
-					pagesize: 3,
-					total: 0
-
-				}
-
-			}
-		},
-			created() {
-				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: _this.pageInfo
 					})
 					.then(function(response) {
 						console.log("+++++++++++++++++++++++++++++++++++")
@@ -190,7 +146,45 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+
+			}
+			// selectAllDrop() {
+
+			// }
+		},
+		data() {
+			return{
+				suspendData: [],
+				CourseRecorddetailData: [],
+				search: '',
+				dialogFormVisible3: false,
+				formLabelWidth: '120px',
+				pageInfo: {
+					currentPage: 1,
+					pagesize: 3,
+					total: 0
+				}
+			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: _this.pageInfo
+				})
+				.then(function(response) {
+					console.log("+++++++++++++++++++++++++++++++++++")
+					console.log(response)
+					_this.suspendData = response.data.list
+					_this.pageInfo.total = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
+			this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -204,7 +198,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse",{
+			this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -215,10 +209,10 @@
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
-				}),
-				
+				})
+
+		}
 	}
-}
 </script>
 
 <style>

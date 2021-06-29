@@ -2,6 +2,7 @@ import {createStore} from 'vuex'
 const store = createStore({
   state: {
 	userInfo:{
+		id:0,
 		userName:sessionStorage.getItem('username'),
 		userPass:"",
 		isValidate:false,
@@ -17,6 +18,7 @@ const store = createStore({
   mutations: {
 	updateUserInfo(state,user){
 		if(user == null){
+			state.userInfo.id=null
 			state.userInfo.userName=null
 			state.userInfo.isValidate=false
 			state.userInfo.token=null
@@ -30,6 +32,7 @@ const store = createStore({
 		//state.userInfo.userPass=use.userPwd
 		state.userInfo.isValidate=true
 		state.userInfo.token=use.token
+		state.userInfo.id=use.id
 		sessionStorage.setItem('state',JSON.stringify(state))
 		sessionStorage.setItem("username",state.userInfo.userName)
 	},
