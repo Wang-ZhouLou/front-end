@@ -100,7 +100,6 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-
 					console.log(row.courserecorddetailsVo.courserecorddetailsId);
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstate6", row.courserecorddetailsVo, {
 							headers: {
@@ -125,9 +124,13 @@
 					})
 					//新增退费记录
 					this.refund.dropId = row.dropId
-					this.refund.courseId = row.courseId
-					this.refund.detailcourseId = row.detailcourseId
-					this.refund.classesId = row.classesId
+					this.refund.courseId = row.courserecorddetailsVo.courseId
+					console.log(row.courserecorddetailsVo.courseId)
+					this.refund.detailcourseId = row.courserecorddetailsVo.detailcourseId
+					console.log(row.courserecorddetailsVo.detailcourseId)
+					this.refund.classesId = row.courserecorddetailsVo.classesId
+					console.log(row.courserecorddetailsVo.classesId)
+					this.refund.addname = this.$store.state.userInfo.userName;
 					this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
 							headers: {
 								'content-type': 'application/json',
@@ -185,6 +188,7 @@
 
 				search: '',
 				refund: {
+					addname: "",
 					dropId: "",
 					courseId: "",
 					classesId: "",

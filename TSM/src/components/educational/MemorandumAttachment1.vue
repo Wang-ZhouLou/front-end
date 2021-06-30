@@ -72,31 +72,51 @@
 			upjwisexamine(row) {
 				const _this = this
 				//修改教务
-				row.jwisexamine = 1
-				this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.selall()
-					})
-				/* 传咨询登记的id去后台 */
-				this.axios.get("http://localhost:8089/tsm/selectsouid?registerId=" + row.registerId, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.registerdata = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
+				var flag = true
+				if (row.jwisexamine === 0) {
+					this.$confirm('对此学员进行审核, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						row.jwisexamine = 1
+						this.axios.put("http://localhost:8089/tsm/upjwisexamine", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.selall()
+							})
+						/* 传咨询登记的id去后台 */
+						this.axios.get("http://localhost:8089/tsm/selectsouid?registerId=" + row.registerId, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) {
+								_this.registerdata = response.data
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消审核!'
+						});
+					});
+				} else {
+					this.$message({
+						type: 'success',
+						message: '此学员已审核!'
+					});
+				}
+
 			},
-				
+
 			//模糊查询
 			selall() {
 				if (this.select == 1) { // eslint-disable-line no-unused-vars

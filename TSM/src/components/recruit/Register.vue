@@ -145,9 +145,6 @@
 								v-model="form1.consultcontent">
 							</el-input>
 						</div>
-						<!-- <div style="margin: 0 0 0 30px ;">
-							<font style="font-size: 13px;">回访次数: {{num}}</font>
-						</div> -->
 						<div>
 							<font>回访登记</font>
 							<el-button style="background-color: #FF5722;color: white; width: 50px; margin-left: 610px;"
@@ -215,8 +212,6 @@
 				</el-table-column>
 				<el-table-column prop="sourceVo.sourceName" label="生源渠道" width="90" align="center">
 				</el-table-column>
-				<el-table-column prop="total" label="回访次数" width="90" align="center">
-				</el-table-column>
 				<el-table-column prop="empVo.empName" label="接待人" width="100" align="center">
 				</el-table-column>
 				<el-table-column prop="attentstate" label="状态" width="50" align="center">
@@ -263,11 +258,6 @@
 		ElMessage
 	} from 'element-plus'
 	export default {
-		/* computed: {
-			num: function() {
-				return this.returnvisitdata.length
-			}
-		}, */
 		methods: {
 			//回访记录的删除
 			//全选复选框
@@ -523,46 +513,71 @@
 			//修改缴费状态
 			upPayState(row) {
 				const _this = this
-				row.paystate = 1
-				this.axios.put("http://localhost:8089/tsm/upPayState", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
-								params: _this.pageInfo,
+				var flag = true
+				if (row.paystate === 0) {
+					this.$confirm('是否带此学员去缴费?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						row.paystate = 1
+						this.axios.put("http://localhost:8089/tsm/upPayState", row, {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
 							})
-							.then(function(response) {
-								_this.registerData = response.data.list
-								_this.pageInfo.total = response.data.total
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.axios.get("http://localhost:8089/tsm/selectregisterAll", {
+										params: _this.pageInfo,
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
+									.then(function(response) {
+										_this.registerData = response.data.list
+										_this.pageInfo.total = response.data.total
+									}).catch(function(error) {
+										console.log(error)
+									})
+							})
+						this.form2.registerId = row.registerId
+						this.form2.courseId = row.courseId
+						this.form2.course = row.course //新增一条报班缴费数据
+						this.form2.addname = this.$store.state.userInfo.userName;
+						this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								console.log(response)
+								for (var key in _this.form2) {
+									delete _this.form2[key];
+								}
 							}).catch(function(error) {
 								console.log(error)
 							})
-					})
-				this.form2.registerId = row.registerId
-				this.form2.courseId = row.courseId
-				this.form2.course = row.course //新增一条报班缴费数据
-				this.form2.addname = this.$store.state.userInfo.userName;
-				this.axios.post("http://localhost:8089/tsm/addentryfees", this.form2, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						console.log(response)
-						for (var key in _this.form2) {
-							delete _this.form2[key];
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消缴费!'
+						});
+					});
+				} else if (row.paystate === 1) {
+					this.$message({
+						message: '此学员为待缴费状态!'
+					});
+				} else {
+					this.$message({
+						type: 'success',
+						message: '此学员已缴费!'
+					});
+				}
+
+
 			},
 			//修改咨询登记
 			updregister() {

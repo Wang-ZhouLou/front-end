@@ -72,28 +72,47 @@
 		methods: {
 			upcwApproval(row) {
 				const _this = this
-				row.cwApproval = 1
-				this.axios.put("http://localhost:8089/tsm/upcwApproval", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/seleAllRefund", {
-								params: _this.pageInfo,
+				var flag = true
+				if (row.cwApproval === 0) {
+					this.$confirm('对此学员进行审核, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						row.cwApproval = 1
+						this.axios.put("http://localhost:8089/tsm/upcwApproval", row, {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
 							})
-							.then(function(response) {
-								_this.refundData = response.data.list
-								_this.pageInfo.total = response.data.total
-							}).catch(function(error) {
-								console.log(error)
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.axios.get("http://localhost:8089/tsm/seleAllRefund", {
+										params: _this.pageInfo,
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
+									.then(function(response) {
+										_this.refundData = response.data.list
+										_this.pageInfo.total = response.data.total
+									}).catch(function(error) {
+										console.log(error)
+									})
 							})
-					})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消审核!'
+						});
+					});
+				} else {
+					this.$message({
+						type: 'success',
+						message: '此学员已审核!'
+					});
+				}
 			},
 			//退费模糊查询
 			selall() {

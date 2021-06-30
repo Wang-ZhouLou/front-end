@@ -4,16 +4,6 @@
 		<el-breadcrumb-item>学员欠费补缴</el-breadcrumb-item>
 	</el-breadcrumb><br>
 	<div>
-		<div style="margin-left: -820px;">
-			<font class="ksjs1" style="font-size: 13px;">快速检索:</font>&nbsp;
-			<el-select v-model="value" placeholder="请选择" style="width: 140px;" size="mini">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-				</el-option>
-			</el-select>&nbsp;
-			<el-input v-model="input" style="width: 140px;" size="mini"></el-input>&nbsp;
-			<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
-		</div>&nbsp;
-
 		<el-dialog title="学费补缴" v-model="dialogFormVisible">
 			<el-form :model="form" size=mini>
 				<el-form-item>
