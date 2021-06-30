@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>退学管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
@@ -34,7 +38,7 @@
 					<p v-if="scope.row.jwApproval==1">已审核</p>
 				</template>
 			</el-table-column>
-			<el-table-column fixed="right" label="操作" align="center">
+			<el-table-column fixed="right" label="操作" align="center" width="140">
 				<template #default="scope">
 					<el-button @click="updateLearningstate6(scope.row)" type="text" size="small">审核通过</el-button>
 					<el-button @click="deleteDrop(scope.row)" type="text" size="small">删除</el-button>
@@ -53,13 +57,44 @@
 </template>
 
 <script>
+	import qs from "qs"
 	export default {
 		methods: {
-			handleEdit(index, row) {
-				console.log(index, row);
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.dropData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
-			handleDelete(index, row) {
-				console.log(index, row);
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectAllDrop", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.dropData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			deleteDrop(row) {
 				const _this = this
@@ -100,6 +135,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
+
 					console.log(row.courserecorddetailsVo.courserecorddetailsId);
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstate6", row.courserecorddetailsVo, {
 							headers: {
@@ -124,12 +160,9 @@
 					})
 					//新增退费记录
 					this.refund.dropId = row.dropId
-					this.refund.courseId = row.courserecorddetailsVo.courseId
-					console.log(row.courserecorddetailsVo.courseId)
-					this.refund.detailcourseId = row.courserecorddetailsVo.detailcourseId
-					console.log(row.courserecorddetailsVo.detailcourseId)
-					this.refund.classesId = row.courserecorddetailsVo.classesId
-					console.log(row.courserecorddetailsVo.classesId)
+					this.refund.courseId = row.courseId
+					this.refund.detailcourseId = row.detailcourseId
+					this.refund.classesId = row.classesId
 					this.refund.addname = this.$store.state.userInfo.userName;
 					this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
 							headers: {
@@ -219,7 +252,7 @@
 					console.log("+++++++++++++++++++++++++++++++++++")
 					console.log(response)
 					_this.dropData = response.data.list
-					_this.pageInfo.total = response.data
+					_this.pageInfo.total = response.data.total
 				}).catch(function(error) {
 					console.log(error)
 				})

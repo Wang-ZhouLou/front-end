@@ -248,9 +248,11 @@
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
 								_this.pageInfo.total = response.data.total
+								
 							}).catch(function(error) {
 								console.log(error)
 							})
+							
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];
