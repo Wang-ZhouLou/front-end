@@ -11,7 +11,6 @@
 					v-for="item in deptData">
 				</el-option>
 			</el-select>&nbsp;
-			
 			<el-button style="background-color: #009688;color: white;margin-bottom: 10px;" size="mini">查询</el-button>
 			<el-button style="background-color: #5FB878;color: white;" @click="addEmpVisible = true" size="mini">新增
 			</el-button>
@@ -41,7 +40,7 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button v-if="scope.row.enabled==true" @click="stopEmpStateOpen(scope.row)" type="text"
+						<el-button v-if="scope.row.enabled==true" @click="goEmpStateOpen(scope.row)" type="text"
 							size="small" style="color: red;">停职</el-button>
 						<el-button v-if="scope.row.enabled==false" @click="goEmpStateOpen(scope.row)" type="text"
 							size="small" style="color: green;">复职</el-button>
@@ -264,6 +263,14 @@
 							<el-input v-model="empForm.graduate"></el-input>
 						</el-form-item>
 					</div>
+					<div class="block">
+					  <span class="demonstration">多选可搜索</span>
+					  <el-cascader
+					    placeholder="部门检索"
+					    :options="options"
+					    :props="{ multiple: true }"
+					    filterable></el-cascader>
+					</div>
 				</div>
 				<div class="addcontent2">
 					<div class="addcontent_line">
@@ -294,6 +301,7 @@
 						</el-form-item>
 					</div>
 				</div>
+				
 			</div>
 		</el-form>
 		<template #footer>
@@ -318,6 +326,9 @@
 	export default {
 		data() {
 			return {
+				props: {
+					multiple: true
+				},
 				empData: [],
 				deptData: [],
 				//初次查询
@@ -334,10 +345,42 @@
 				selectEmpVisible: false,
 				updateEmpVisible: false,
 				addEmpVisible: false,
-				updateroleVisible:false
+				updateroleVisible:false,
+				options: []
+				
 			}
 		},
 		methods: {
+			goEmpStateOpen(row){
+				
+				const _this = this
+				row.updatename=this.$store.state.userInfo.userName
+				this.axios.put("http://localhost:8089/tsm/goEmpState", row, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
+						params: _this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
+						console.log(response)
+						_this.empData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+				
+				
+			},
 			addEmp() {
 				const _this = this
 				this.axios.post("http://localhost:8089/tsm/insertEmp", this.empForm, {
@@ -389,7 +432,6 @@
 				})
 			},
 			updatemp() {
-				const _this = this
 				this.axios.put("http://localhost:8089/tsm/updateEmp", this.empForm, {
 					headers: {
 						'content-type': 'application/json',
@@ -400,6 +442,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+				
 
 				this.axios.get("http://localhost:8089/tsm/selectAllEmp", {
 					params: this.pageInfo,
@@ -416,6 +459,30 @@
 				})
 			},
 			updateEmpOpen(row) {
+				//
+				const _this = this
+				for (var j = 0; j < _this.roleData.length; j++) {
+					var arr2 = {
+						value: "",
+						label: ""
+					};
+					arr2.value = _this.roleData[j].id,
+					arr2.label = _this.roleData[j].roleName,
+					_this.options.push(arr2)
+				}
+				this.axios.get("http://localhost:8089/tsm/selrolebyempid", {
+					params: {empid:row.empId},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log("juse----------")
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+				
 				this.empForm.jobnumber = row.jobnumber
 				this.empForm.empId = row.empId
 				this.empForm.empName = row.empName
@@ -526,7 +593,7 @@
 					'jwtAuth': _this.$store.getters.token
 				}
 			}).then(function(response) {
-				console.log(response)
+				//console.log(response)
 				_this.empData = response.data.list
 				_this.pageInfo.total = response.data.total
 			}).catch(function(error) {
@@ -541,7 +608,7 @@
 					}
 				})
 				.then(function(response) {
-					console.log(response)
+					//console.log(response)
 					_this.deptData = response.data
 				}).catch(function(error) {
 					console.log(error)
@@ -554,7 +621,7 @@
 					}
 				})
 				.then(function(response) {
-					console.log(response)
+					//console.log(response)
 					_this.roleData = response.data
 				}).catch(function(error) {
 					console.log(error)
