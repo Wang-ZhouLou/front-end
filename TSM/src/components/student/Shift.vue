@@ -1,58 +1,40 @@
 <template>
 	<el-breadcrumb separator-class="el-icon-arrow-right">
 		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-		<el-breadcrumb-item>复课管理</el-breadcrumb-item>
+		<el-breadcrumb-item>转班管理</el-breadcrumb-item>
 	</el-breadcrumb><br>
 	<div>
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
 	</div>&nbsp;
 	<div>
-		<el-dialog title="编辑停课信息" v-model="dialogFormVisible2">
-			<el-form :model="form">
-				<el-form-item label="停课理由" :label-width="formLabelWidth">
-					<el-input v-model="form.backReason" autocomplete="off"></el-input>
-				</el-form-item>
-			</el-form>
-			<template #footer>
-				<span class="dialog-footer">
-					<el-button @click="dialogFormVisible2 = false">取 消</el-button>
-					<el-button type="primary" @click="updateBack()">确 定</el-button>
-				</span>
-			</template>
-		</el-dialog>
-		<el-table :data="backData" border style="width: 100%">
+		<el-table :data="shiftData" border style="width: 100%">
 			<el-table-column type="selection" width="55" align="center">
 			</el-table-column>
-			<el-table-column label="复课编号" prop="backId" width="80" align="center">
+			<el-table-column label="复课编号" prop="shiftId" width="80" align="center">
 			</el-table-column>
 			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			<el-table-column label="原班级" prop="oldclass" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			<el-table-column label="意向班级" prop="newclass" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="复课时间" prop="backTime" width="150" align="center">
+			<el-table-column label="复课时间" prop="shiftTime" width="150" align="center">
 			</el-table-column>
-			<el-table-column label="复课意向" prop="intention" width="140" align="center">
+			<el-table-column label="复课理由" prop="shiftReason" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="复课办理人" prop="shiftHandler" width="140" align="center">
+			</el-table-column>
+			<el-table-column label="审核状态" prop="shiftApproval" width="140" align="center">
 				<template v-slot="scope">
-					<p v-if="scope.row.intention==0">跟班</p>
-					<p v-if="scope.row.intention==1">转班</p>
+					<p v-if="scope.row.shiftApproval==0">未审核</p>
+					<p v-if="scope.row.shiftApproval==1">已审核</p>
 				</template>
 			</el-table-column>
-			<el-table-column label="停课办理人" prop="backHandler" width="140" align="center">
-			</el-table-column>
-			<el-table-column label="审核状态" prop="backApproval" width="140" align="center">
-				<template v-slot="scope">
-					<p v-if="scope.row.backApproval==0">未审核</p>
-					<p v-if="scope.row.backApproval==1">已审核</p>
-				</template>
-			</el-table-column>
-			<el-table-column fixed="right" label="操作" align="center" width="200">
+			<el-table-column fixed="right" label="操作" align="center">
 				<template #default="scope">
-					<el-button @click="updateLearningstate2(scope.row)" type="text" size="small">审核通过</el-button>
-					<!-- <el-button @click="showEdit(scope.row)" type="text" size="small">修改</el-button> -->
-					<el-button @click="deleteSuspend(scope.row)" type="text" size="small">删除</el-button>
+					<el-button @click="updateLearningstate2(scope.row)" type="info" size="small">审核通过</el-button>
+					<el-button @click="deleteShift(scope.row)" type="info" size="small">删除</el-button>
 				</template>
 			</el-table-column>
 
@@ -70,78 +52,8 @@
 <script>
 	export default {
 		methods: {
-			handleSizeChange(pagesize) {
-				var _this = this
-				this.pageInfo.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo)
-				console.log(ps)
-				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.backData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleCurrentChange(currentPage) {
-				var _this = this
-				this.pageInfo.currentPage = currentPage
-				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.backData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			showEdit(row) {
-				this.form.backReason = row.backReason
-				this.dialogFormVisible2 = true
-			},
-			updateBack() { // eslint-disable-line no-unused-vars
-				const _this = this
-				this.form.updatename=this.$store.state.userInfo.userName;
-				this.axios.put("http://localhost:8089/tsm/updateBack", this.form, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selectAllBack", {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								},
 			
-								params: this.pageInfo
-							})
-							.then(function(response) {
-								_this.backData = response.data.list
-								_this.pageInfo.total = response.data.total
-								//console.log(_this.EnterpriseData[0])
-								_this.dialogFormVisible2 = false
-							}).catch(function(error) {
-								console.log(error)
-							})
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			
-			deleteBack(row) {
+			deleteShift(row) {
 				const _this = this
 				this.row.deletename=this.$store.state.userInfo.userName;
 				var flag = true // eslint-disable-line no-unused-vars
@@ -151,7 +63,7 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteBack", row, {
+					_this.axios.put("http://localhost:8089/tsm/deleteShift", row, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -159,9 +71,9 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							var rows = _this.backData
-								.filter(b => b.backId != row.backId)
-							_this.backData = rows
+							var rows = _this.shiftData
+								.filter(s => s.shiftId != row.shiftId)
+							_this.shiftData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
 							console.log(error)
@@ -170,8 +82,8 @@
 					this.$message({
 						type: 'error',
 						message: '取消删除!'
-					});
-				});
+					})
+				})
 			},
 			updateLearningstate2(row) {
 				const _this = this
@@ -198,7 +110,7 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
-						this.axios.put("http://localhost:8089/tsm/updateBack_Approval", row, {
+						this.axios.put("http://localhost:8089/tsm/appShift_Approval1", row, {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
@@ -206,9 +118,30 @@
 							}).then(function(response) {
 							console.log(response)
 							
-						}).catch(function(error) {
-									console.log(error)
-								})
+						})
+						// .catch(function(error) {
+						// 			console.log(error)
+						// 		})
+						// 		this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+						// 			headers: {
+						// 				'content-type': 'application/json',
+						// 				'jwtAuth': _this.$store.getters.token
+						// 			},
+						// 				params: _this.pageInfo
+										
+										
+						// 			})
+						// 			.then(function(response) {
+						// 				console.log("+++++++++++++++++++++++++++++++++++")
+						// 				console.log(response)
+						// 				_this.suspendData = response.data.list
+						// 				_this.pageInfo.total = response.data
+						//			})
+									.catch(function(error) {
+										console.log(error)
+									})
+								
+								
 					// this.updateSuspend_Approval1(row);
 
 				}).catch(() => {
@@ -218,27 +151,54 @@
 					// });
 				});
 			},
+			// updateSuspend_Approval1(row) {
+			// 	const _this = this
+			// 	console.log(params)
+			// 	this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
+			// 			headers: {
+			// 				'content-type': 'application/json',
+			// 				'jwtAuth': _this.$store.getters.token
+			// 			}
+			// 		}).catch(function(error) {
+			// 				console.log(error)
+			// 			})
+					
+					// _this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+					// 	headers: {
+					// 		'content-type': 'application/json',
+					// 		'jwtAuth': _this.$store.getters.token
+					// 	},
+					// 		params: _this.pageInfo
+							
+							
+					// 	})
+					// 	.then(function(response) {
+					// 		console.log("+++++++++++++++++++++++++++++++++++")
+					// 		console.log(response)
+					// 		_this.suspendData = response.data.list
+					// 		_this.pageInfo.total = response.data
+					// 	}).catch(function(error) {
+					// 		console.log(error)
+					// 	})
+						
+			// }
 			
 		},
 		data() {
 			return {
-				backData: [],
+				shiftData: [],
 
 				CourseRecorddetailData: [],
 
 				courseData:[],
 				ClassesData:[],
-				form:{
-					updatename:"",
-					backReason:""
-				},
+
 				search: '',
 				dialogFormVisible3: false,
-				dialogFormVisible2: false,
 				formLabelWidth: '120px',
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 8,
+					pagesize: 10,
 					total: 0
 
 				}
@@ -246,8 +206,9 @@
 			}
 		},
 			created() {
+				
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
+				this.axios.get("http://localhost:8089/tsm/selectAllShifts", {
 
 						headers: {
 							'content-type': 'application/json',
@@ -258,8 +219,8 @@
 					.then(function(response) {
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
-						_this.backData = response.data.list
-						_this.pageInfo.total = response.data.total
+						_this.shiftData = response.data.list
+						_this.pageInfo.total = response.data
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -274,6 +235,13 @@
 					console.log(response)
 
 					_this.CourseRecorddetailData = response.data
+					// for(c c:as){
+						
+						
+					// 	c.
+					// }
+					// for
+					
 				}).catch(function(error) {
 					console.log(error)
 				})

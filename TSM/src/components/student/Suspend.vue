@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>停课管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
@@ -46,9 +50,45 @@
 </template>
 
 <script>
+	import qs from "qs"
 	export default {
 		methods: {
-			
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.suspendData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.suspendData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			deleteSuspend(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
@@ -195,7 +235,7 @@
 				formLabelWidth: '120px',
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 10,
+					pagesize: 8,
 					total: 0
 
 				}
@@ -211,13 +251,13 @@
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						},
-						params: _this.pageInfo
+						params: this.pageInfo
 					})
 					.then(function(response) {
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
 						_this.suspendData = response.data.list
-						_this.pageInfo.total = response.data
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})

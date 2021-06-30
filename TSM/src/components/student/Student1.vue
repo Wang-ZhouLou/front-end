@@ -3,10 +3,10 @@
 		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
 		<el-breadcrumb-item>学员档案</el-breadcrumb-item>
 	</el-breadcrumb><br>
-	<div>
+	<!-- <div>
 		<el-button size="mini" @click="dialogFormVisible = true">新增</el-button>
 		<el-button size="mini">审批通过</el-button>
-	</div>
+	</div> -->
 
 	<el-dialog title="新增学员" v-model="dialogFormVisible">
 		<el-form :model="form">
@@ -353,12 +353,32 @@
 		</el-form>
 		<template #footer>
 			<span class="dialog-footer">
-				<el-button @click="dialogFormVisible32=false">关闭</el-button>
+				<el-button @click="dialogFormVisible42=false">关闭</el-button>
+				<el-button type="primary" @click="addShift()(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
+	
+	<el-dialog title="学员转班" v-model="dialogFormVisible42">
+		<el-form :model="form43">
+			<el-form-item>
+				<div style="margin: 16px 0 0 35px;">
+					原班级: <el-input v-model="form43.oldclasses" style="width: 190px;margin-bottom: 10px;">
+					</el-input>
+					意向班级:<el-select v-model="form2.course.courseId" :index='index' size=mini style="width: 90px;">
+						<el-option v-for="(items,index) in CourseData"
+							:key="items.courseId" :label="items.courseName" :value="items.courseId"></el-option>
+					</el-select>
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible42=false">关闭</el-button>
 				<el-button type="primary" @click="addBack(row)">保 存</el-button>
 			</span>
 		</template>
 	</el-dialog>
-
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -395,15 +415,62 @@
 	<!-- 分页 -->
 	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
-			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+			:current-page="pageInfo1.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo1.pagesize"
+			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo1.total">
 		</el-pagination>
 	</div>
 </template>
 
 <script>
+	import qs from "qs"
 	export default {
 		methods: {
+			addShift(row) {
+				const _this = this
+				this.form43.addname = this.$store.state.userInfo.userName;
+				console.log("_____________++++++++++++")
+				console.log(_this.form43)
+				this.axios.post("http://localhost:8089/tsm/addShift", this.form43, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible42 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+			
+			},
+			updateLearningstate8(row) {
+				const _this = this
+			
+				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+			
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate8", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form43 = row
+							_this.dialogFormVisible42 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					})
+				})
+			},
 			addBack(row) {
 				const _this = this
 				this.form33.addname = this.$store.state.userInfo.userName;
@@ -576,7 +643,7 @@
 				this.pageInfo1.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo1)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+				this.axios.get("http://localhost:8089/tsm/selectAllpage", {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -594,7 +661,7 @@
 				var _this = this
 				this.pageInfo1.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo1) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+				this.axios.get("http://localhost:8089/tsm/selectAllpage", {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -958,12 +1025,12 @@
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					},
-					params: this.pageInfo,
+					params: this.pageInfo1
 
 				})
 				.then(function(response) {
 					_this.StudentData = response.data.list
-					_this.pageInfo.total = response.data.total
+					_this.pageInfo1.total = response.data.total
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -1023,6 +1090,9 @@
 				form33: {
 					addname: ""
 				},
+				form43: {
+					addname: ""
+				},
 				person: "TSM",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -1032,6 +1102,7 @@
 				dialogFormVisible12: false,
 				dialogFormVisible22: false,
 				dialogFormVisible32: false,
+				dialogFormVisible42: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],
@@ -1079,7 +1150,7 @@
 					source: {}
 				},
 				formLabelWidth: '120px',
-				pageInfo: {
+				pageInfo1: {
 					currentPage: 1,
 					pagesize: 10,
 					total: 0,

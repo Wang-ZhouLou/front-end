@@ -127,23 +127,62 @@
 					</template>
 				</el-table-column>
 			</el-table>
+			<!-- 分页 -->
+			<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+					:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
+					layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+				</el-pagination>
+			</div>
 		</div>
 	</div>
-	<!-- 分页 -->
-	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
-			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
-		</el-pagination>
-	</div>
+	
 </template>
 
 <script>
+	
 	import {
 		ref
 	} from 'vue'
+	import qs from "qs";
 	export default {
 		methods: {
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/selectClassesAll", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.classesData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectClassesAll", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.classesData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			updateClassesOpen(row) {
 				const _this = this
 				if (this.classesOpen == "0") {
@@ -348,13 +387,11 @@
 					emp:{},
 					emp2:{},
 					course:{}
-					
 				},
 				pageInfo: {
 					currentPage: 1, //当前页数，由用户指定
-					pagesize: 10, //每页显示的条数
+					pagesize: 2, //每页显示的条数
 					total: 0, //总记录条数，数据库查出来的
-					flag: ""
 				},
 				input: ref(''),
 				value: '',
@@ -381,7 +418,8 @@
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
-				}),
+				})
+
 				this.axios.get("http://localhost:8089/tsm/WJselAllcourse",{
 					headers: {
 						'content-type': 'application/json',
@@ -393,7 +431,8 @@
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
-				}),
+				}) 
+				
 				this.axios.get("http://localhost:8089/tsm/wjselectAllEmp",{
 					headers: {
 						'content-type': 'application/json',
