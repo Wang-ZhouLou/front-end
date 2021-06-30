@@ -194,7 +194,7 @@
 							<el-button v-if="scope.row.learningstate== 0" size="mini" type="info"
 								@click="cha11(scope.row)">分班</el-button>
 							<el-button size="mini" type="info" @click="updateLearningstate3(scope.row)">停课</el-button>
-							<el-button type="info" size="mini">复课</el-button>
+							<el-button type="info" size="mini" @click="updateLearningstate7(scope.row)">复课</el-button>
 							<el-button size="mini" type="info">转班</el-button>
 							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
 						</div>
@@ -336,6 +336,29 @@
 			</span>
 		</template>
 	</el-dialog>
+	<el-dialog title="学员复课" v-model="dialogFormVisible32">
+		<el-form :model="form33">
+			<el-form-item>
+				<div style="margin: 16px 0 0 35px;">
+					缺课节数: <el-input v-model="form33.absent" style="width: 90px;margin-bottom: 10px;">
+					</el-input>
+					<br />
+
+					<!-- 请选择复课意向:<el-select  size=mini v-model="form33.intention">
+						<el-option value="0" label="跟班"></option>
+						<el-option value="1" label="转班"></option>
+					</el-select> -->
+				</div>
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<span class="dialog-footer">
+				<el-button @click="dialogFormVisible32=false">关闭</el-button>
+				<el-button type="primary" @click="addBack(row)">保 存</el-button>
+			</span>
+		</template>
+	</el-dialog>
+
 
 
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
@@ -381,10 +404,58 @@
 <script>
 	export default {
 		methods: {
+			addBack(row) {
+				const _this = this
+				this.form33.addname = this.$store.state.userInfo.userName;
+				console.log("_____________++++++++++++")
+				console.log(_this.form33)
+				this.axios.post("http://localhost:8089/tsm/addBack", this.form33, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}).then(function(response) {
+					console.log(response)
+					_this.dialogFormVisible32 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			},
+			updateLearningstate7(row) {
+				const _this = this
+
+				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate7", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form33 = row
+							_this.dialogFormVisible32 = true
+						})
+						.catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消操作!'
+					});
+				});
+			},
+
 			addDrop(row) {
 				const _this = this
 				console.log("_____________++++++++++++")
 				console.log(_this.form13)
+				this.form13.addname = this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addDrop", this.form13, {
 					headers: {
 						'content-type': 'application/json',
@@ -541,20 +612,32 @@
 				const _this = this
 				console.log("_____________________________________SSSS")
 				console.log(this.form11.classesId)
-				this.axios.put("http://localhost:8089/tsm/updateclassesId", this.form11.classesId, {
+				console.log(this.form11.courserecorddetailsId)
+				this.axios.delete("http://localhost:8089/tsm/updateclassesId",{
+						params: {
+							"courserecorddetailsId": this.form11.courserecorddetailsId,
+							"classesId": this.form11.classesId
+						},
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
 					})
 					.then(function(response) {
-						console.log(response)
-
+						_this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) {
 						_this.CourseRecorddetailsData2 = response.data
 						_this.dialogFormVisible11 = false
 					}).catch(function(error) {
 						console.log(error)
-					});
+						})
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			//新增预报
 			addSource() {
@@ -655,6 +738,8 @@
 			cha11(row) {
 				var _this = this
 				console.log(row)
+				_this.form11.classesId = row.classesId
+				_this.form11.courserecorddetailsId = row.courserecorddetailsId
 				console.log("1111111111111111111111111111111")
 				this.dialogFormVisible11 = true
 				this.axios.get("http://localhost:8089/tsm/selClasses2?courseId=" +
@@ -930,10 +1015,13 @@
 					classesId: ""
 				},
 				form13: {
-
+					addname: ""
 				},
 				form23: {
-
+					addname: ""
+				},
+				form33: {
+					addname: ""
 				},
 				person: "TSM",
 				dialogFormVisible: false,
@@ -943,6 +1031,7 @@
 				dialogFormVisible11: false,
 				dialogFormVisible12: false,
 				dialogFormVisible22: false,
+				dialogFormVisible32: false,
 				StudentData: [],
 				SourceData: [],
 				CourseData: [],

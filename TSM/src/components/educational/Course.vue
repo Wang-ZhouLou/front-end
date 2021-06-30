@@ -123,7 +123,9 @@
 					courseName: "",
 					classhours: "",
 					courseMoney: "",
-					classtype: {}
+					classtype: {},
+					addname:"",
+					updatename:"",
 				},
 				pageInfo: {
 					currentPage: 1,
@@ -196,6 +198,7 @@
 			},
 			updatecourse() { // eslint-disable-line no-unused-vars
 				const _this = this
+				this.form.updatename=this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updatecourse", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -225,6 +228,7 @@
 			},
 			addcourse() {
 				const _this = this
+				this.form.addname=this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addcourse", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -321,6 +325,7 @@
 			delete1(row) {
 				this.showEdit2(row)
 				const _this = this
+				this.row.deletename=this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/delcourse", this.form, {
 						headers: {
 							'content-type': 'application/json',
