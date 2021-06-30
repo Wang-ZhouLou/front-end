@@ -77,8 +77,10 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button @click="showEdit(scope.row)" type="text" size="small">收钱
-						</el-button>
+						<p v-if="scope.row.feesType==null">
+							<el-button @click="showEdit(scope.row)" type="text" size="small">收钱
+							</el-button>
+						</p>
 						<el-button type="text" size="small" @click="upPayState(scope.row)">审核通过</el-button>
 					</template>
 				</el-table-column>
@@ -108,78 +110,97 @@
 			//修改缴费方式修改咨询登记中的缴费状态（已）
 			upPayState(row) {
 				const _this = this
-				row.paystate = 2
-				this.axios.put("http://localhost:8089/tsm/upPayState", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
+				var flag = true
+				if (row.feesState === 0) {
+					this.$confirm('对此学员进行审核, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						row.paystate = 2
+						this.axios.put("http://localhost:8089/tsm/upPayState", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
+									.then(function(response) {
+										_this.registerData = response.data
+									}).catch(function(error) {
+										console.log(error)
+									})
+							})
+						//报班点击审核通过修改缴费状态
+						this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
 							})
 							.then(function(response) {
+								console.log(response.data)
 								_this.registerData = response.data
+								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
 							})
-					})
-				//报班点击审核通过修改缴费状态
-				this.axios.get("http://localhost:8089/tsm/WjselectregisterAll", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.registerData = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-				row.feesState = 1
-				this.axios.put("http://localhost:8089/tsm/upfeesState", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
-								params: _this.pageInfo,
+						row.feesState = 1
+						this.axios.put("http://localhost:8089/tsm/upfeesState", row, {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
 							})
-							.then(function(response) {
-								_this.entryfeesData = response.data.list
-								_this.pageInfo.total = response.data.total
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.axios.get("http://localhost:8089/tsm/selectAllentryfees", {
+										params: _this.pageInfo,
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
+									.then(function(response) {
+										_this.entryfeesData = response.data.list
+										_this.pageInfo.total = response.data.total
+									}).catch(function(error) {
+										console.log(error)
+									})
+							})
+						//新增学员交接记录表信息
+						this.form2.registerId = row.registerId
+						this.axios.post("http://localhost:8089/tsm/addmemorandumatt", this.form2, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								console.log(response)
+								for (var key in _this.form2) {
+									delete _this.form2[key];
+								}
 							}).catch(function(error) {
 								console.log(error)
 							})
-					})
-				//新增学员交接记录表信息
-				this.form2.registerId = row.registerId
-				this.axios.post("http://localhost:8089/tsm/addmemorandumatt", this.form2, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						console.log(response)
-						for (var key in _this.form2) {
-							delete _this.form2[key];
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消审核!'
+						});
+					});
+				} else {
+					this.$message({
+						type: 'success',
+						message: '此学员已审核!'
+					});
+				}
 			},
 			//全选复选框
 			SAll() {
@@ -227,9 +248,11 @@
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
 								_this.pageInfo.total = response.data.total
+								
 							}).catch(function(error) {
 								console.log(error)
 							})
+							
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];

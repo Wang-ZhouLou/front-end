@@ -163,6 +163,7 @@
 					this.refund.courseId = row.courseId
 					this.refund.detailcourseId = row.detailcourseId
 					this.refund.classesId = row.classesId
+					this.refund.addname = this.$store.state.userInfo.userName;
 					this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
 							headers: {
 								'content-type': 'application/json',
@@ -220,6 +221,7 @@
 
 				search: '',
 				refund: {
+					addname: "",
 					dropId: "",
 					courseId: "",
 					classesId: "",

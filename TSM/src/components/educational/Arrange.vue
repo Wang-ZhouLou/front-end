@@ -31,6 +31,7 @@
 				</div> -->
 				<div class="el-select-table-two-s">
 					<el-button style="left: 100px;" @click="addClick()">设置排课信息</el-button>
+					<el-button style="left: 100px;" @click="appClick()">审核排课信息</el-button>
 				</div>
 			</div>
 
@@ -38,47 +39,19 @@
 				<div>
 					<el-table :data="tableData" @selection-change="handleSelectionChange()" class="el-table-one-s"
 						stripe :header-cell-style="{background:'#f8f8f9',color:'#606266'}">
-						<el-table-column type="selection" min-width="50">
-						</el-table-column>
 						<el-table-column type="index" :index="indexMethod" label="编号">
 						</el-table-column>
-						<el-table-column prop="bookname" label="教材名称" align="center">
+						<el-table-column prop="classesVo.classesName" label="班级名称" align="center">
 						</el-table-column>
-						<el-table-column prop="courseVo.courseName" label="课程名称" align="center">
+						<el-table-column prop="classRoomVo.classroomName" label="教室名称" align="center">
 						</el-table-column>
-						<el-table-column prop="deliverycount" label="库存" align="center">
+						<el-table-column prop="empVo.empName" label="教师名称" align="center">
 						</el-table-column>
-						<el-table-column prop="booksprice" label="教材售价" align="center">
+						<el-table-column prop="arrangeDate" label="授课日期" align="center">
 						</el-table-column>
-						<el-table-column prop="bookjprice" label="教材进价" align="center">
-						</el-table-column>
-						<el-table-column prop="press" label="出版社" align="center">
-						</el-table-column>
-						<el-table-column prop="safestock" label="安全库存" align="center">
-						</el-table-column>
-						<el-table-column prop="storage" label="总入库量" align="center">
-						</el-table-column>
-						<el-table-column prop="outbound" label="总出库量" align="center">
-						</el-table-column>
-						<el-table-column prop="damage" label="总破损量" align="center">
-						</el-table-column>
-						<el-table-column label="操作" align="center" min-width="150">
-							<template #default="scope">
-								<el-button @click="updateClick(scope.row)" type="text" size="small">编辑</el-button>
-								<el-button @click="deleteClick(scope.row)" type="text" size="small">删除</el-button>
-								<el-button @click="superadditionClick(scope.row)" type="text" size="small">追加库存
-								</el-button>
-							</template>
+						<el-table-column prop="trainingPeriodVo.period" label="授课时间" align="center">
 						</el-table-column>
 					</el-table>
-					<div class="block">
-						<!-- 分页 -->
-						<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-							:current-page="pageInfo.currentPage" :page-sizes="[5, 10, 15, 20]"
-							:page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper"
-							:total="pageInfo.total">
-						</el-pagination>
-					</div>
 				</div>
 			</div>
 		</el-col>
@@ -87,8 +60,7 @@
 		<el-form label-width="100px" class="demo-ruleForm">
 			<el-form-item label="可用教室">
 				<el-checkbox-group v-model="form.classRoom">
-					<el-checkbox v-for="item in classRoom" :model-value="item" :label="item.classroomId" name="type"
-						checked>
+					<el-checkbox v-for="item in classRoom" :label="item.classroomId" name="type" checked>
 						{{item.classroomName}}
 					</el-checkbox>
 				</el-checkbox-group>
@@ -115,18 +87,14 @@
 	import {
 		ElMessage
 	} from 'element-plus'
+
+	import qs from 'qs'
+
 	export default {
 		data() {
 			return {
 				props: {
 					multiple: true
-				},
-				pageInfo: {
-					currentPage: 1,
-					pagesize: 5,
-					total: 0,
-					value: '',
-					courseId: ''
 				},
 				classRoom: [],
 				tableData: [],
@@ -150,6 +118,61 @@
 				this.getTime(7);
 				this.selectAllClassesByState();
 			},
+			appClick() {
+				if (this.tableData.length == 0) {
+					ElMessage.warning({
+						message: '无审核数据',
+						type: 'warning'
+					});
+					return false;
+				} else {
+					this.$confirm('此操作将审核排课信息, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						const _this = this
+						var arrange = [];
+						for (var i = 0; i < this.tableData.length; i++) {
+							var select = {
+								classroomId: "",
+								classesId: [],
+								arrangeDate: "",
+								periodId: "",
+								addname: "",
+								empId: ""
+							};
+							select.classroomId = this.tableData[i].classroomId;
+							select.classesId = this.tableData[i].classesId;
+							select.arrangeDate = this.tableData[i].arrangeDate;
+							select.periodId = this.tableData[i].periodId;
+							select.addname = this.tableData[i].addname;
+							select.empId = this.tableData[i].empId;
+							arrange.push(select)
+						}
+						this.axios.put("http://localhost:8089/tsm/appArrange", arrange, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) {
+								_this.selectAllAdvancearrange();
+								_this.$message({
+									type: 'success',
+									message: '审核成功!'
+								});
+							}).catch(function(error) {
+								console.log(error)
+							})
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消审核'
+						});
+					});
+				}
+			},
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
 			},
@@ -160,64 +183,46 @@
 					})
 					.catch(_ => {});
 			},
-			handleCurrentChange(page) {
-				this.pageInfo.currentPage = page;
-				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllBooks", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.tableData = response.data.list
-						_this.pageInfo.total = response.data.total
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleSizeChange(size) {
-				this.pageInfo.pagesize = size;
-				const _this = this
-				this.axios.get("http://localhost:8080/tsm/selectAllBooks", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.tableData = response.data.list
-						_this.pageInfo.total = response.data.total
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
 			indexMethod(index) {
-				return index + 1 + (this.pageInfo.currentPage - 1) * this.pageInfo.pagesize;
+				return index + 1;
+			},
+			selectAllAdvancearrange() {
+				const _this = this
+				this.axios.get("http://localhost:8089/tsm/selectAllAdvancearrange", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			onSubmit() {
 				console.log(this.form);
 				var arrange = [];
+
 				for (var i = 0; i < this.form.classRoom.length; i++) {
 					for (var h = 0; h < this.form.options.length; h++) {
 						var select = {
 							classRoomId: "",
 							classesId: [],
 							date: "",
-							periodId: ""
+							periodId: "",
+							addname: ""
 						};
 						select.classRoomId = this.form.classRoom[i];
 						select.date = this.form.options[h][0];
 						select.classesId = this.form.classes;
 						select.periodId = this.form.options[h][1];
+						select.addname = this.$store.state.userInfo.userName;
 						arrange.push(select)
 					}
 				}
-				console.log(arrange);
 				const _this = this
-				//console.log(arrange)
+				console.log("---------------------------------------------")
 				this.axios.post("http://localhost:8089/tsm/checkedArrange", arrange, {
 						headers: {
 							'content-type': 'application/json',
@@ -225,11 +230,15 @@
 						}
 					})
 					.then(function(response) {
-						console.log("-------------")
+						_this.selectAllAdvancearrange();
+						_this.$message({
+							type: 'success',
+							message: '设置成功!'
+						});
+						_this.dialogVisible = false;
 					}).catch(function(error) {
 						console.log(error)
 					})
-
 			},
 			selectAllTrainingPeriodList() {
 				const _this = this
@@ -338,6 +347,21 @@
 				this.thisWeek = setDate(addDate(currentFirstDate, time));
 
 			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllAdvancearrange", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.tableData = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
 		}
 	}
 </script>

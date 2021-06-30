@@ -63,16 +63,35 @@
 			//修改招生审核
 			upzsisexamine(row) {
 				const _this = this
-				row.zsisexamine = 1
-				this.axios.put("http://localhost:8089/tsm/upzsisexamine", row, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.selall()
-					})
+				var flag = true
+				if (row.zsisexamine === 0) {
+					this.$confirm('审核此学员, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						row.zsisexamine = 1
+						this.axios.put("http://localhost:8089/tsm/upzsisexamine", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) { // eslint-disable-line no-unused-vars
+								_this.selall()
+							})
+					}).catch(() => {
+						this.$message({
+							type: 'error',
+							message: '取消审核!'
+						});
+					});
+				} else {
+					this.$message({
+						type: 'success',
+						message: '此学员已审核!'
+					});
+				}
 			},
 			//模糊查询
 			selall() {

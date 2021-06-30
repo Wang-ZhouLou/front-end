@@ -119,8 +119,31 @@
 						'jwtAuth': _this.$store.getters.token
 					}
 				}).then(function(response) {
-					console.log(response.data)
-					console.log(_this.$store.getters.token)
+					console.log(response)
+					
+					if(response.data.code==200){
+						ElMessage.success({
+							message: response.data.data,
+							type: 'success'
+						});
+					}else if(response.data.code==600){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+						
+						_this.$router.push({path: '/login'})
+					}else if(response.data.code=='601'){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}else {
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -218,8 +241,8 @@
 					})
 					.then(function(response) {
 						_this.rolemuens = response.data.data
-						console.log("----------")
-						console.log(_this.rolemuens)
+						//console.log("----------")
+						//console.log(_this.rolemuens)
 						// _this.rolemuens.forEach((item) => {
 						// 	item.asideChildren.forEach((item) => {
 						// 		item.asideChildren.forEach((item) => {
@@ -234,7 +257,7 @@
 						_this.$nextTick(() => {
 							_this.$refs.tree.setCheckedKeys(_this.xz);
 						});
-						console.log(_this.xz)	
+						//console.log(_this.xz)	
 
 					}).catch(function(error) {
 						console.log(error)

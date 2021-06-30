@@ -23,9 +23,6 @@
 				<el-form :model="form">
 					<el-form-item>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
-						<br>
-						<!-- 已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
-						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -43,9 +40,6 @@
 							style="width: 650px;margin-bottom: 10px;">
 						</el-input><br>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
-						<br>
-						<!-- 已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
-						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -99,11 +93,7 @@
 				</el-table-column>
 				<el-table-column prop="sourceId" label="编号" width="50" align="center">
 				</el-table-column>
-				<el-table-column prop="sourceName" label="生源渠道" width="400" align="center">
-				</el-table-column>
-				<el-table-column prop="already" label="已有生源(人)" width="290" align="center">
-				</el-table-column>
-				<el-table-column prop="potential" label="潜在生源(人)" width="290" align="center">
+				<el-table-column prop="sourceName" label="生源渠道" width="800" align="center">
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
