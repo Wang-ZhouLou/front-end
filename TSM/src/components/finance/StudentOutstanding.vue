@@ -110,6 +110,7 @@
 			//新增学费补缴表信息
 			addStudentoutstanding() {
 				const _this = this
+				this.form.addname = this.$store.state.userInfo.userName;
 				this.form.accumulateds = this.form.accumulated - this.form.alongmoney //累计欠费=剩余待缴金额-补缴金额
 				this.axios.post("http://localhost:8089/tsm/addStudentoutstanding", this.form, {
 						headers: {
@@ -229,7 +230,8 @@
 				form: {
 					feesId: '',
 					accumulateds: '',
-					accumulated: ''
+					accumulated: '',
+					addname: ''
 				},
 				dialogFormVisible: false,
 				options: [],

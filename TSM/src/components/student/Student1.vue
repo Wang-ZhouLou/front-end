@@ -243,31 +243,25 @@
 
 				<p style="text-align: center; font-size: 13px;">预报信息</p>
 				<div>
-					<div style="margin: 0 0 0 8px;">
+					<div style="margin: 0 0 0 30px;">
 						课时数: <el-input v-model="form2.course.classhours" disabled size=mini
-							style="width: 180px;margin-right: 200px;">
+							style="width: 180px;margin-right: 170px;">
 						</el-input>
-
 						课类选择: <el-select id="aa" v-model="form2.classtype.classtypeId" size=mini style="width: 90px;">
 							<el-option v-for="item in ClasstypesData" :key="item.classtypeId" v-on:click.enter="cha1()"
 								:label="item.classtypeName" :value="item.classtypeId"></el-option>
 						</el-select>
-
 						&nbsp;
 						<el-select v-model="form2.course.courseId" :index='index' size=mini style="width: 90px;">
 							<el-option v-for="(items,index) in CourseData" v-on:click.enter="cha2(index)"
 								:key="items.courseId" :label="items.courseName" :value="items.courseId"></el-option>
 						</el-select>
-
 					</div>
-					<div style="margin: 0 0 0 22px;">
-						费用: <el-input v-model="form2.course.courseMoney" disabled size=mini style="width: 184px;">
-						</el-input>
-						&nbsp;&nbsp;
-						<div style="top:200px; margin-left: 250px;">
-							备注: <el-input style="width: 180px;" v-model="form2.course.remarks" size=mini>
+					<div style="margin: 0 0 0 30px;">
+						费用: <el-input v-model="form2.course.courseMoney" disabled size=mini 
+						style="width: 184px;margin-right: 195px;"></el-input>
+							备注: <el-input style="width: 200px;" v-model="form2.course.remarks" size=mini>
 							</el-input>
-						</div>
 					</div>
 					<el-button size=mini @click="yubao()" style="margin-left: 584px;">添加预报</el-button>
 				</div>

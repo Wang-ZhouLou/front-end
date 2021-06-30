@@ -66,6 +66,7 @@
 			//修改审核状态
 			upapprovaltype(row) {
 				const _this = this
+				this.form.updatename = this.$store.state.userInfo.userName;
 				row.approvalType = 1
 				this.axios.put("http://localhost:8089/tsm/upapprovaltype", row, {
 						headers: {
@@ -168,7 +169,9 @@
 				},
 				select: '',
 				dialogFormVisible: false,
-				form: {},
+				form: {
+					updatename: ''
+				},
 				options: [],
 				input: ref(''),
 				value: '',

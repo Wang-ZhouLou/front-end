@@ -208,6 +208,7 @@
 			//修改报班缴费信息
 			upentryfees() {
 				const _this = this
+				this.form.updatename = this.$store.state.userInfo.userName;
 				this.form.accumulated = this.form.course.courseMoney - this.form.receipts //剩余待缴=应收-实收
 				this.axios.put("http://localhost:8089/tsm/upentryfees", this.form, {
 						headers: {
@@ -246,7 +247,6 @@
 				this.form.feesType = row.feesType
 				this.dialogFormVisible = true
 			},
-
 			//删除
 			deleAlls(row) {
 				const _this = this
@@ -361,6 +361,7 @@
 				},
 				dialogFormVisible: false,
 				form: {
+					updatename: '',
 					feesAdvance: '',
 					receipts: '',
 					registerId: '',

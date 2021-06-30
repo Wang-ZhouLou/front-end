@@ -24,10 +24,9 @@
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
-							接待人: <el-select v-model="form.empVo" style="margin-right: 142px; width: 190px;">
-								<el-option v-for="items in empData" :key="items.empId" :label="items.empName"
-									:value="items"></el-option>
-							</el-select>
+							接待人: <el-input v-model="this.$store.state.userInfo.userName"
+								style="margin-right: 142px; width: 190px;" disabled>
+							</el-input>
 							联系电话: <el-input maxlength="11" oninput="value=value.replace(/[^\d]/g,'')"
 								v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
@@ -66,10 +65,9 @@
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
-							接待人: <el-select v-model="form.empVo" style="margin-right: 142px; width: 190px;">
-								<el-option v-for="items in empData" :key="items.empId" :label="items.empName"
-									:value="items"></el-option>
-							</el-select>
+							接待人: <el-input v-model="this.$store.state.userInfo.userName"
+								style="margin-right: 142px; width: 190px;" disabled>
+							</el-input>
 							咨询日期: <el-input v-model="form.addtime" disabled style="width: 190px;">
 							</el-input>
 						</div>
@@ -86,7 +84,8 @@
 								<el-option v-for="items in courseData" :key="items.courseId" :label="items.courseName"
 									:value="items.courseId"></el-option>
 							</el-select>
-							联系电话: <el-input v-model="form.phone" style="width: 190px;"></el-input>
+							联系电话: <el-input v-model="form.phone" maxlength="11"
+								oninput="value=value.replace(/[^\d]/g,'')" style="width: 190px;"></el-input>
 						</div>
 						<div style="margin: 16px 0 0 -420px ;">
 							性别: &nbsp; <el-radio v-model="form.sex" default label="男">男</el-radio>
@@ -149,7 +148,6 @@
 						<!-- <div style="margin: 0 0 0 30px ;">
 							<font style="font-size: 13px;">回访次数: {{num}}</font>
 						</div> -->
-
 						<div>
 							<font>回访登记</font>
 							<el-button style="background-color: #FF5722;color: white; width: 50px; margin-left: 610px;"
@@ -299,6 +297,7 @@
 			//批量删除
 			delete2(row) {
 				const _this = this
+				this.form3.deletename = this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/dereturnvisit", row, {
 						headers: {
 							'content-type': 'application/json',
@@ -338,7 +337,8 @@
 						console.log(error)
 					})
 				this.form1.registerId = row.registerId
-				this.form1.empId = row.empId
+				//this.form1.empId = row.empId
+				this.form.empId = this.$store.state.userInfo.id
 				this.hfxs(row)
 			},
 			//回访按钮显示
@@ -378,7 +378,7 @@
 			/* 回访表新增 */
 			addreturnvisits() {
 				const _this = this
-				//this.form1.empId = this.form1.empVo.empId
+				this.form1.addname = this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addreturnvisit", this.form1, {
 						headers: {
 							'content-type': 'application/json',
@@ -567,7 +567,8 @@
 			//修改咨询登记
 			updregister() {
 				const _this = this
-				this.form.empId = this.form.empVo.empId
+				this.form.empId = this.$store.state.userInfo.id
+				this.form.lastupdatename = this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updateregister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -613,7 +614,8 @@
 			//新增咨询登记
 			addregister() {
 				const _this = this
-				this.form.empId = this.form.empVo.empId
+				this.form.empId = this.$store.state.userInfo.id
+				this.form.addname = this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addregister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -734,6 +736,7 @@
 				dialogFormVisible2: false,
 				dialogFormVisible3: false,
 				form: {
+					addname: '',
 					paystate: '',
 					sex: '',
 					region: '',
@@ -743,7 +746,6 @@
 					type: [],
 					courseVo: {},
 					returnvisitVo: {},
-					/* 					returnvisitId: {}, */
 					empVo: {}, //外键用数组来包含实体类里面所有字段
 					source: [],
 					consultcontent: '',
@@ -757,7 +759,7 @@
 					consultant: '',
 					returnvisitback: '',
 					returnvisitmode: '',
-					addname: 'admin',
+					addname: '',
 					phone: '',
 					source: [],
 				},
@@ -768,6 +770,9 @@
 					courseId: '',
 					entryfeesVo: {},
 					course: '',
+				},
+				form3: {
+					deletename: '',
 				},
 				input: ref(''),
 				value: '',

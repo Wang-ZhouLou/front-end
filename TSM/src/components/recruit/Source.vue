@@ -24,8 +24,8 @@
 					<el-form-item>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
 						<br>
-						已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
-						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br>
+						<!-- 已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
+						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -44,8 +44,8 @@
 						</el-input><br>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
 						<br>
-						已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
-						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br>
+						<!-- 已有生源: <el-input v-model="form.already" style="width: 650px;margin-bottom: 10px;"></el-input><br>
+						潜在生源: <el-input v-model="form.potential" style="width: 650px;"></el-input><br> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -209,6 +209,7 @@
 			//修改
 			updsource() {
 				const _this = this
+				this.form.lastupdatename = this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updSource", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -306,6 +307,7 @@
 			//新增
 			addSource() {
 				const _this = this
+				this.form.addchannelname = this.$store.state.userInfo.userName; //获取当前登记人员名称
 				this.axios.post("http://localhost:8089/tsm/addsource", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -408,6 +410,8 @@
 				dialogFormVisible1: false,
 				dialogFormVisible2: false,
 				form: {
+					addchannelname: "",
+					lastupdatename: "",
 					sourceId: '',
 					sourceName: "",
 					potential: '',

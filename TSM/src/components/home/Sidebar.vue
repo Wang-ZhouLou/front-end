@@ -4,7 +4,7 @@
 			<el-menu class="sidebar-el-menu" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff"
 				:default-active="$route.path" :uniqueOpened="true" @open="handleOpen" @close="handleClose" router>
 				<el-menu-item index="dashboard" class="sy">
-					<span>首頁</span>
+					<span><i class="el-icon-s-shop">首页</i></span>
 				</el-menu-item>
 
 				<el-submenu :index="item.id" v-for="item in menus" :key="item.id" class="sys">
@@ -91,7 +91,7 @@
 		height: 100%;
 	}
 	.sy{
-		margin-left: -170px;
+		margin-left: -165px;
 	}
 	.sys{
 		margin-left: -120px;

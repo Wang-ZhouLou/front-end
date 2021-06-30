@@ -62,6 +62,7 @@
 						//sessionStorage.setItem("imgs", response.data.data.sysUser.userImgs);
 						_this.$store.commit("setrightList", response.data.data.menus);
 						_this.$store.commit("updateUserInfo", {
+							id:response.data.data.id,
 							userName: response.data.data.username,
 							token: response.data.data.token,
 						});
