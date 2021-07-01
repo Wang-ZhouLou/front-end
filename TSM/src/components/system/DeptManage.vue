@@ -22,16 +22,16 @@
 			<el-button type="primary" @click="selectAllDept" style="margin-left: 10px;" size="small">
 				查询所有部门<i class="el-icon-search el-icon--right"></i>
 			</el-button>
-			
-			
+
+
 			<el-button :disabled="this.multipleSelection.length === 0" @click="deleteDeptMany(multipleSelection)"
 				type="primary" icon="el-icon-delete" style="margin-left: 10px;" size="small"></el-button>
 		</div>
 		<div class="memorandum" style="margin-top: 20px;display:flex;justify-content: center">
-			
+
 			<el-table :data="deptData" border style="width: 1200px;" ref="deptTable"
 				@selection-change="handleSelectionChange">
-				<el-table-column type="selection"  width="55" align="center">
+				<el-table-column type="selection" width="55" align="center">
 				</el-table-column>
 
 				<el-table-column prop="deptId" label="编号" width="50" align="center">
@@ -59,11 +59,11 @@
 			</el-pagination>
 		</div>
 	</div>
-	
-	
-	
-	
-	
+
+
+
+
+
 
 	<el-dialog title="添加部门信息" v-model="addDeptVisible" width="450px" top="27vh">
 		<el-form :model="deptForm" :rules="rules" ref="deptForm" label-width="100px" class="demo-ruleForm" size="mini"
@@ -513,7 +513,7 @@
 						type: 'info',
 						message: '添加失败'
 					})
-				})	
+				})
 			}
 		},
 		created() {

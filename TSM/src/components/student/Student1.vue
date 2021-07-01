@@ -195,7 +195,7 @@
 								@click="cha11(scope.row)">分班</el-button>
 							<el-button size="mini" type="info" @click="updateLearningstate3(scope.row)">停课</el-button>
 							<el-button type="info" size="mini" @click="updateLearningstate7(scope.row)">复课</el-button>
-							<el-button size="mini" type="info">转班</el-button>
+							<el-button size="mini" type="info" @click="updateLearningstate8(scope.row)">转班</el-button>
 							<el-button type="info" size="mini" @click="updateLearningstate5(scope.row)">退学</el-button>
 						</div>
 					</template>
@@ -258,10 +258,10 @@
 						</el-select>
 					</div>
 					<div style="margin: 0 0 0 30px;">
-						费用: <el-input v-model="form2.course.courseMoney" disabled size=mini 
-						style="width: 184px;margin-right: 195px;"></el-input>
-							备注: <el-input style="width: 200px;" v-model="form2.course.remarks" size=mini>
-							</el-input>
+						费用: <el-input v-model="form2.course.courseMoney" disabled size=mini
+							style="width: 184px;margin-right: 195px;"></el-input>
+						备注: <el-input style="width: 200px;" v-model="form2.course.remarks" size=mini>
+						</el-input>
 					</div>
 					<el-button size=mini @click="yubao()" style="margin-left: 584px;">添加预报</el-button>
 				</div>
@@ -354,28 +354,29 @@
 		<template #footer>
 			<span class="dialog-footer">
 				<el-button @click="dialogFormVisible42=false">关闭</el-button>
-				<el-button type="primary" @click="addShift()(row)">保 存</el-button>
+				<el-button type="primary" @click="addBack(row)">保 存</el-button>
 			</span>
 		</template>
 	</el-dialog>
-	
+
 	<el-dialog title="学员转班" v-model="dialogFormVisible42">
 		<el-form :model="form43">
 			<el-form-item>
 				<div style="margin: 16px 0 0 35px;">
-					原班级: <el-input v-model="form43.oldclasses" style="width: 190px;margin-bottom: 10px;">
-					</el-input>
-					意向班级:<el-select v-model="form2.course.courseId" :index='index' size=mini style="width: 90px;">
-						<el-option v-for="(items,index) in CourseData"
-							:key="items.courseId" :label="items.courseName" :value="items.courseId"></el-option>
+					原班级:<el-input v-model="form43.oldclass" style="width: 90px;"></el-input>
+
+					意向班级:<el-select v-model="form43.classesId" :index='index' size=mini style="width: 90px;">
+						<el-option v-for="(items,index) in ClassesData" :key="items.classesId"
+							:label="items.classesName" :value="items.classesId"></el-option>
 					</el-select>
+					转班理由：<el-input v-model="form43.shiftReason" style="width: 90px;"></el-input>
 				</div>
 			</el-form-item>
 		</el-form>
 		<template #footer>
 			<span class="dialog-footer">
 				<el-button @click="dialogFormVisible42=false">关闭</el-button>
-				<el-button type="primary" @click="addBack(row)">保 存</el-button>
+				<el-button type="primary" @click="addShift(row)">保 存</el-button>
 			</span>
 		</template>
 	</el-dialog>
@@ -423,603 +424,612 @@
 
 <script>
 	import qs from "qs"
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			addShift(row) {
 				const _this = this
-				this.form43.addname = this.$store.state.userInfo.userName;
-				console.log("_____________++++++++++++")
-				console.log(_this.form43)
+				this.form43.shiftHandler= this.$store.state.userInfo.userName;
 				this.axios.post("http://localhost:8089/tsm/addShift", this.form43, {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				}).then(function(response) {
-					console.log(response)
-					_this.dialogFormVisible42 = false
+					
+					if(response.data.code==200){
+						ElMessage.success({
+							message: response.data.data,
+							type: 'success'
+						});
+					}else if(response.data.code==600){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+						_this.$router.push({path: '/login'})
+					}else if(response.data.code=='601'){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}else {
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}
+					//console.log(response)
+					//_this.dialogFormVisible42 = false
 				}).catch(function(error) {
 					console.log(error)
 				})
-			
+
 			},
 			updateLearningstate8(row) {
+
 				const _this = this
-			
+				this.form43.oldclass = row.classesVo.classesName
+				this.form43.courserecorddetailsId=row.courserecorddetailsId
+				console.log(this.form43.oldclasses)
 				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-			
+					
+					
+
+
+
 					_this.axios.put("http://localhost:8089/tsm/updateLearningstate8", row, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
 						}).then(function(response) {
-							_this.form43 = row
-							_this.dialogFormVisible42 = true
+							//_this.form43 = row
+
 						})
 						.catch(function(error) {
 							console.log(error)
 						})
+						
+						_this.dialogFormVisible42 = true
+						
+						this.form43.shiftHandler = this.$store.state.userInfo.userName
+
 				}).catch(() => {
 					this.$message({
 						type: 'error',
 						message: '取消操作!'
 					})
-				})
-			},
-			addBack(row) {
-				const _this = this
-				this.form33.addname = this.$store.state.userInfo.userName;
-				console.log("_____________++++++++++++")
-				console.log(_this.form33)
-				this.axios.post("http://localhost:8089/tsm/addBack", this.form33, {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				}).then(function(response) {
-					console.log(response)
-					_this.dialogFormVisible32 = false
-				}).catch(function(error) {
-					console.log(error)
-				})
+			})
+	},
+	addBack(row) {
+			const _this = this
+			this.form33.addname = this.$store.state.userInfo.userName;
+			console.log("_____________++++++++++++")
+			console.log(_this.form33)
+			this.axios.post("http://localhost:8089/tsm/addBack", this.form33, {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
+				console.log(response)
+				_this.dialogFormVisible32 = false
+			}).catch(function(error) {
+				console.log(error)
+			})
 
-			},
-			updateLearningstate7(row) {
-				const _this = this
+		},
+		updateLearningstate7(row) {
+			const _this = this
 
-				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+			this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
 
-					_this.axios.put("http://localhost:8089/tsm/updateLearningstate7", row, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}).then(function(response) {
-							_this.form33 = row
-							_this.dialogFormVisible32 = true
-						})
-						.catch(function(error) {
-							console.log(error)
-						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消操作!'
-					});
-				});
-			},
-
-			addDrop(row) {
-				const _this = this
-				console.log("_____________++++++++++++")
-				console.log(_this.form13)
-				this.form13.addname = this.$store.state.userInfo.userName;
-				this.axios.post("http://localhost:8089/tsm/addDrop", this.form13, {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				}).then(function(response) {
-					console.log(response)
-					_this.dialogFormVisible12 = false
-				}).catch(function(error) {
-					console.log(error)
-				})
-			},
-			// .then(function(response) {
-			// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-			// 		headers: {
-			// 			'content-type': 'application/json',
-			// 			'jwtAuth': _this.$store.getters.token
-			// 		}
-			// 	})
-
-			// }),
-			// .then(function(response) {
-			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
-			// 			.studentId, {
-			// 				headers: {
-			// 					'content-type': 'application/json',
-			// 					'jwtAuth': _this.$store.getters.token
-			// 				}
-			// 			})
-			// 			})
-			// 		.then(function(response) {
-			// 			for (var key in response.data) {
-			// 				console.log(key + ":")
-			// 				console.log(response.data[key])
-
-			// 				for (var i = 0; i < response.data[key].length; i++) {
-			// 					_this.CourseRecorddetailsData2.push(response.data[key][i])
-			// 				}
-			// 			}
-			// 			console.log(response.data)
-			// 		})
-			// 		
-			updateLearningstate5(row) {
-				const _this = this
-
-				this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-
-					_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}).then(function(response) {
-							_this.form13 = row
-							_this.dialogFormVisible12 = true
-						})
-						.catch(function(error) {
-							console.log(error)
-						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消操作!'
-					});
-				});
-			},
-			addSuspend(row) {
-				const _this = this
-				console.log("_____________++++++++++++")
-				console.log(_this.form23)
-				this.axios.post("http://localhost:8089/tsm/addSuspend", this.form23, {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				}).then(function(response) {
-					console.log(response)
-					_this.dialogFormVisible22 = false
-				}).catch(function(error) {
-					console.log(error)
-				})
-
-			},
-			updateLearningstate3(row) {
-				const _this = this
-
-				this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-
-					_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}).then(function(response) {
-							_this.form23 = row
-							_this.dialogFormVisible22 = true
-						})
-						.catch(function(error) {
-							console.log(error)
-						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消操作!'
-					});
-				});
-			},
-			handleSizeChange(pagesize) {
-				var _this = this
-				this.pageInfo1.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo1)
-				console.log(ps)
-				this.axios.get("http://localhost:8089/tsm/selectAllpage", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo1
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.StudentData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleCurrentChange(currentPage) {
-				var _this = this
-				this.pageInfo1.currentPage = currentPage
-				var ps = qs.stringify(this.pageInfo1) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selectAllpage", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo1
-					})
-					.then(function(response) {
-						_this.StudentData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-
-			addClassesId(row) {
-				const _this = this
-				console.log("_____________________________________SSSS")
-				console.log(this.form11.classesId)
-				console.log(this.form11.courserecorddetailsId)
-				this.axios.delete("http://localhost:8089/tsm/updateclassesId",{
-						params: {
-							"courserecorddetailsId": this.form11.courserecorddetailsId,
-							"classesId": this.form11.classesId
-						},
+				_this.axios.put("http://localhost:8089/tsm/updateLearningstate7", row, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
+					}).then(function(response) {
+						_this.form33 = row
+						_this.dialogFormVisible32 = true
 					})
-					.then(function(response) {
-						_this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							}).then(function(response) {
+					.catch(function(error) {
+						console.log(error)
+					})
+			}).catch(() => {
+				this.$message({
+					type: 'error',
+					message: '取消操作!'
+				});
+			});
+		},
+
+		addDrop(row) {
+			const _this = this
+			console.log("_____________++++++++++++")
+			console.log(_this.form13)
+			this.form13.addname = this.$store.state.userInfo.userName;
+			this.axios.post("http://localhost:8089/tsm/addDrop", this.form13, {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
+				console.log(response)
+				_this.dialogFormVisible12 = false
+			}).catch(function(error) {
+				console.log(error)
+			})
+		},
+		// .then(function(response) {
+		// _this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+		// 		headers: {
+		// 			'content-type': 'application/json',
+		// 			'jwtAuth': _this.$store.getters.token
+		// 		}
+		// 	})
+
+		// }),
+		// .then(function(response) {
+		// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+		// 			.studentId, {
+		// 				headers: {
+		// 					'content-type': 'application/json',
+		// 					'jwtAuth': _this.$store.getters.token
+		// 				}
+		// 			})
+		// 			})
+		// 		.then(function(response) {
+		// 			for (var key in response.data) {
+		// 				console.log(key + ":")
+		// 				console.log(response.data[key])
+
+		// 				for (var i = 0; i < response.data[key].length; i++) {
+		// 					_this.CourseRecorddetailsData2.push(response.data[key][i])
+		// 				}
+		// 			}
+		// 			console.log(response.data)
+		// 		})
+		// 		
+		updateLearningstate5(row) {
+			const _this = this
+
+			this.$confirm('此操作将会将提交退学申请, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+
+				_this.axios.put("http://localhost:8089/tsm/updateLearningstateE", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
+						_this.form13 = row
+						_this.dialogFormVisible12 = true
+					})
+					.catch(function(error) {
+						console.log(error)
+					})
+			}).catch(() => {
+				this.$message({
+					type: 'error',
+					message: '取消操作!'
+				});
+			});
+		},
+		addSuspend(row) {
+			const _this = this
+			console.log("_____________++++++++++++")
+			console.log(_this.form23)
+			this.axios.post("http://localhost:8089/tsm/addSuspend", this.form23, {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+			}).then(function(response) {
+				console.log(response)
+				_this.dialogFormVisible22 = false
+			}).catch(function(error) {
+				console.log(error)
+			})
+
+		},
+		updateLearningstate3(row) {
+			const _this = this
+
+			this.$confirm('此操作将会将提交停课申请, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+
+				_this.axios.put("http://localhost:8089/tsm/updateLearningstate3", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
+						_this.form23 = row
+						_this.dialogFormVisible22 = true
+					})
+					.catch(function(error) {
+						console.log(error)
+					})
+			}).catch(() => {
+				this.$message({
+					type: 'error',
+					message: '取消操作!'
+				});
+			});
+		},
+		handleSizeChange(pagesize) {
+			var _this = this
+			this.pageInfo1.pagesize = pagesize
+			var ps = qs.stringify(this.pageInfo1)
+			console.log(ps)
+			this.axios.get("http://localhost:8089/tsm/selectAllpage", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo1
+				})
+				.then(function(response) {
+					console.log(response.data)
+					_this.StudentData = response.data.list
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		handleCurrentChange(currentPage) {
+			var _this = this
+			this.pageInfo1.currentPage = currentPage
+			var ps = qs.stringify(this.pageInfo1) // eslint-disable-line no-unused-vars
+			this.axios.get("http://localhost:8089/tsm/selectAllpage", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo1
+				})
+				.then(function(response) {
+					_this.StudentData = response.data.list
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+
+		addClassesId(row) {
+			const _this = this
+			console.log("_____________________________________SSSS")
+			console.log(this.form11.classesId)
+			console.log(this.form11.courserecorddetailsId)
+			this.axios.delete("http://localhost:8089/tsm/updateclassesId", {
+					params: {
+						"courserecorddetailsId": this.form11.courserecorddetailsId,
+						"classesId": this.form11.classesId
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+					_this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
 						_this.CourseRecorddetailsData2 = response.data
 						_this.dialogFormVisible11 = false
 					}).catch(function(error) {
 						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		//新增预报
+		addSource() {
+			const _this = this
+			this.courserecord.studentId = this.form.studentId
+			this.courserecord.addname = this.$store.state.userInfo.userName; //获取当前登记人员名称
+			this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) { // eslint-disable-line no-unused-vars
+					var c = response.data.data
+					console.log(c.courserecordId)
+					_this.courserecordId = c.courserecordId
+					_this.CourserecorddetailsData.forEach((item) => {
+						//遍历courserecordId这个字段，并累加
+						console.log(_this.courserecordId);
+						item.courserecordId = _this.courserecordId
+					})
+					_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
+						.CourserecorddetailsData, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) { // eslint-disable-line no-unused-vars
+						_this.refund.courseId = _this.form2.course.courseId
+						console.log(_this.form2.course.courseId)
+						_this.refund.registerId = _this.form.registerId
+						console.log(_this.form.registerId)
+						_this.refund.addname = _this.$store.state.userInfo.userName;
+						_this.axios.post("http://localhost:8089/tsm/addentryfees", _this.refund, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
+						_this.dialogFormVisible3 = false
 					}).catch(function(error) {
 						console.log(error)
 					})
-			},
-			//新增预报
-			addSource() {
-				const _this = this
-				this.courserecord.studentId = this.form.studentId
-				this.courserecord.addname = this.$store.state.userInfo.userName; //获取当前登记人员名称
-				this.axios.post("http://localhost:8089/tsm/addcourserecord", this.courserecord, {
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		delCourserecorddetails(row) {
+			this.CourserecorddetailsData.splice(this.CourserecorddetailsData.indexOf(row), 1)
+		},
+		//预报上显
+		yubao() {
+			var courserecorddetails = {
+				course: {
+					classhours: 0,
+					courseMoney: 0,
+					courseName: "",
+				},
+				remarks: ""
+			};
+			courserecorddetails.course.classhours = this.form2.course.classhours
+			courserecorddetails.course.courseMoney = this.form2.course.courseMoney
+			courserecorddetails.course.courseName = this.form2.course.courseName
+			courserecorddetails.remarks = this.form2.course.remarks
+			courserecorddetails.courseId = this.form2.course.courseId
+			this.CourserecorddetailsData.push(courserecorddetails)
+
+
+			refund.courseId = this.form2.course.courseId
+			this.refunData.push(refund);
+
+		},
+		//?
+		cha2(index) {
+			this.form2.course.courseMoney = this.CourseData[index].courseMoney
+			this.form2.course.classhours = this.CourseData[index].classhours
+			this.form2.course.courseName = this.CourseData[index].courseName
+			this.form2.course.courseId = this.CourseData[index].courseId
+		},
+		cha1() {
+			var _this = this
+			this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
+					this.form2.classtype.classtypeId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}
+				)
+				.then(function(response) {
+					_this.CourseData = response.data
+
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		cha11(row) {
+			var _this = this
+			_this.form11.classesId = row.classesId
+			_this.form11.courserecorddetailsId = row.courserecorddetailsId
+			this.dialogFormVisible11 = true
+			this.axios.get("http://localhost:8089/tsm/selClasses2?courseId=" +
+					row.courseId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}
+				)
+				.then(function(response) {
+					_this.ClassesData = response.data
+					_this.form11.empId = _this.ClassesData[0].empId
+					_this.form11.teacherId = _this.ClassesData[0].teacherId
+					_this.form11.classesSize = _this.ClassesData[0].classesSize
+					_this.form11.classesId = _this.ClassesData[0].classesId
+					_this.form11.courseName = _this.ClassesData[0].course.courseName
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+		},
+		cha12(index) {
+			console.log(index)
+			const fo = {
+				classesSize: 0,
+				classesId: 0,
+				courseName: ""
+			}
+			fo.classesSize = this.ClassesData[index].classesSize
+			fo.classesId = this.ClassesData[index].classesId
+			fo.courseName = this.ClassesData[index].course.courseName
+			this.form11 = fo
+		},
+		close() {
+			for (var key in this.form) {
+				delete this.form[key];
+			}
+			this.dialogFormVisible = false
+			this.dialogFormVisible2 = false
+			this.dialogFormVisible3 = false
+			this.dialogFormVisible10 = false
+			this.dialogFormVisible11 = false
+			this.dialogFormVisible12 = false
+		},
+		close2() {
+			for (var key in this.CourseRecorddetailsData2) {
+				delete this.CourseRecorddetailsData2[key];
+			}
+			this.dialogFormVisible10 = false
+		},
+		Allclose() {
+			for (var key in this.form) {
+				delete this.form[key];
+			}
+		},
+		//修改
+		showEdit(row) {
+			this.form.studentId = row.studentId
+			this.form.studentName = row.studentName
+			this.form.studentPhone = row.studentPhone
+			this.form.parentname = row.parentname
+			this.form.parentphone = row.parentphone
+			this.form.sex = row.sex
+			this.form.entrance = row.entrance
+			this.form.Entrance = row.Entrance
+			this.form.address = row.address
+			this.form.source = row.source
+			this.form.Address = row.Address
+			this.dialogFormVisible2 = true
+		},
+		//补报
+		showEdit2(row) {
+			this.form.registerId = row.register.registerId //新增报课获取咨询id
+			this.form.studentId = row.studentId
+			this.form.studentName = row.studentName
+			this.dialogFormVisible3 = true
+		},
+
+		selectAllCourseRecorddetails(row) {
+			this.showEdit10(row)
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
+					.studentId, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
 					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						var c = response.data.data
-						console.log(c.courserecordId)
-						_this.courserecordId = c.courserecordId
-						_this.CourserecorddetailsData.forEach((item) => {
-							//遍历courserecordId这个字段，并累加
-							console.log(_this.courserecordId);
-							item.courserecordId = _this.courserecordId
+				.then(function(response) {
+					for (var key in response.data) {
+						console.log(key + ":")
+						console.log(response.data[key])
+
+						for (var i = 0; i < response.data[key].length; i++) {
+							_this.CourseRecorddetailsData2.push(response.data[key][i])
+						}
+					}
+
+					console.log(response.data)
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+		},
+
+
+		//学员详情
+		showEdit10(row) {
+			this.form.studentId = row.studentId
+			this.form.studentName = row.studentName
+			this.form.studentPhone = row.studentPhone
+			this.form.parentname = row.parentname
+			this.form.parentphone = row.parentphone
+			this.form.sex = row.sex
+			this.form.entrance = row.entrance
+			this.form.Entrance = row.Entrance
+			this.form.address = row.address
+			this.form.source = row.source
+			this.form.Address = row.Address
+			this.dialogFormVisible10 = true
+
+
+		},
+		add() {
+			const _this = this
+
+			this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) { // eslint-disable-line no-unused-vars
+					_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
+							params: _this.pageInfo
 						})
-						_this.axios.post("http://localhost:8089/tsm/addcourserecorddetails", _this
-							.CourserecorddetailsData, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							}).then(function(response) { // eslint-disable-line no-unused-vars
-							_this.refund.courseId = _this.form2.course.courseId
-							console.log(_this.form2.course.courseId)
-							_this.refund.registerId = _this.form.registerId
-							console.log(_this.form.registerId)
-							_this.refund.addname = _this.$store.state.userInfo.userName;
-							_this.axios.post("http://localhost:8089/tsm/addentryfees", _this.refund, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							})
-							_this.dialogFormVisible3 = false
+						.then(function(response) {
+							_this.StudentData = response.data.list
+							_this.pageInfo.total = response.data.total
 						}).catch(function(error) {
 							console.log(error)
 						})
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			delCourserecorddetails(row) {
-				this.CourserecorddetailsData.splice(this.CourserecorddetailsData.indexOf(row), 1)
-			},
-			//预报上显
-			yubao() {
-				var courserecorddetails = {
-					course: {
-						classhours: 0,
-						courseMoney: 0,
-						courseName: "",
-					},
-					remarks: ""
-				};
-				courserecorddetails.course.classhours = this.form2.course.classhours
-				courserecorddetails.course.courseMoney = this.form2.course.courseMoney
-				courserecorddetails.course.courseName = this.form2.course.courseName
-				courserecorddetails.remarks = this.form2.course.remarks
-				courserecorddetails.courseId = this.form2.course.courseId
-				this.CourserecorddetailsData.push(courserecorddetails)
-
-
-				refund.courseId = this.form2.course.courseId
-				this.refunData.push(refund);
-
-			},
-			//?
-			cha2(index) {
-				this.form2.course.courseMoney = this.CourseData[index].courseMoney
-				this.form2.course.classhours = this.CourseData[index].classhours
-				this.form2.course.courseName = this.CourseData[index].courseName
-				this.form2.course.courseId = this.CourseData[index].courseId
-			},
-			cha1() {
-				var _this = this
-				console.log("aaaaaaaaaaaaaa")
-				this.axios.get("http://localhost:8089/tsm/selcoursebyclasstypeid?classtypeid=" +
-						this.form2.classtype.classtypeId, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}
-					)
-					.then(function(response) {
-						_this.CourseData = response.data
-
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			cha11(row) {
-				var _this = this
-				console.log(row)
-				_this.form11.classesId = row.classesId
-				_this.form11.courserecorddetailsId = row.courserecorddetailsId
-				console.log("1111111111111111111111111111111")
-				this.dialogFormVisible11 = true
-				this.axios.get("http://localhost:8089/tsm/selClasses2?courseId=" +
-						row.courseId, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						}
-					)
-					.then(function(response) {
-						_this.ClassesData = response.data
-						_this.form11.empId = _this.ClassesData[0].empId
-						_this.form11.teacherId = _this.ClassesData[0].teacherId
-						_this.form11.classesSize = _this.ClassesData[0].classesSize
-						_this.form11.classesId = _this.ClassesData[0].classesId
-						_this.form11.courseName = _this.ClassesData[0].course.courseName
-						console.log(_this.ClassesData[0])
-					}).catch(function(error) {
-						console.log(error)
-					})
-
-			},
-			cha12(index) {
-				console.log(index)
-				const fo = {
-					classesSize: 0,
-					classesId: 0,
-					courseName: ""
-				}
-				fo.classesSize = this.ClassesData[index].classesSize
-				console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++")
-
-				//console.log(this.ClassesData[index].classesId)
-				fo.classesId = this.ClassesData[index].classesId
-				fo.courseName = this.ClassesData[index].course.courseName
-				this.form11 = fo
-			},
-			close() {
-				for (var key in this.form) {
-					delete this.form[key];
-				}
-				this.dialogFormVisible = false
-				this.dialogFormVisible2 = false
-				this.dialogFormVisible3 = false
-				this.dialogFormVisible10 = false
-				this.dialogFormVisible11 = false
-				this.dialogFormVisible12 = false
-			},
-			close2() {
-				for (var key in this.CourseRecorddetailsData2) {
-					delete this.CourseRecorddetailsData2[key];
-				}
-				this.dialogFormVisible10 = false
-			},
-			Allclose() {
-				for (var key in this.form) {
-					delete this.form[key];
-				}
-			},
-			//修改
-			showEdit(row) {
-				this.form.studentId = row.studentId
-				this.form.studentName = row.studentName
-				this.form.studentPhone = row.studentPhone
-				this.form.parentname = row.parentname
-				this.form.parentphone = row.parentphone
-				this.form.sex = row.sex
-				this.form.entrance = row.entrance
-				this.form.Entrance = row.Entrance
-				this.form.address = row.address
-				this.form.source = row.source
-				this.form.Address = row.Address
-				this.dialogFormVisible2 = true
-			},
-			//补报
-			showEdit2(row) {
-				this.form.registerId = row.register.registerId //新增报课获取咨询id
-				this.form.studentId = row.studentId
-				this.form.studentName = row.studentName
-				this.dialogFormVisible3 = true
-			},
-
-			selectAllCourseRecorddetails(row) {
-				this.showEdit10(row)
-				const _this = this
-				//const dkey = _this.[];// eslint-disable-line no-unused-vars
-				// this.courserecordVo.courserecordId=_this.courserecordVo.courserecordId
-				// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetails?studentId=" + row.studentId)
-				// 	.then(function(response) {
-				// 		console.log("----------------------------------------------------")
-
-				// 		console.log(response.data)
-				// 		for (var key in response.data) {
-				// 			console.log(key + ":")
-				// 			console.log(response.data[key])
-
-				// 			for (var i = 0; i < response.data[key].length; i++) {
-				// 				_this.CourseRecorddetailsData2.push(response.data[key][i])
-				// 			}
-				// 		}
-				// 		console.log(_this.CourseRecorddetailsData2)
-
-				// 		//console.log(_this.CourseRecorddetailsData2)
-				// 		//console.log(response)
-				// 	}).catch(function(error) {
-				// 		console.log(error)
-				// 	}),
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetailss?studentId=" + row
-						.studentId, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						})
-					.then(function(response) {
-						for (var key in response.data) {
-							console.log(key + ":")
-							console.log(response.data[key])
-
-							for (var i = 0; i < response.data[key].length; i++) {
-								_this.CourseRecorddetailsData2.push(response.data[key][i])
-							}
-						}
-
-						console.log(response.data)
-					}).catch(function(error) {
-						console.log(error)
-					})
-
-			},
-
-
-			//学员详情
-			showEdit10(row) {
-				this.form.studentId = row.studentId
-				this.form.studentName = row.studentName
-				this.form.studentPhone = row.studentPhone
-				this.form.parentname = row.parentname
-				this.form.parentphone = row.parentphone
-				this.form.sex = row.sex
-				this.form.entrance = row.entrance
-				this.form.Entrance = row.Entrance
-				this.form.address = row.address
-				this.form.source = row.source
-				this.form.Address = row.Address
-				this.dialogFormVisible10 = true
-
-
-			},
-			add() {
-				const _this = this
-
-				this.axios.post("http://localhost:8089/tsm/addstudent", this.form, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								},
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.StudentData = response.data.list
-								_this.pageInfo.total = response.data.total
-							}).catch(function(error) {
-								console.log(error)
-							})
-						_this.dialogFormVisible = false
-						for (var key in _this.form) {
-							delete _this.form[key];
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			update() {
-				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatestudent", this.form, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) { // eslint-disable-line no-unused-vars
-						_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								},
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.StudentData = response.data.list
-								_this.pageInfo.total = response.data.total
-								//console.log(_this.EnterpriseData[0])
-							}).catch(function(error) {
-								console.log(error)
-							})
-						_this.dialogFormVisible2 = false
-					}).catch(function(error) {
-						console.log(error)
-					})
-			}
-
+					_this.dialogFormVisible = false
+					for (var key in _this.form) {
+						delete _this.form[key];
+					}
+				}).catch(function(error) {
+					console.log(error)
+				})
 		},
-		created() {
+		update() {
 			const _this = this
+			this.axios.put("http://localhost:8089/tsm/updatestudent", this.form, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) { // eslint-disable-line no-unused-vars
+					_this.axios.get("http://localhost:8089/tsm/selbystudentName", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
+							params: _this.pageInfo
+						})
+						.then(function(response) {
+							_this.StudentData = response.data.list
+							_this.pageInfo.total = response.data.total
+							//console.log(_this.EnterpriseData[0])
+						}).catch(function(error) {
+							console.log(error)
+						})
+					_this.dialogFormVisible2 = false
+				}).catch(function(error) {
+					console.log(error)
+				})
+		}
+
+	},
+	created() {
+
+			const _this = this
+			_this.person = _this.$store.state.userInfo.userName
 			this.axios.get("http://localhost:8089/tsm/selbystudentName", {
 					headers: {
 						'content-type': 'application/json',
@@ -1046,12 +1056,20 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-			// this.axios.get("http://localhost:8089/tsm/WJselAllclasses")
-			// 	.then(function(response) {
-			// 		_this.ClassesData = response.data
-			// 	}).catch(function(error) {
-			// 		console.log(error)
-			// 	})
+			this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+
+					_this.ClassesData = response.data
+					console.log("--------------------------------")
+					console.log(_this.ClassesData)
+				}).catch(function(error) {
+					console.log(error)
+				})
 			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetails")
 			// 	.then(function(response) {
 			// 		_this.CourseRecorddetailsData2 = response.data
@@ -1091,9 +1109,10 @@
 					addname: ""
 				},
 				form43: {
+					classesId: '',
 					addname: ""
 				},
-				person: "TSM",
+				person: "",
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
 				dialogFormVisible3: false,

@@ -264,12 +264,16 @@
 						</el-form-item>
 					</div>
 					<div class="block">
-					  <span class="demonstration">多选可搜索</span>
-					  <el-cascader
-					    placeholder="部门检索"
-					    :options="options"
-					    :props="{ multiple: true }"
-					    filterable></el-cascader>
+						<span>选择角色组</span>
+						&nbsp;&nbsp;&nbsp; 
+						<el-select v-model="value1" style="margin-left: 20px;" multiple collapse-tags placeholder="请选择">
+						    <el-option
+						      v-for="item in options"
+						      :key="item.value"
+						      :label="item.label"
+						      :value="item.value">
+						    </el-option>
+						  </el-select>
 					</div>
 				</div>
 				<div class="addcontent2">
@@ -326,6 +330,8 @@
 	export default {
 		data() {
 			return {
+				//选中角色id
+				value1:[],
 				props: {
 					multiple: true
 				},
@@ -432,16 +438,44 @@
 				})
 			},
 			updatemp() {
-				this.axios.put("http://localhost:8089/tsm/updateEmp", this.empForm, {
+				var _this=this
+				this.axios.put("http://localhost:8089/tsm/updateEmp",this.empForm, {
+					params:{
+						roleId:qs.stringify(this.value1)
+					},
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				}).then(function(response) {
-					console.log(response)
+					
+					if(response.data.code==200){
+						ElMessage.success({
+							message: response.data.data,
+							type: 'success'
+						});
+					}else if(response.data.code==600){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+						_this.$router.push({path: '/login'})
+					}else if(response.data.code=='601'){
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}else {
+						ElMessage.error({
+							message: response.data.message,
+							type: 'success'
+						});
+					}
+					
 				}).catch(function(error) {
 					console.log(error)
 				})
+				
 				
 
 				this.axios.get("http://localhost:8089/tsm/selectAllEmp", {

@@ -120,7 +120,6 @@
 					}
 				}).then(function(response) {
 					console.log(response)
-					
 					if(response.data.code==200){
 						ElMessage.success({
 							message: response.data.data,
@@ -131,7 +130,6 @@
 							message: response.data.message,
 							type: 'success'
 						});
-						
 						_this.$router.push({path: '/login'})
 					}else if(response.data.code=='601'){
 						ElMessage.error({

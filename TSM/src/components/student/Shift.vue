@@ -50,12 +50,15 @@
 </template>
 
 <script>
+	
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			
 			deleteShift(row) {
 				const _this = this
-				this.row.deletename=this.$store.state.userInfo.userName;
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -94,7 +97,7 @@
 					type: 'warning'
 				}).then(() => {
 
-					console.log(row.courserecorddetailsVo.courserecorddetailsId);
+					console.log(row);
 					this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row.courserecorddetailsVo, {
 							headers: {
 								'content-type': 'application/json',
@@ -103,10 +106,7 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							// console.log("+++++++++++++++++++++")
-							// console.log(row)
-
-							//_this.dropData = rows
+							
 						}).catch(function(error) {
 							console.log(error)
 						})
@@ -119,6 +119,39 @@
 							console.log(response)
 							
 						})
+						
+						this.axios.put("http://localhost:8089/tsm/updatecourserecorddetails", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) {
+								
+							if(response.data.code==200){
+								ElMessage.success({
+									message: response.data.data,
+									type: 'success'
+								});
+							}else if(response.data.code==600){
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+								_this.$router.push({path: '/login'})
+							}else if(response.data.code=='601'){
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}else {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}
+							
+						})
+						
 						// .catch(function(error) {
 						// 			console.log(error)
 						// 		})
@@ -220,7 +253,7 @@
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
 						_this.shiftData = response.data.list
-						_this.pageInfo.total = response.data
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
