@@ -183,6 +183,32 @@
 							})
 							.then(function(response) { // eslint-disable-line no-unused-vars
 								console.log(response)
+								//弹窗
+								if (response.data.code == 200) {
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								} else if (response.data.code == 600) {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({
+										path: '/login'
+									})
+								} else if (response.data.code == '601') {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
+
 								for (var key in _this.form2) {
 									delete _this.form2[key];
 								}
@@ -248,11 +274,36 @@
 							.then(function(response) {
 								_this.entryfeesData = response.data.list
 								_this.pageInfo.total = response.data.total
-								
+
 							}).catch(function(error) {
 								console.log(error)
 							})
-							
+						//弹窗
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
+
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];

@@ -1,86 +1,61 @@
 <template>
-	<el-row>
-		<el-col :span="24" class="el-center-top-labels" style="border-bottom: 1px solid #e8eaec;">
-			<div class="el-center-title-content">
-				<div class="ivn-page-header-main">
-					<div class="ivn-page-header-row">
-						<div class="ivu-page-header-title">排课管理</div>
-					</div>
-					<div class="ivn-page-header-row">
-						<div class="ivu-page-header-content">
-							排课管理
-						</div>
-					</div>
-				</div>
-			</div>
-		</el-col>
-	</el-row>
-	<el-row>
-		<el-col :span="23" class="el-table-show-one-s">
-			<div class="grid-content bg-purple-dark1 el-top-background-one-s">
-				<!-- <div class="el-select-table-one-s">
-					快速检索：<el-select v-model="pageInfo.courseId" placeholder="所有课程" @change="changeSelect()">
-						<el-option label="所有课程" value="0">
-						</el-option>
-						<el-option v-for="item in tableData2" :key="item.courseId" :label="item.courseName"
-							:value="item.courseId">
-						</el-option>
-					</el-select>
-					<el-input v-model="pageInfo.value" placeholder="可以根据教材名称/出版社名称查询" clearable class="el-input-one-s"
-						style="margin-left:10px;width: 300px;" @change="changeSelect()"></el-input>
-				</div> -->
-				<div class="el-select-table-two-s">
-					<el-button style="left: 100px;" @click="addClick()">设置排课信息</el-button>
-					<el-button style="left: 100px;" @click="appClick()">审核排课信息</el-button>
-				</div>
-			</div>
-
-			<div class="grid-content bg-purple-dark1">
-				<div>
-					<el-table :data="tableData" @selection-change="handleSelectionChange()" class="el-table-one-s"
-						stripe :header-cell-style="{background:'#f8f8f9',color:'#606266'}">
-						<el-table-column type="index" :index="indexMethod" label="编号">
-						</el-table-column>
-						<el-table-column prop="classesVo.classesName" label="班级名称" align="center">
-						</el-table-column>
-						<el-table-column prop="classRoomVo.classroomName" label="教室名称" align="center">
-						</el-table-column>
-						<el-table-column prop="empVo.empName" label="教师名称" align="center">
-						</el-table-column>
-						<el-table-column prop="arrangeDate" label="授课日期" align="center">
-						</el-table-column>
-						<el-table-column prop="trainingPeriodVo.period" label="授课时间" align="center">
-						</el-table-column>
-					</el-table>
-				</div>
-			</div>
-		</el-col>
-	</el-row>
-	<el-dialog title="排课信息" v-model="dialogVisible" width="50%" :before-close="handleClose">
-		<el-form label-width="100px" class="demo-ruleForm">
-			<el-form-item label="可用教室">
-				<el-checkbox-group v-model="form.classRoom">
-					<el-checkbox v-for="item in classRoom" :label="item.classroomId" name="type" checked>
-						{{item.classroomName}}
-					</el-checkbox>
-				</el-checkbox-group>
-			</el-form-item>
-			<el-form-item label="课表时间段">
-				<el-cascader :options="thisWeek2" v-model="form.options" :props="props" collapse-tags clearable>
-				</el-cascader>
-			</el-form-item>
-			<el-form-item label="排课班级">
-				<el-checkbox-group v-model="form.classes">
-					<el-checkbox v-for="item in classes" :label="item.classesId" name="type" checked>
-						{{item.classesName}}
-					</el-checkbox>
-				</el-checkbox-group>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" @click="onSubmit">立即创建</el-button>
-			</el-form-item>
-		</el-form>
-	</el-dialog>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>排课</el-breadcrumb-item>
+	</el-breadcrumb><br>
+	<div style="margin-left: -950px;">
+		<el-button style="background-color: #009688;color: white; width: 100px;" size="mini" @click="addClick()">设置排课信息
+		</el-button>
+		<el-button style="background-color: #5FB878;color: white;width: 100px;" type="text" size="mini"
+			@click="appClick()">审核排课信息
+		</el-button>
+	</div><br>
+	<div>
+		<el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange()"
+			ref="multipleTable">
+			<el-table-column type="selection" width="55" align="center">
+			</el-table-column>
+			<el-table-column type="index" :index="indexMethod" label="编号">
+			</el-table-column>
+			<el-table-column prop="classesVo.classesName" label="班级名称" align="center">
+			</el-table-column>
+			<el-table-column prop="classRoomVo.classroomName" label="教室名称" align="center">
+			</el-table-column>
+			<el-table-column prop="empVo.empName" label="教师名称" align="center">
+			</el-table-column>
+			<el-table-column prop="arrangeDate" label="授课日期" align="center">
+			</el-table-column>
+			<el-table-column prop="trainingPeriodVo.period" label="授课时间" align="center">
+			</el-table-column>
+		</el-table>
+	</div>
+	<div>
+		<el-dialog title="排课信息" v-model="dialogVisible" width="50%" :before-close="handleClose">
+			<el-form label-width="100px" class="demo-ruleForm">
+				<el-form-item label="可用教室">
+					<el-checkbox-group v-model="form.classRoom">
+						<el-checkbox v-for="item in classRoom" :label="item.classroomId" name="type" checked>
+							{{item.classroomName}}
+						</el-checkbox>
+					</el-checkbox-group>
+				</el-form-item>
+				<el-form-item label="课表时间段">
+					<el-cascader :options="thisWeek2" v-model="form.options" :props="props" collapse-tags clearable>
+					</el-cascader>
+				</el-form-item>
+				<el-form-item label="排课班级">
+					<el-checkbox-group v-model="form.classes">
+						<el-checkbox v-for="item in classes" :label="item.classesId" name="type" checked>
+							{{item.classesName}}
+						</el-checkbox>
+					</el-checkbox-group>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="onSubmit">立即创建</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+	</div>
 </template>
 
 <script>

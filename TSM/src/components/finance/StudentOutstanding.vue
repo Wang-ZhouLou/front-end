@@ -97,6 +97,9 @@
 	import qs from 'qs'
 	export default {
 		methods: {
+			close() {
+				this.dialogFormVisible = false
+			},
 			//新增学费补缴表信息
 			addStudentoutstanding() {
 				const _this = this

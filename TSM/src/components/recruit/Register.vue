@@ -20,7 +20,7 @@
 				@click="del()">删除
 			</el-button>
 
-			<el-dialog title="新增咨询登记信息" v-model="dialogFormVisible" @click="close()">
+			<el-dialog title="新增咨询登记信息" v-model="dialogFormVisible" :before-close="close">
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
@@ -61,7 +61,7 @@
 				</template>
 			</el-dialog>
 
-			<el-dialog title="修改咨询登记信息" v-model="dialogFormVisible2" @click="close()">
+			<el-dialog title="修改咨询登记信息" v-model="dialogFormVisible2" :before-close="close">
 				<el-form :model="form">
 					<el-form-item>
 						<div style="margin: 0 0 0 45px;">
@@ -182,7 +182,7 @@
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
-						<el-button @click="close1()">关闭</el-button>
+						<el-button @click="dialogFormVisible3=false">关闭</el-button>
 						<el-button type="primary" @click="addreturnvisits">保 存</el-button>
 					</span>
 				</template>
@@ -334,7 +334,7 @@
 			//回访按钮显示
 			hfxs(row) {
 				const _this = this
-				if (row.attentstate == 0 || row.attentstate == 1) {
+				if (row.paystate == 0 || row.paystate == 1) {
 					this.form1.empName = row.empName
 					this.form1.empVo = row.empVo
 					this.form1.sourceVo = row.sourceVo
@@ -386,21 +386,14 @@
 								_this.returnvisitdata = response.data
 							}).catch(function(error) {
 								console.log(error)
-							}),
-							_this.dialogFormVisible3 = false
+							})
+						_this.dialogFormVisible3 = false
 						for (var key in _this.form1) {
 							delete _this.form1[key];
 						}
 					}).catch(function(error) {
 						console.log(error)
 					})
-			},
-			close1() {
-				var _this = this
-				for (var key in _this.form1) {
-					delete _this.form1[key];
-				}
-				_this.dialogFormVisible3 = false
 			},
 			open2() {
 				ElMessage({
@@ -554,6 +547,31 @@
 							})
 							.then(function(response) { // eslint-disable-line no-unused-vars
 								console.log(response)
+								//弹窗
+								if (response.data.code == 200) {
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								} else if (response.data.code == 600) {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({
+										path: '/login'
+									})
+								} else if (response.data.code == '601') {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
 								for (var key in _this.form2) {
 									delete _this.form2[key];
 								}
@@ -576,8 +594,6 @@
 						message: '此学员已缴费!'
 					});
 				}
-
-
 			},
 			//修改咨询登记
 			updregister() {
@@ -604,6 +620,32 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
+						//弹窗
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
+
 						_this.dialogFormVisible2 = false
 						for (var key in _this.form) {
 							delete _this.form[key];
@@ -652,6 +694,32 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
+						//弹窗
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
+
 						for (var key in _this.form) {
 							delete _this.form[key];
 						}
@@ -661,12 +729,16 @@
 					})
 			},
 			close() {
-				var _this = this
-				for (var key in _this.form) {
-					delete _this.form[key];
+				this.dialogFormVisible = false
+				this.dialogFormVisible2 = false
+				this.dialogFormVisible3 = false
+				for (var key in this.form) {
+					delete this.form[key];
 				}
-				_this.dialogFormVisible = false
-				_this.dialogFormVisible2 = false
+				for (var key in this.form1) {
+					delete this.form1[key];
+				}
+
 			},
 			//分页大小
 			handleSizeChange(pagesize) {

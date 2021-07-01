@@ -19,7 +19,7 @@
 			</el-button>
 
 
-			<el-dialog title="新增生源渠道信息" v-model="dialogFormVisible">
+			<el-dialog title="新增生源渠道信息" v-model="dialogFormVisible" :before-close="close">
 				<el-form :model="form">
 					<el-form-item>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
@@ -27,13 +27,13 @@
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible = false">关闭</el-button>
+						<el-button @click="close()">关闭</el-button>
 						<el-button type="primary" @click="addSource">保 存</el-button>
 					</span>
 				</template>
 			</el-dialog>
 
-			<el-dialog title="修改生源渠道信息" v-model="dialogFormVisible1">
+			<el-dialog title="修改生源渠道信息" v-model="dialogFormVisible1" :before-close="close">
 				<el-form :model="form">
 					<el-form-item>
 						&nbsp; &nbsp; &nbsp; &nbsp;编号: <el-input disabled v-model="form.sourceId"
@@ -50,7 +50,7 @@
 				</template>
 			</el-dialog>
 
-			<el-dialog v-model="dialogFormVisible2">
+			<el-dialog v-model="dialogFormVisible2" :before-close="close">
 				<el-form :model="form1">
 					<el-form-item>
 						<div style="font-size: 16px;margin-top: -20px;">
@@ -79,7 +79,7 @@
 				<div style="margin-bottom: 200px;"></div>
 				<template #footer>
 					<span class="dialog-footer">
-						<el-button type="primary" @click="close1()">关闭</el-button>
+						<el-button type="primary" @click="close()">关闭</el-button>
 					</span>
 				</template>
 
@@ -97,7 +97,7 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" align="center">
 					<template #default="scope">
-						<el-button @click="selStudent(scope.row)" type="text" size="small">查看学员</el-button>
+						<el-button @click="selStudent(scope.row)" type="text" size="small">查看已有学员</el-button>
 						<el-button type="text" size="small" @click="showEdit(scope.row)">
 							<i class="el-icon-edit"></i>编辑
 						</el-button>
@@ -130,13 +130,6 @@
 	} from 'element-plus'
 	export default {
 		methods: {
-			close1() {
-				var _this = this
-				for (var key in _this.studnetData) {
-					delete _this.studnetData[key];
-				}
-				_this.dialogFormVisible2 = false
-			},
 			selStudent(row) {
 				const _this = this
 				this.axios.get("http://localhost:8089/tsm/seleSourceId?sourceId=" + row.sourceId, {
@@ -151,6 +144,12 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
+				this.axios.put("http://localhost:8089/tsm/updalready?sourceId=" + row.sourceId, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				this.form.sourceName = row.sourceName
 				this.dialogFormVisible2 = true
 			},
@@ -217,15 +216,47 @@
 							.then(function(response) {
 								_this.sourceData = response.data.list
 								_this.pageInfo.total = response.data.total
+								for (var key in _this.form) {
+									delete _this.form[key];
+								}
 							}).catch(function(error) {
 								console.log(error)
+								for (var key in _this.form) {
+									delete _this.form[key];
+								}
 							})
+
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
+
 						_this.dialogFormVisible1 = false
+					}).catch(function(error) {
+						console.log(error)
 						for (var key in _this.form) {
 							delete _this.form[key];
 						}
-					}).catch(function(error) {
-						console.log(error)
 					})
 			},
 			showEdit(row) { //自动获取值并填入到form表单中
@@ -319,20 +350,52 @@
 								console.log(error)
 							})
 						_this.dialogFormVisible = false
+
+
 						for (var key in _this.form) {
 							delete _this.form[key];
 						}
+
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
+
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			close() {
-				var _this = this
-				for (var key in _this.form) {
-					delete _this.form[key];
+				this.dialogFormVisible = false
+				this.dialogFormVisible1 = false
+				this.dialogFormVisible2 = false
+				for (var key in this.form) {
+					delete this.form[key];
 				}
-				_this.dialogFormVisible = false
-				_this.dialogFormVisible1 = false
+				this.$message({
+					type: 'info',
+					message: '已取消操作'
+				});
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
