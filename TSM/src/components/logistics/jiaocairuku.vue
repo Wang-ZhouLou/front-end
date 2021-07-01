@@ -6,21 +6,24 @@
 	
 			<el-tabs type="border-card">
 				<el-tab-pane label="教材入库">
-					&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
-					<el-select v-model="value" placeholder="校区" class="el2" size="mini">
+					&nbsp;<a style="font-size: 14px;margin:0 0 0 -600px;" >快速检索 :</a> &nbsp;
+					<el-select v-model="pageInfoAll"  class="el2" size="mini" style="width:150px" placeholder="请选择查询的对象">
 			
-						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+						<el-option label="教材名称" value="1">
+						</el-option>
+						<el-option label="出版社" value="2">
 						</el-option>
 					</el-select>
-					<el-input placeholder="请输入内容" size="mini" prefix-icon="el-icon-search" v-model="input2" style="width: 150px;">
+					<el-input placeholder="请输入内容" size="mini" prefix-icon="el-icon-search" v-model="pageInfo.value" style="width: 150px;">
 					</el-input>
 			
 			
 					<div style="float: ; margin: -27px 0 0 350px;">
-						<el-button type="primary" icon="el-icon-search" size="mini">查询</el-button>
+						<el-button type="primary" icon="el-icon-search" size="mini" @click="selectAll">查询</el-button>
+						<el-button type="primary" icon="el-icon-search" size="mini" @click="selectAll1">查询所有</el-button>
 						<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;" @click="addbs">教材入库</el-button>
 						<el-button type="primary" size="mini" icon="el-icon-delete" @click="del()">删除</el-button>
-						<el-button type="primary" size="mini" icon="el-icon-share">导出</el-button>
+						
 					</div>
 			
 					<el-table :data="tableData" @selection-change="handleSelectionChange" border style="width: 100%" class="el3">
@@ -36,7 +39,7 @@
 						</el-table-column>
 						<el-table-column prop="storagecount" label="入库量" width="80">
 						</el-table-column>
-						<el-table-column prop="deliverycount" label="库存量" width="80">
+						<el-table-column prop="book.deliverycount" label="库存量" width="80">
 						</el-table-column>
 						<el-table-column prop="book.safestock" label="安全库存" width="80">
 						</el-table-column>
@@ -46,7 +49,7 @@
 						</el-table-column>
 						<el-table-column fixed="right" label="操作" width="252">
 							<template #default="scope" style="width: 150px;">
-								<el-button @click="handleClick(scope.row)" type="text" size="medium" style="text-decoration:underline;">追加库存</el-button>
+								
 								<el-button type="text" size="medium" style="text-decoration:underline;" @click="showEdit(scope.row)">修改入库</el-button>
 								<el-button type="text" size="medium" style="text-decoration:underline;"  @click="deletebookstor1(scope.row)">删除入库</el-button>
 							</template>
@@ -69,28 +72,28 @@
 					<el-dialog title="教材入库" v-model="dialogFormVisible" class="di1">
 						<el-form :model="form">
 			
-							<el-form-item label="教材名称 :" :label-width="formLabelWidth" style="margin: 0px 0 0 0px;" >
-								<el-select v-model="form.bookId" placeholder="请选择" autocomplete="off" >
+							<el-form-item label="教材名称 :" :label-width="formLabelWidth" style="margin: 0px 0 0 230px;" >
+								<el-select v-model="form.bookId" placeholder="请选择" autocomplete="off" style="margin:0 0 0 -180px">
 									<el-option v-for="item in bookdata" :label="item.bookname" :key="item.bookId" :value="item.bookId">
 									</el-option>
 									</el-select>
 							</el-form-item>
 			
 			
-							<el-form-item label="入库数量 :" :label-width="formLabelWidth" style="margin: 20px 0 0 0">
-								<el-input v-model="form.storagecount" placeholder="请输入入库数量" autocomplete="off" style="width: 220px; "></el-input>
+							<el-form-item label="入库数量 :" :label-width="formLabelWidth" style="margin: 20px 0 0 230px">
+								<el-input v-model="form.storagecount" placeholder="请输入入库数量" autocomplete="off" style="width: 220px; margin:0 0 0 -165px"></el-input>
 								本
 							</el-form-item>
 							
 							
-							<el-form-item label="入库时间 :" :label-width="formLabelWidth" style="margin: -100px 0 0 399px;">
+							<!-- <el-form-item label="入库时间 :" :label-width="formLabelWidth" style="margin: -100px 0 0 399px;">
 								<el-date-picker type="date" placeholder="选择日期" v-model="form.storagetime" style="width: 200px;"></el-date-picker>
 							</el-form-item>
 							
 							<el-form-item label="库存数量 :" :label-width="formLabelWidth" style="margin: -40px 0 0 399px">
-								<el-input v-model="form.deliverycount" placeholder="请输入库存数量" autocomplete="off" style="width: 200px; "></el-input>
+								<el-input v-model="form.deliverycount" placeholder="请输入库存数量" autocomplete="off" style="width: 200px; margin:0 0 0 15px"></el-input>
 								本
-							</el-form-item>
+							</el-form-item> -->
 			
 			
 						</el-form>
@@ -126,9 +129,7 @@
 									</el-date-picker>
 								
 								
-								<b style="font-weight: 100;margin-left: 135px; margin: 0px 0 0 70px;">库存数量：</b>
-								<el-input style="width: 193px;" size="mini" v-model="form.deliverycount" placeholder="" clearable></el-input>
-								<b style="font-weight: 100; ">本</b>
+								
 								</el-form-item>
 								<el-form-item size="large">
 									<el-button style="margin-left: -100px; margin: 0 0 0 180px;" @click="updateBookstorage">更新</el-button>
@@ -151,8 +152,6 @@
 						</el-table-column>
 						<el-table-column prop="booksprice" label="售价" width="80">
 						</el-table-column>
-						<el-table-column prop="storage" label="入库量" width="80">
-						</el-table-column>
 						<el-table-column prop="deliverycount" label="库存量" width="80">
 						</el-table-column>
 						<el-table-column prop="safestock" label="安全库存" width="80">
@@ -170,20 +169,20 @@
 						<el-form :model="form1">
 						
 							<el-form-item label="教材名称 :" :label-width="formLabelWidth" style="margin: 0px 0 0 0px;">
-								<el-input v-model="form1.bookname" placeholder="请输入教材名称" autocomplete="off" style="width: 220px; "></el-input>
+								<el-input v-model="form1.bookname" placeholder="请输入教材名称" autocomplete="off" style="width: 220px; margin:0 0 0 -400px "></el-input>
 							</el-form-item>
 						
 						
 							<el-form-item label="教材库存 :" :label-width="formLabelWidth" style="margin: 20px 0 0 0">
-								<el-input v-model="form1.deliverycount" placeholder="请输入教材库存" autocomplete="off" style="width: 220px; "></el-input>
+								<el-input v-model="form1.deliverycount" placeholder="请输入教材库存" autocomplete="off" style="width: 220px; margin:0 0 0 -382px "></el-input>
 								本
 							</el-form-item>
 							<el-form-item label="教材售价 :" :label-width="formLabelWidth" style="margin: 20px 0 0 0">
-								<el-input v-model="form1.booksprice" placeholder="请输入教材售价" autocomplete="off" style="width: 220px; "></el-input>
+								<el-input v-model="form1.booksprice" placeholder="请输入教材售价" autocomplete="off" style="width: 220px; margin:0 0 0 -400px "></el-input>
 								
 							</el-form-item>
 							<el-form-item label="教材进价 :" :label-width="formLabelWidth" style="margin: 20px 0 0 0">
-								<el-input v-model="form1.bookjprice" placeholder="请输入教材进价" autocomplete="off" style="width: 220px; "></el-input>
+								<el-input v-model="form1.bookjprice" placeholder="请输入教材进价" autocomplete="off" style="width: 220px; margin:0 0 0 -400px "></el-input>
 								
 							</el-form-item>
 							<el-form-item label="安全库存 :" :label-width="formLabelWidth" style="margin: -220px 0 0 399px;">
@@ -278,17 +277,9 @@
 				},
 				tableData: [],
 				tableData1: [],
-				options: [{
-					value: '1',
-					label: '校区'
-				}, {
-					value: '2',
-					label: '教材名'
-				}, {
-					value: '3',
-					label: '入库人'
-				}],
+				
 				value: '',
+				pageInfoAll:'',
 				book: false,
 				dialogVisible: false,
 				dialogFormVisible: false,
@@ -306,6 +297,58 @@
 		},
 		methods: {
 
+			selectAll(){
+				const _this = this
+				if (this.pageInfoAll == "1") {
+					this.axios.get("http://localhost:8089/tsm/selectbookname", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					}).then(function(
+						response) {
+						console.log(response)
+						_this.$message({
+							type: 'success',
+							message: '查询成功'
+						})
+						_this.pageInfo.value = ""
+						_this.tableData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+						_this.$message({
+							type: 'info',
+							message: '查询失败'
+						})
+					})
+				} else if (this.pageInfoAll == "2") {
+					this.axios.get("http://localhost:8089/tsm/selectpress", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					}).then(function(
+						response) {
+						console.log(response)
+						_this.$message({
+							type: 'success',
+							message: '查询成功'
+						})
+						_this.pageInfo.value = ""
+						_this.tableData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+						_this.$message({
+							type: 'info',
+							message: '查询失败'
+						})
+					})
+				}
+			},
 			showEdit2(row) {
 				this.form.mbookstorageId = row.mbookstorageId
 				this.form.bookId = row.bookId
@@ -406,6 +449,24 @@
 						console.log(error)
 					})
 			},
+			selectAll1(){
+				const _this=this
+				this.axios.get("http://localhost:8089/tsm/findPage1", {
+						
+						params: this.pageInfo,
+						headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+					})
+					.then(function(response) {
+						_this.pageInfo.value = ''
+						_this.pageInfo.total = response.data.total
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			//修改
 			showEdit(row) {
 				this.form.mbookstorageId = row.mbookstorageId
@@ -465,7 +526,7 @@
 				const _this = this
 				// this.dialogVisible=true
 
-
+				
 				this.axios.put("http://localhost:8089/tsm/delectbookstor", this.form, {
 					headers: {
 							'content-type': 'application/json',
@@ -534,12 +595,13 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消删除!'
-					});
-				});
+						}).catch(() => {
+							this.$message({
+								type: 'error',
+								message: '取消删除!'
+							});
+						});
+				
 			},
 			
 			handleCurrentChange(currentPage) {
@@ -584,7 +646,19 @@
 		},
 		created() {
 			const _this = this
-			
+			this.axios.get("http://localhost:8089/tsm/selectbook" ,{
+				headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+			})
+				.then(function(response) {
+					console.log(response)
+					_this.bookdata = response.data
+				
+				}).catch(function(error) {
+					console.log(error)
+				})
 			this.axios.get("http://localhost:8089/tsm/findPage1", {
 					
 					params: this.pageInfo,
@@ -596,23 +670,11 @@
 				.then(function(response) {
 			
 					_this.pageInfo.total = response.data.total
-
+					_this.tableData = response.data.list
 				}).catch(function(error) {
 					console.log(error)
 				})
-				this.axios.get("http://localhost:8089/tsm/selectbook" ,{
-					headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-				})
-					.then(function(response) {
-						console.log(response)
-						_this.bookdata = response.data
-					
-					}).catch(function(error) {
-						console.log(error)
-					})
+				
 
 		}
 

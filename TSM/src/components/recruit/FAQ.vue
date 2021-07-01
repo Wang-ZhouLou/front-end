@@ -4,17 +4,10 @@
 		<el-breadcrumb-item>FAQ问答</el-breadcrumb-item>
 	</el-breadcrumb><br>
 	<div style="margin: 0 0 10px -650px;">
-		&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
-		<el-select v-model="value" placeholder="问题" class="el2" size="mini">
-			<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-			</el-option>
-		</el-select>
-		<el-input placeholder="请输入内容" size="mini" prefix-icon="el-icon-search" v-model="input2" style="width: 150px;">
-		</el-input>
-		<el-button type="primary" size="mini" icon="el-icon-search">查询</el-button>
-		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;"
+		
+		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;,margin:0 0 0 -800px;"
 			@click="dialogFormVisible = true">增加</el-button>
-		<el-button type="primary" size="mini" icon="el-icon-delete">删除</el-button>
+		
 	</div>
 
 	<div style="margin-left: 5px;">

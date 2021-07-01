@@ -3,18 +3,14 @@
 		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
 		<el-breadcrumb-item>教材销售</el-breadcrumb-item>
 	</el-breadcrumb><br>
-	&nbsp;<a style="font-size: 14px;">快速检索 :</a> &nbsp;
-	<el-select v-model="value4" placeholder="校区" class="el2" size="mini">
-
-		<el-option v-for="item in options1" :key="item.value4" :label="item.label" :value="item.value4">
-		</el-option>
-	</el-select>
-	<el-input placeholder="请输入内容" size="mini" prefix-icon="el-icon-search" v-model="input7" style="width: 150px;">
+	&nbsp;<a style="font-size: 14px;margin:0 0 0 -400px;">快速检索 :</a> &nbsp;
+	<el-input placeholder="请输入教材名称" size="mini" prefix-icon="el-icon-search" v-model="pageInfo.value" style="width: 150px;">
 	</el-input>
 
 
 	<div style="margin: -27px 0 0 400px;">
-		<el-button type="primary" size="mini" icon="el-icon-search">查询</el-button>
+		<el-button type="primary" size="mini" icon="el-icon-search" @click="selectBookdelivery">查询</el-button>
+		<el-button type="primary" size="mini" icon="el-icon-search" @click="selectAll">查询所有</el-button>
 		<el-button type="primary" size="mini" icon="el-icon-circle-plus-outline" style="width: 110px;" @click="xskd">
 			销售开单</el-button>
 		<el-button type="primary" size="mini" icon="el-icon-delete" @click="del()">删除</el-button>
@@ -53,8 +49,7 @@
 	</el-table>
 
 
-	<el-dialog :data="xiaosData" title="" v-model="dialogTableVisible" style="margin: -30px 0 0 0; height:100%"
-		width="100%">
+	<el-dialog :data="xiaosData" title="" v-model="dialogTableVisible" style="margin: -30px 0 0 0; height:100%" width="100%">
 		<el-form :model="form">
 			<el-table :data="gridData">
 				<el-table-column property="form4.bookname" label="出售教材" width="650"></el-table-column>
@@ -68,8 +63,8 @@
 				</el-table-column>
 			</el-table>
 
-			<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;margin: 0px 0 0 1250px;"
-				size="mini" @click="a1()">添加教材</el-button>
+			<el-button type="primary" icon="el-icon-circle-plus-outline" style="width: 110px;margin: 0px 0 0 1250px;" size="mini"
+			 @click="a1()">添加教材</el-button>
 			<el-form v-model="form3">
 				<div>
 					<div style="margin: 20px 0 0 370px;">
@@ -77,7 +72,7 @@
 						<el-input placeholder="请输入单号" v-model="form.salenumber" style="width: 170px;">
 						</el-input>
 						<a style="font-size: 16px; margin: 0 0 0 300px;">录入人 :</a>&nbsp;
-						<el-input type="text" style="width: 170px;height: ;" placeholder="梁政"></el-input>
+						<el-input type="text" style="width: 170px;height: ;" placeholder="谭静" :disabled="true"></el-input>
 						<!-- <el-select v-model="form2.emp.empId" autocomplete="off" size="mini" style="width: 180px;" @change="as1">
 						<el-option v-for="item in empdata" :label="item.empName" :key="item.empId" :value="item.empId">
 						</el-option>
@@ -89,14 +84,16 @@
 
 					<div style="margin: 20px 0 0 339px;">
 						<a style="font-size: 16px;">支付方式 :</a>&nbsp;
-						<el-select v-model="value" placeholder="现金支付" style="width: 170px;">
-							<el-option v-for="item in options" :key="item.value2" :label="item.label1"
-								:value="item.value2">
+						<el-select v-model="value7" placeholder="现金支付" style="width: 170px;">
+							<el-option v-for="item in options" :key="item.value2" :label="item.label1" :value="item.value2">
 							</el-option>
 						</el-select>
 						<a style="font-size: 16px; margin: 0 0 0 300px;">购买者 :</a>&nbsp;
-						<el-input type="text" style="width: 170px;" v-model="form.studentName"></el-input>
-
+						<!-- <el-input type="text" style="width: 170px;" v-model="form.studentName"></el-input> -->
+						<el-select v-model="form2.student.studentId" autocomplete="off" style="width: 170px;" @change="aa1" placeholder="请选择购买人">
+							<el-option v-for="item in studentdate" :label="item.studentName" :key="item.studentId" :value="item.studentId">
+							</el-option>
+						</el-select>
 
 					</div>
 
@@ -107,7 +104,7 @@
 				</div>
 			</el-form>
 
-			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addstu">确 定</el-button>
+			<el-button type="primary" style="margin: 20px 0 0 650px;" @click="addbookdel1">确 定</el-button>
 			<el-button @click="dialogTableVisible=false">取 消</el-button>
 		</el-form>
 
@@ -126,7 +123,7 @@
 			</div>
 			<div style="font-size: 16px; margin: -26px 0 0 620px;">
 				<span>￥: </span>&nbsp;
-				<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice"></el-input>
+				<el-input type="text" style="width: 60px;" size="mini" v-model="bookdata.booksprice" :disabled="true"></el-input>
 				<span>/本</span>
 
 			</div>
@@ -153,9 +150,8 @@
 
 
 	<div class="block" style="margin:20px;display: flex;justify-content: center;">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			:current-page="pageInfo.currentPage" :page-sizes="[ 6, 8]" :page-size="pageInfo.pagesize"
-			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
+		 :page-sizes="[3, 6, 8]" :page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
 
@@ -202,7 +198,8 @@
 					book: {},
 					form4: {
 
-					}
+					},
+					student: {}
 				},
 				input: ref(''),
 				input1: ref(''),
@@ -217,6 +214,7 @@
 				input14: ref(''),
 				input15: ref(''),
 				empdata: [],
+				studentdate: [],
 				tableData: [],
 				xiaosData: [],
 				bookdata: [],
@@ -248,11 +246,9 @@
 					receivablemoney: ''
 				},
 				form3: {
-					student: {},
-					salenumber: '',
-
-
-					empName: ''
+					bookId: "",
+					deliverycount: "",
+					count: ""
 				},
 				value: '',
 				value1: '',
@@ -269,20 +265,8 @@
 
 				value2: '',
 
+				pageinfoCondition: '',
 
-				options1: [{
-					value4: '1',
-					label: '校区'
-				}, {
-					value4: '2',
-					label: '教材名'
-				}, {
-					value4: '3',
-					label: '课程顾问'
-				}, {
-					value4: '4',
-					label: '购买者'
-				}, ],
 				value4: '',
 
 				dialogVisible: false,
@@ -290,7 +274,8 @@
 				pageInfo: {
 					currentPage: 1, //标识当前页码
 					pagesize: 6, //每页多少条数据
-					total: 0
+					total: 0,
+					value: ""
 				},
 				// gridData: [],
 				dialogTableVisible: false,
@@ -313,50 +298,92 @@
 
 		},
 		methods: {
-			addstu() {
+			selectAll() {
 				const _this = this
-
-				console.log("1111aas")
-				// this.form.deliverycount=this.course.deliverycount
-
-				this.axios.post("http://localhost:8089/tsm/insertstu", this.form,{
-					headers: {
+				this.axios.get("http://localhost:8089/tsm/findPage2", {
+						params: this.pageInfo,
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
-						console.log(response)
-
-
-
-						_this.addbookdel1(response.data.studentId)
-
-
-						_this.dialogTableVisible = false
-
+						console.log(response.data)
+						_this.pageinfoCondition = ''
+						_this.pageInfo.total = response.data.total
+						_this.tableData = response.data.list
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-			addbookdel1(row) {
+			updateBook(bookId, deliverycount) {
+				console.log("ddddd" + bookId)
 				const _this = this
-				this.form.tota = this.bookdata.booksprice * this.form2.form4.deliverycount
-				this.form.studentId = row
-				console.log("1111aas")
-				// this.form.deliverycount=this.course.deliverycount
-
-				this.axios.post("http://localhost:8089/tsm/insertz", this.form,{
-					headers: {
+				this.form3.bookId = bookId
+				console.log(this.form3.bookId)
+				this.form3.count = deliverycount
+				this.form3.deliverycount = this.bookdata.deliverycount - this.form3.count
+				console.log(this.bookdata.deliverycount)
+				this.axios.put("http://localhost:8089/tsm/updateBook", this.form3, {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
+					.then(function(response) {
+
+
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//多条件查询
+			selectBookdelivery() {
+				const _this = this
+				console.log("----------------")
+				this.axios.get("http://localhost:8089/tsm/selectBookdelivery", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.pageinfoCondition = 1
+						_this.tableData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			resetForm(form) {
+				this.$refs[form].resetFields();
+			},
+
+			addbookdel1() {
+
+				const _this = this
+
+				this.form.tota = this.bookdata.booksprice * this.form2.form4.deliverycount
+
+				console.log("1111aas")
+				// this.form.deliverycount=this.course.deliverycount
+
+				this.axios.post("http://localhost:8089/tsm/insertz", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 
 
-
+						
 						_this.addbookdel(response.data.bookdeliveryId)
 
 
@@ -372,24 +399,26 @@
 				this.form.tota = this.bookdata.booksprice * this.form2.form4.deliverycount
 				this.form.receivablemoney = this.form.tota
 				this.form.bookId = this.form2.book.bookId
+				this.form.studentId = this.form2.student.studentId
 				this.form.bookdeliveryId = row
 				console.log("1111aas")
 				// this.form.deliverycount=this.course.deliverycount
 
-				this.axios.post("http://localhost:8089/tsm/insertdel", this.form,{
-					headers: {
+				this.axios.post("http://localhost:8089/tsm/insertdel", this.form, {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
 						console.log(response)
-						_this.axios.get("http://localhost:8089/tsm/findPage2", {
+						_this.updateBook(response.data.bookId, response.data.deliverycount);
+						this.axios.get("http://localhost:8089/tsm/findPage2", {
 								params: _this.pageInfo,
 								headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									}
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
 							})
 							.then(function(response) {
 								_this.pageInfo.total = response.data.total
@@ -418,7 +447,7 @@
 			},
 			xskd() {
 				this.dialogTableVisible = true;
-				this.selectemp();
+				this.selectstudent();
 			},
 			debookdel(row) {
 				this.showEdit2(row)
@@ -426,18 +455,18 @@
 				// this.dialogVisible=true
 
 
-				this.axios.put("http://localhost:8089/tsm/debookdel", this.form,{
+				this.axios.put("http://localhost:8089/tsm/debookdel", this.form, {
 					headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				this.axios.get("http://localhost:8089/tsm/findPage2", {
 						params: _this.pageInfo,
 						headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 					.then(function(response) {
 						_this.pageInfo.total = response.data.total
@@ -464,19 +493,19 @@
 					type: 'warning'
 				}).then(() => {
 
-					this.axios.put("http://localhost:8089/tsm/debookdel", this.form,{
+					this.axios.put("http://localhost:8089/tsm/debookdel", this.form, {
 						headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
 
 					this.axios.get("http://localhost:8089/tsm/findPage2", {
 							params: _this.pageInfo,
 							headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
 						})
 						.then(function(response) {
 							console.log(response)
@@ -514,6 +543,7 @@
 			a1() {
 				this.ts = true;
 				this.selectBook();
+
 			},
 			showEdit() {
 
@@ -522,7 +552,7 @@
 						bookname: '',
 						deliverycount: '',
 						booksprice: '',
-
+						studentName: '',
 						receivablemoney: '',
 						tota: ''
 
@@ -530,6 +560,7 @@
 				};
 
 				courserecorddetails.form4.bookname = this.bookdata.bookname
+				courserecorddetails.form4.studentName = this.studentdate.studentName
 				courserecorddetails.form4.booksprice = this.bookdata.booksprice
 				courserecorddetails.form4.deliverycount = this.form2.form4.deliverycount
 				// this.form2.course.deliverycount=1
@@ -546,12 +577,12 @@
 			a() {
 				const _this = this
 
-				this.axios.get("http://localhost:8089/tsm/selectBybook/" + this.form2.book.bookId,{
-					headers: {
+				this.axios.get("http://localhost:8089/tsm/selectBybook?bookId=" + this.form2.book.bookId, {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -560,18 +591,18 @@
 						console.log(error)
 					})
 			},
-			as1() {
+			aa1() {
 				const _this = this
 
-				this.axios.get("http://localhost:8089/tsm/selectemp/" + this.form2.emp.empId,{
-					headers: {
+				this.axios.get("http://localhost:8089/tsm/selectBystudent?studentId=" + this.form2.student.studentId, {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
 						console.log(response)
-						_this.empdata = response.data
+						_this.studendate = response.data
 
 					}).catch(function(error) {
 						console.log(error)
@@ -586,32 +617,34 @@
 			},
 			selectBook() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectbook",{
-					headers: {
+				this.axios.get("http://localhost:8089/tsm/selectbook", {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
-						console.log(_this.bookdata)
+						console.log(response)
+						
+
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-			selectemp() {
+			selectstudent() {
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectemp",{
-					headers: {
+				this.axios.get("http://localhost:8089/tsm/selectstudent", {
+						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-				})
+					})
 					.then(function(response) {
 						console.log(response)
-						_this.empdata = response.data
-						console.log(_this.empdata)
+						_this.studentdate = response.data
+						console.log(_this.studentdate)
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -621,39 +654,75 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: this.pageInfo,
-						headers: {
+				if (this.pageinfoCondition == '1') {
+					this.axios.get("http://localhost:8089/tsm/selectBookdelivery", {
+							params: this.pageInfo,
+							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.pageInfo.total = response.data.total
-						_this.tableData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
+						})
+						.then(function(response) {
+							console.log(response.data)
+							_this.pageInfo.total = response.data.total
+							_this.tableData = response.data.list
+						}).catch(function(error) {
+							console.log(error)
+						})
+				} else {
+					this.axios.get("http://localhost:8089/tsm/findPage2", {
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) {
+							console.log(response.data)
+							_this.pageInfo.total = response.data.total
+							_this.tableData = response.data.list
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}
+
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/findPage2", {
-						params: this.pageInfo,
-						headers: {
+				if (this.pageinfoCondition == '1') {
+					this.axios.get("http://localhost:8089/tsm/selectBookdelivery", {
+							params: this.pageInfo,
+							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.pageInfo.total = response.data.total
-						_this.tableData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
+						})
+						.then(function(response) {
+							console.log(response.data)
+							_this.pageInfo.total = response.data.total
+							_this.tableData = response.data.list
+						}).catch(function(error) {
+							console.log(error)
+						})
+				} else {
+					this.axios.get("http://localhost:8089/tsm/findPage2", {
+							params: this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+						.then(function(response) {
+							console.log(response.data)
+							_this.pageInfo.total = response.data.total
+							_this.tableData = response.data.list
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}
+
 
 			},
 			deleteInfo(index) {
@@ -672,9 +741,9 @@
 			this.axios.get("http://localhost:8089/tsm/findPage2", {
 					params: this.pageInfo,
 					headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
 				})
 				.then(function(response) {
 					console.log(response.data)

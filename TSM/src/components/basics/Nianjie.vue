@@ -9,7 +9,11 @@
 	<el-table :data="SessionData" border style="width: 100%" class="e1">
 		<el-table-column prop="sessionId" label="编号" width="60">
 		</el-table-column>
-		<el-table-column prop="sessionName" label="学期名称">
+		<el-table-column prop="sessionName" label="年届名称">
+		</el-table-column>
+		<el-table-column prop="addname" label="新增人">
+		</el-table-column>
+		<el-table-column prop="addtime" label="新增时间">
 		</el-table-column>
 		<el-table-column label="操作" width="150">
 			<template #default="scope">
@@ -34,8 +38,10 @@
 			</span>
 		</template>
 	</el-dialog>
+	
+	
 
-	<el-dialog title="修改学期信息" v-model="dialogFormVisible2" class="di2">
+	<el-dialog title="修改年届信息" v-model="dialogFormVisible2" class="di2">
 		<el-form :model="form">
 			<el-form-item label="学期名称 :" :label-width="formLabelWidth">
 				<el-input v-model="form.sessionName" autocomplete="off" style="width: 530px;"></el-input>
@@ -54,9 +60,33 @@
 </template>
 
 <script>
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		data() {
 			return {
+				dels() {
+					ElMessage({
+						showClose: true,
+						message: '删除成功!',
+						type: 'success'
+					});
+				},
+				addss() {
+					ElMessage({
+						showClose: true,
+						message: '新增成功!',
+						type: 'success'
+					});
+				},
+				upss() {
+					ElMessage({
+						showClose: true,
+						message: '修改成功!',
+						type: 'success'
+					});
+				},
 				SessionData: [],
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -76,10 +106,15 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selectSession")
+			this.axios.get("http://localhost:8089/tsm/selectSession",{
+				headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+			})
 				.then(function(response) {
 					console.log(response)
-					_this.SessionData = response.data.list
+					_this.SessionData = response.data
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -88,15 +123,25 @@
 		methods: {
 			addsession() {
 				const _this = this
-				this.axios.post("http://localhost:8089/tsm/insertsession", this.form)
+				this.axios.post("http://localhost:8089/tsm/insertsession", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log("111")
 						console.log(response)
 						var session = response.data
 						_this.SessionData.push(session)
 						_this.dialogFormVisible = false
+						_this.addss()
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
+						
 					})
 			},
 			showEidt1(row) {
@@ -108,7 +153,12 @@
 				const _this = this
 				this.form.sessionId = row.sessionId
 				this.form.sessionName = row.sessionName
-				this.axios.put("http://localhost:8089/tsm/delectsession", this.form)
+				this.axios.put("http://localhost:8089/tsm/delectsession", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						console.log(response.data.sessionId)
@@ -118,13 +168,22 @@
 						_this.pageInfo.total = _this.pageInfo.total - 1
 
 						_this.dialogFormVisible2 = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
+						_this.dels()
 					})
 			},
 			updatesession() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatesession", this.form)
+				this.axios.put("http://localhost:8089/tsm/updatesession", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						console.log(response.data.sessionId)
@@ -133,6 +192,7 @@
 						row.sessionName = session.sessionName
 
 						_this.dialogFormVisible2 = false
+						_this.upss()
 					}).catch(function(error) {
 						console.log(error)
 					})

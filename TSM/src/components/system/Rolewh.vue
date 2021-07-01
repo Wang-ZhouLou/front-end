@@ -14,14 +14,11 @@
 			<el-button style="background-color: #009688;color: white;margin-bottom: 10px;" size="mini">查询</el-button>
 			<el-button style="background-color: #5FB878;color: white;" @click="addEmpVisible = true" size="mini">新增
 			</el-button>
-			<el-button style="background-color:  #FF5722;color: white;width: 50px;" type="text" @click="open"
-				size="mini">删除</el-button>
 		</div>
 
 		<div class="zxdj">
 			<el-table :data="empData" border @selection-change="handleSelectionChange" ref="multipleTable" align>
-				<el-table-column type="selection" width="55" align="center">
-				</el-table-column>
+				
 				<el-table-column prop="username" label="用户名" align="center">
 				</el-table-column>
 				<el-table-column prop="empName" label="用户名" align="center">

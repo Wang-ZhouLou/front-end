@@ -11,6 +11,10 @@
 		</el-table-column>
 		<el-table-column prop="semesterName" label="学期名称">
 		</el-table-column>
+		<el-table-column prop="addname" label="新增人">
+		</el-table-column>
+		<el-table-column prop="addtime" label="新增时间">
+		</el-table-column>
 		<el-table-column label="操作" width="150">
 			<template #default="scope">
 				<el-button type="text" size="mini" @click="showEidt(scope.row)">修改</el-button>
@@ -54,9 +58,33 @@
 </template>
 
 <script>
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		data() {
 			return {
+				dels() {
+					ElMessage({
+						showClose: true,
+						message: '删除成功!',
+						type: 'success'
+					});
+				},
+				addss() {
+					ElMessage({
+						showClose: true,
+						message: '新增成功!',
+						type: 'success'
+					});
+				},
+				upss() {
+					ElMessage({
+						showClose: true,
+						message: '修改成功!',
+						type: 'success'
+					});
+				},
 				SemData: [],
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -71,10 +99,15 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/tsm/selectByPrimaryKey")
+			this.axios.get("http://localhost:8089/tsm/selectByPrimaryKey",{
+				headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+			})
 				.then(function(response) {
 					console.log(response)
-					_this.SemData = response.data.list
+					_this.SemData = response.data
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -95,8 +128,13 @@
 						var semester = response.data
 						_this.SemData.push(semester)
 						_this.dialogFormVisible = false
+						_this.addss()
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
+						_this.addss()
 					})
 			},
 			showEidt(row){
@@ -108,7 +146,12 @@
 				const _this = this
 				this.form.semesterId=row.semesterId
 				this.form.semesterName=row.semesterName
-				this.axios.put("http://localhost:8089/tsm/delectsem", this.form)
+				this.axios.put("http://localhost:8089/tsm/delectsem", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						console.log(response.data.semesterId)
@@ -118,13 +161,22 @@
 						_this.pageInfo.total = _this.pageInfo.total - 1
 				
 						_this.dialogFormVisible2 = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
+						_this.dels()
 					})
 			},
 			updatesem() {
 				const _this = this
-				this.axios.put("http://localhost:8089/tsm/updatesemester", this.form)
+				this.axios.put("http://localhost:8089/tsm/updatesemester", this.form,{
+					headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+				})
 					.then(function(response) {
 						console.log(response)
 						console.log(response.data.semesterId)
@@ -133,6 +185,10 @@
 						row.semesterName = semester.semesterName
 
 						_this.dialogFormVisible2 = false
+						_this.upss()
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
 					})

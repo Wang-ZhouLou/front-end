@@ -20,8 +20,8 @@
 
 
 			<el-dialog title="新增生源渠道信息" v-model="dialogFormVisible" :before-close="close">
-				<el-form :model="form" :rules="rules">
-					<el-form-item prop="sourceName">
+				<el-form :model="form">
+					<el-form-item>
 						生源渠道: <el-input v-model="form.sourceName" style="width: 650px;margin-bottom: 10px;"></el-input>
 					</el-form-item>
 				</el-form>
@@ -144,6 +144,12 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
+				this.axios.put("http://localhost:8089/tsm/updalready?sourceId=" + row.sourceId, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				this.form.sourceName = row.sourceName
 				this.dialogFormVisible2 = true
 			},
@@ -254,13 +260,11 @@
 					})
 			},
 			showEdit(row) { //自动获取值并填入到form表单中
-				const _this = this
 				this.form.sourceId = row.sourceId
 				this.form.sourceName = row.sourceName
 				this.form.already = row.already
 				this.form.potential = row.potential
 				this.dialogFormVisible1 = true
-				this.sourceData.studentId = row.sourceId
 			},
 			//批量删除
 			delete1(row) {
@@ -435,13 +439,6 @@
 		},
 		data() {
 			return {
-				rules: {
-					sourceName: [{
-						required: true,
-						message: "请输入用户名",
-						trigger: "blur"
-					}]
-				},
 				deld() {
 					ElMessage({
 						showClose: true,
@@ -465,14 +462,13 @@
 				dialogFormVisible: false,
 				dialogFormVisible1: false,
 				dialogFormVisible2: false,
-				form1: {
-					sourceId: '',
-				},
 				form: {
 					addchannelname: "",
 					lastupdatename: "",
 					sourceId: '',
-					sourceName: ""
+					sourceName: "",
+					potential: '',
+					already: ''
 				},
 				search: ref(''),
 				value: '',
