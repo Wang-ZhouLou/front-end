@@ -1,74 +1,46 @@
 <template>
-	<!-- 课段管理 -->
-	<el-row>
-		<el-col :span="24" class="el-center-top-labels" style="border-bottom: 1px solid #e8eaec;">
-			<div class="el-center-title-content">
-				<div class="ivn-page-header-main">
-					<div class="ivn-page-header-row">
-						<div class="ivu-page-header-title">课段管理</div>
-					</div>
-					<div class="ivn-page-header-row">
-						<div class="ivu-page-header-content">
-							课段管理
-						</div>
-					</div>
-				</div>
-			</div>
-		</el-col>
-	</el-row>
-	<el-row>
-		<el-col :span="23" class="el-table-show-one-s">
-			<div class="grid-content2 bg-purple-dark1 el-top-background-one-s">
-				<div class="el-select-table-one-s">
-					用户名：<el-input v-model="input3" placeholder="请输入内容" clearable class="el-input-one-s"></el-input>
-				</div>
-				<div class="el-select-table-two-s">
-					<el-button type="primary">查询</el-button>
-					<el-button style="left: 100px;">删除</el-button>
-				</div>
-			</div>
-			<div class="grid-content2 bg-purple-dark1">
-				<div class="el-select-table-one-s">
-					<el-button @click="addTrainingPeriod()" type="primary" plain style="margin-left: -10px;">+ 课段
-					</el-button>
-				</div>
-			</div>
-			<div class="grid-content2 bg-purple-dark1">
-				<div>
-					<el-table :data="TrainingPeriodData" @selection-change="handleSelectionChange" stripe
-						class="el-table-one-s" :header-cell-style="{background:'#f8f8f9',color:'#606266'}">
-						<el-table-column type="selection" min-width="60">
-						</el-table-column>
-						<el-table-column type="index" min-width="60" align="center" :index="indexMethod" label="编号">
-						</el-table-column>
-						<el-table-column min-width="60" prop="period" label="培训时段" align="center">
-						</el-table-column>
-						<el-table-column label="操作" align="center">
-							<template #default="scope">
-								<el-button @click="showEdit(scope.row)" type="text" size="small">
-									<i class="el-icon-edit"></i>修改
-								</el-button>
-								<div class="ivu-divider"></div>
-								<el-button @click="delSelectAllTrainingPeriod(scope.row)" type="text" size="small">
-									删除
-								</el-button>
-							</template>
-						</el-table-column>
-					</el-table>
-					<div class="block">
-						<!-- 分页 -->
-						<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-							:current-page="pageInfo.currentPage" :page-sizes="[5, 10, 15, 20]"
-							:page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper"
-							:total="pageInfo.total" class="el-block-showtable-one-s">
-						</el-pagination>
-					</div>
-				</div>
-			</div>
-		</el-col>
-	</el-row>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>课段设置</el-breadcrumb-item>
+	</el-breadcrumb>
+	<div style="margin-left: -1160px;margin-top: 10px;">
+		<el-button @click="addTrainingPeriod()" type="primary" size="mini" plain style="margin-bottom: 10px;">+ 课段
+		</el-button>
+	</div>
+	<div>
+		<div>
+			<el-table :data="TrainingPeriodData" border style="width: 100%" @selection-change="handleSelectionChange()"
+				ref="multipleTable">
+				<el-table-column type="selection" min-width="60">
+				</el-table-column>
+				<el-table-column type="index" min-width="60" align="center" :index="indexMethod" label="编号">
+				</el-table-column>
+				<el-table-column min-width="60" prop="period" width="800" label="培训时段" align="center">
+				</el-table-column>
+				<el-table-column label="操作" align="center">
+					<template #default="scope">
+						<el-button @click="showEdit(scope.row)" type="text" size="small">
+							<i class="el-icon-edit"></i>修改
+						</el-button>
+						<el-button @click="delSelectAllTrainingPeriod(scope.row)" type="text" size="small">
+							<i class="el-icon-edit"></i>
+							删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
+		<div class="block">
+			<!-- 分页 -->
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				:current-page="pageInfo.currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pageInfo.pagesize"
+				layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total"
+				class="el-block-showtable-one-s">
+			</el-pagination>
+		</div>
+	</div>
 	<!-- 弹窗 -->
-	<el-dialog title="增加课类信息" v-model="dialogVisible" width="30%" :before-close="handleClose">
+	<el-dialog title="增加课段信息" v-model="dialogVisible" width="30%" :before-close="handleClose">
 		<el-form :model="TrainingPeriod" :rules="rules" ref="TrainingPeriod" label-width="100px" class="demo-ruleForm">
 			<el-form-item label="培训时段:" prop="period">
 				<el-input v-model="TrainingPeriod.period" placeholder="请输入培训时段"></el-input>
@@ -78,7 +50,7 @@
 			</el-form-item>
 		</el-form>
 	</el-dialog>
-	<el-dialog title="修改课类信息" v-model="dialogVisible2" width="30%" :before-close="handleClose">
+	<el-dialog title="修改课段信息" v-model="dialogVisible2" width="30%" :before-close="handleClose">
 		<el-form :model="TrainingPeriod" :rules="rules" ref="TrainingPeriod" label-width="100px" class="demo-ruleForm">
 			<el-form-item label="培训时段:" prop="period">
 				<el-input v-model="TrainingPeriod.period" placeholder="请输入培训时段"></el-input>
@@ -181,12 +153,13 @@
 				this.$refs[TrainingPeriod].validate((valid) => {
 					if (valid) {
 						const _this = this
-						this.axios.put("http://localhost:8089/tsm/updateByTrainingPeriodKey", this.TrainingPeriod, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							})
+						this.axios.put("http://localhost:8089/tsm/updateByTrainingPeriodKey", this
+								.TrainingPeriod, {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
 							.then(function(response) {
 								_this.dialogVisible2 = false
 								_this.FindTrainingPeriod();
@@ -227,7 +200,7 @@
 			handleCurrentChange(page) {
 				var _this = this
 				this.pageInfo.currentPage = page;
-				this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod",{
+				this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod", {
 						params: this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
@@ -263,7 +236,7 @@
 			FindTrainingPeriod() {
 				var _this = this
 				console.log(this.pageInfo.currentPage, this.pageInfo.pagesize)
-				this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod",{
+				this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod", {
 						params: this.pageInfo,
 						headers: {
 							'content-type': 'application/json',
@@ -282,7 +255,7 @@
 		created() {
 			var _this = this
 			console.log(this.pageInfo.currentPage, this.pageInfo.pagesize)
-			this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod",{
+			this.axios.get("http://localhost:8089/tsm/selectAllTrainingPeriod", {
 					params: this.pageInfo,
 					headers: {
 						'content-type': 'application/json',

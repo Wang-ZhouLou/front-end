@@ -27,7 +27,7 @@
 							接待人: <el-input v-model="this.$store.state.userInfo.userName"
 								style="margin-right: 142px; width: 190px;" disabled>
 							</el-input>
-							联系电话: <el-input maxlength="11" oninput="value=value.replace(/[^\d]/g,'')"
+							联系电话: <el-input maxlength="11" mini=11 oninput="value=value.replace(/[^\d]/g,'')"
 								v-model="form.phone" style="width: 190px;"></el-input>
 						</div>
 						<div style="margin: 16px 0 0 30px;">
