@@ -1,4 +1,8 @@
 <template>
+	<el-breadcrumb separator-class="el-icon-arrow-right">
+		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+		<el-breadcrumb-item>复课管理</el-breadcrumb-item>
+	</el-breadcrumb><br>
 	<div>
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
@@ -22,11 +26,11 @@
 			</el-table-column>
 			<el-table-column label="复课编号" prop="backId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentNumber" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			<el-table-column label="课程名称" prop="courseName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			<el-table-column label="班级" prop="classesName" width="140" align="center">
 			</el-table-column>
 			<el-table-column label="复课时间" prop="backTime" width="150" align="center">
 			</el-table-column>
@@ -66,6 +70,42 @@
 <script>
 	export default {
 		methods: {
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.backData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
+				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.backData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			showEdit(row) {
 				this.form.backReason = row.backReason
 				this.dialogFormVisible2 = true
@@ -169,6 +209,40 @@
 						}).catch(function(error) {
 									console.log(error)
 								})
+								
+					this.axios.post("http://localhost:8089/tsm/addRefund", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
+							.then(function(response) {
+								
+								if(response.data.code==200){
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								}else if(response.data.code==600){
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({path: '/login'})
+								}else if(response.data.code=='601'){
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
+							}).catch(function(error) {
+								console.log(error)
+							})
 					// this.updateSuspend_Approval1(row);
 
 				}).catch(() => {
@@ -198,7 +272,7 @@
 				formLabelWidth: '120px',
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 10,
+					pagesize: 8,
 					total: 0
 
 				}
@@ -219,47 +293,47 @@
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
 						_this.backData = response.data.list
-						_this.pageInfo.total = response.data
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					console.log("+++++++++++++++++++++++++++++++++++")
-					console.log(response)
+				// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+				// 	headers: {
+				// 		'content-type': 'application/json',
+				// 		'jwtAuth': _this.$store.getters.token
+				// 	}
+				// })
+				// .then(function(response) {
+				// 	console.log("+++++++++++++++++++++++++++++++++++")
+				// 	console.log(response)
 
-					_this.CourseRecorddetailData = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.courseData = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-				this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.ClassesData = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
+				// 	_this.CourseRecorddetailData = response.data
+				// }).catch(function(error) {
+				// 	console.log(error)
+				// })
+				// this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+				// 		headers: {
+				// 			'content-type': 'application/json',
+				// 			'jwtAuth': _this.$store.getters.token
+				// 		}
+				// 	})
+				// 	.then(function(response) {
+				// 		_this.courseData = response.data
+				// 		console.log(response)
+				// 	}).catch(function(error) {
+				// 		console.log(error)
+				// 	})
+				// this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+				// 		headers: {
+				// 			'content-type': 'application/json',
+				// 			'jwtAuth': _this.$store.getters.token
+				// 		}
+				// 	})
+				// 	.then(function(response) {
+				// 		_this.ClassesData = response.data
+				// 	}).catch(function(error) {
+				// 		console.log(error)
+				// 	})
 				
 	}
 	

@@ -83,10 +83,10 @@
 			</template>
 		</el-table-column>
 	</el-table>
-	<div>
+	<div class="block" style="display: flex;justify-content: center;margin-top: 10px;">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-			:current-page="pageInfo.currentPage" :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize"
-			layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+			:current-page="pageInfo.currentPage" :page-sizes="[2, 4, 6, 8]" :page-size="pageInfo.pagesize"
+			layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 		</el-pagination>
 	</div>
 </template>
@@ -101,7 +101,7 @@
 			return {
 				pageInfo: {
 					currentPage: 1, //标识当前页码
-					pagesize: 2, //每页多少条数据
+					pagesize: 8, //每页多少条数据
 					total: 0
 				},
 
@@ -141,7 +141,7 @@
 					console.log(error)
 				})
 
-			this.axios.get("http://localhost:8089/tsm/findPage", {
+			this.axios.get("http://localhost:8089/tsm/selectClasstypeAll", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -163,7 +163,7 @@
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/findPage", {
+				this.axios.get("http://localhost:8089/tsm/selectClasstypeAll", {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -183,7 +183,7 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				console.log(ps) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/findPage", {
+				this.axios.get("http://localhost:8089/tsm/selectClasstypeAll", {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token

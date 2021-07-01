@@ -1,40 +1,40 @@
 <template>
 	<el-breadcrumb separator-class="el-icon-arrow-right">
 		<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-		<el-breadcrumb-item>停课管理</el-breadcrumb-item>
+		<el-breadcrumb-item>转班管理</el-breadcrumb-item>
 	</el-breadcrumb><br>
 	<div>
 		<input type="text" placeholder="输入关键字搜索" v-model="search" />
 		<el-button style="background-color: #009688;color: white;" size="mini">查询</el-button>
 	</div>&nbsp;
 	<div>
-		<el-table :data="suspendData" border style="width: 100%">
+		<el-table :data="shiftData" border style="width: 100%">
 			<el-table-column type="selection" width="55" align="center">
 			</el-table-column>
-			<el-table-column label="停课编号" prop="suspendId" width="80" align="center">
+			<el-table-column label="复课编号" prop="shiftId" width="80" align="center">
 			</el-table-column>
 			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			<el-table-column label="原班级" prop="oldclass" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			<el-table-column label="意向班级" prop="newclass" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="停课时间" prop="suspendTime" width="150" align="center">
+			<el-table-column label="复课时间" prop="shiftTime" width="150" align="center">
 			</el-table-column>
-			<el-table-column label="停课理由" prop="suspendReason" width="140" align="center">
+			<el-table-column label="复课理由" prop="shiftReason" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="停课办理人" prop="suspendHandler" width="140" align="center">
+			<el-table-column label="复课办理人" prop="shiftHandler" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="审核状态" prop="suspendApproval" width="140" align="center">
+			<el-table-column label="审核状态" prop="shiftApproval" width="140" align="center">
 				<template v-slot="scope">
-					<p v-if="scope.row.suspendApproval==0">未审核</p>
-					<p v-if="scope.row.suspendApproval==1">已审核</p>
+					<p v-if="scope.row.shiftApproval==0">未审核</p>
+					<p v-if="scope.row.shiftApproval==1">已审核</p>
 				</template>
 			</el-table-column>
 			<el-table-column fixed="right" label="操作" align="center">
 				<template #default="scope">
-					<el-button @click="updateLearningstate4(scope.row)" type="text" size="small">审核通过</el-button>
-					<el-button @click="deleteSuspend(scope.row)" type="text" size="small">删除</el-button>
+					<el-button @click="updateLearningstate2(scope.row)" type="info" size="small">审核通过</el-button>
+					<el-button @click="deleteShift(scope.row)" type="info" size="small">删除</el-button>
 				</template>
 			</el-table-column>
 
@@ -50,46 +50,14 @@
 </template>
 
 <script>
-	import qs from "qs"
+	
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
-			handleSizeChange(pagesize) {
-				var _this = this
-				this.pageInfo.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo)
-				console.log(ps)
-				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.suspendData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleCurrentChange(currentPage) {
-				var _this = this
-				this.pageInfo.currentPage = currentPage
-				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.suspendData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			deleteSuspend(row) {
+			
+			deleteShift(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -98,7 +66,7 @@
 					type: 'warning'
 				}).then(() => {
 					console.log(row);
-					_this.axios.put("http://localhost:8089/tsm/deleteSuspend", row, {
+					_this.axios.put("http://localhost:8089/tsm/deleteShift", row, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -106,9 +74,9 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							var rows = _this.suspendData
-								.filter(s => s.suspendId != row.suspendId)
-							_this.suspendData = rows
+							var rows = _this.shiftData
+								.filter(s => s.shiftId != row.shiftId)
+							_this.shiftData = rows
 							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
 							console.log(error)
@@ -117,10 +85,10 @@
 					this.$message({
 						type: 'error',
 						message: '取消删除!'
-					});
-				});
+					})
+				})
 			},
-			updateLearningstate4(row) {
+			updateLearningstate2(row) {
 				const _this = this
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将审批学员, 是否继续?', '提示', {
@@ -129,8 +97,8 @@
 					type: 'warning'
 				}).then(() => {
 
-					console.log(row.courserecorddetailsVo.courserecorddetailsId);
-					this.axios.put("http://localhost:8089/tsm/updateLearningstate4", row.courserecorddetailsVo, {
+					console.log(row);
+					this.axios.put("http://localhost:8089/tsm/updateLearningstate2", row.courserecorddetailsVo, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -138,14 +106,11 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							// console.log("+++++++++++++++++++++")
-							// console.log(row)
-
-							//_this.dropData = rows
+							
 						}).catch(function(error) {
 							console.log(error)
 						})
-						this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
+						this.axios.put("http://localhost:8089/tsm/appShift_Approval1", row, {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
@@ -154,6 +119,39 @@
 							console.log(response)
 							
 						})
+						
+						this.axios.put("http://localhost:8089/tsm/updatecourserecorddetails", row, {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							}).then(function(response) {
+								
+							if(response.data.code==200){
+								ElMessage.success({
+									message: response.data.data,
+									type: 'success'
+								});
+							}else if(response.data.code==600){
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+								_this.$router.push({path: '/login'})
+							}else if(response.data.code=='601'){
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}else {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}
+							
+						})
+						
 						// .catch(function(error) {
 						// 			console.log(error)
 						// 		})
@@ -217,13 +215,11 @@
 					// 	})
 						
 			// }
-			// selectAllDrop() {
-				
-			// }
+			
 		},
 		data() {
 			return {
-				suspendData: [],
+				shiftData: [],
 
 				CourseRecorddetailData: [],
 
@@ -235,7 +231,7 @@
 				formLabelWidth: '120px',
 				pageInfo: {
 					currentPage: 1,
-					pagesize: 8,
+					pagesize: 10,
 					total: 0
 
 				}
@@ -245,18 +241,18 @@
 			created() {
 				
 				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+				this.axios.get("http://localhost:8089/tsm/selectAllShifts", {
 
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						},
-						params: this.pageInfo
+						params: _this.pageInfo
 					})
 					.then(function(response) {
 						console.log("+++++++++++++++++++++++++++++++++++")
 						console.log(response)
-						_this.suspendData = response.data.list
+						_this.shiftData = response.data.list
 						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
