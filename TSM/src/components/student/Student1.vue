@@ -385,7 +385,7 @@
 	<el-table border @selection-change="handleSelectionChange" :data="StudentData" style="margin-top: 20px;">
 		<el-table-column type="selection" align="center" width="55">
 		</el-table-column>
-		<el-table-column label="编号" align="center" prop="studentId">
+		<el-table-column label="学号" align="center" prop="studentNumber">
 		</el-table-column>
 		<el-table-column label="报名日期" align="center" prop="studytime">
 		</el-table-column>
@@ -395,20 +395,20 @@
 		</el-table-column>
 		<el-table-column label="联系电话" align="center" prop="studentPhone">
 		</el-table-column>
-		<el-table-column label="状态" align="center" prop="">
+		<!-- <el-table-column label="状态" align="center" prop="">
 			<template v-slot="slot">
 				<p v-if="slot.row.attentstate==0||slot.row.attentstate==1"><i class="el-icon-user-solid"></i>
 				</p>
 				<p v-if="slot.row.attentstate==2"><i class="el-icon-check"></i></p>
 			</template>
-		</el-table-column>
+		</el-table-column> -->
 		<el-table-column label="操作" align="center" width="250">
 			<template v-slot="scope">
 				<div style="display:flex;justify-content:center">
 					<el-button size="mini" type="info" @click="showEdit2(scope.row)">补报</el-button>
 					<el-button size="mini" type="info" @click="showEdit(scope.row)">编辑</el-button>
 					<el-button type="info" size="mini" @click="selectAllCourseRecorddetails(scope.row)">详情</el-button>
-					<el-button type="info" size="mini" @click="delete1(scope.row)">删除</el-button>
+					<el-button type="info" size="mini">删除</el-button>
 				</div>
 			</template>
 		</el-table-column>
@@ -519,6 +519,30 @@
 					'jwtAuth': _this.$store.getters.token
 				}
 			}).then(function(response) {
+				if (response.data.code == 200) {
+					ElMessage.success({
+						message: response.data.data,
+						type: 'success'
+					});
+				} else if (response.data.code == 600) {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+					_this.$router.push({
+						path: '/login'
+					})
+				} else if (response.data.code == '601') {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				} else {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				}
 				console.log(response)
 				_this.dialogFormVisible32 = false
 			}).catch(function(error) {
@@ -566,6 +590,30 @@
 					'jwtAuth': _this.$store.getters.token
 				}
 			}).then(function(response) {
+				if (response.data.code == 200) {
+					ElMessage.success({
+						message: response.data.data,
+						type: 'success'
+					});
+				} else if (response.data.code == 600) {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+					_this.$router.push({
+						path: '/login'
+					})
+				} else if (response.data.code == '601') {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				} else {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				}
 				console.log(response)
 				_this.dialogFormVisible12 = false
 			}).catch(function(error) {
@@ -755,6 +803,30 @@
 					}
 				})
 				.then(function(response) { // eslint-disable-line no-unused-vars
+				if (response.data.code == 200) {
+					ElMessage.success({
+						message: response.data.data,
+						type: 'success'
+					});
+				} else if (response.data.code == 600) {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+					_this.$router.push({
+						path: '/login'
+					})
+				} else if (response.data.code == '601') {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				} else {
+					ElMessage.error({
+						message: response.data.message,
+						type: 'success'
+					});
+				}
 					var c = response.data.data
 					console.log(c.courserecordId)
 					_this.courserecordId = c.courserecordId
@@ -770,6 +842,30 @@
 								'jwtAuth': _this.$store.getters.token
 							}
 						}).then(function(response) { // eslint-disable-line no-unused-vars
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
 						_this.refund.courseId = _this.form2.course.courseId
 						console.log(_this.form2.course.courseId)
 						_this.refund.registerId = _this.form.registerId
@@ -1024,7 +1120,62 @@
 					console.log(error)
 				})
 		}
-
+		// delstudent(row) {
+		// 		const _this = this
+		// 		var flag = true // eslint-disable-line no-unused-vars
+		// 		this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+		// 			confirmButtonText: '确定',
+		// 			cancelButtonText: '取消',
+		// 			type: 'warning'
+		// 		}).then(() => {
+		// 			console.log(row);
+		// 			_this.axios.put("http://localhost:8089/tsm/delstudent", row, {
+		// 					headers: {
+		// 						'content-type': 'application/json',
+		// 						'jwtAuth': _this.$store.getters.token
+		// 					}
+		// 				})
+		// 				.then(function(response) {
+		// 					if (response.data.code == 200) {
+		// 						ElMessage.success({
+		// 							message: response.data.data,
+		// 							type: 'success'
+		// 						});
+		// 					} else if (response.data.code == 600) {
+		// 						ElMessage.error({
+		// 							message: response.data.message,
+		// 							type: 'success'
+		// 						});
+		// 						_this.$router.push({
+		// 							path: '/login'
+		// 						})
+		// 					} else if (response.data.code == '601') {
+		// 						ElMessage.error({
+		// 							message: response.data.message,
+		// 							type: 'success'
+		// 						});
+		// 					} else {
+		// 						ElMessage.error({
+		// 							message: response.data.message,
+		// 							type: 'success'
+		// 						});
+		// 					}
+		// 					console.log(response)
+		// 					var rows = _this.StudentData
+		// 						.filter(s => s.studentId != row.studentId)
+		// 					_this.StudentData = rows
+		// 					_this.pageInfo.total = _this.pageInfo.total - 1
+		// 				}).catch(function(error) {
+		// 					console.log(error)
+		// 				})
+		// 		}).catch(() => {
+		// 			this.$message({
+		// 				type: 'error',
+		// 				message: '取消删除!'
+		// 			})
+		// 		})
+		// 	}
+			
 	},
 	created() {
 

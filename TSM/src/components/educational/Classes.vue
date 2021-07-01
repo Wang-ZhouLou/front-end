@@ -6,7 +6,7 @@
 	<div>
 		<div class="crumbs">
 			<font class="ksjs" style="font-size: 13px;">快速检索:</font>&nbsp;
-			<el-input v-model="input" style="width: 140px;" size="mini" placeholder="请输入教室名称"></el-input>&nbsp;
+			<el-input v-model="input" style="width: 140px;" size="mini" placeholder="请输入班级名称"></el-input>&nbsp;
 			<el-button style="background-color: #5FB878;color: white;" size="mini">查询</el-button>
 			<el-button style="background-color: #009688;color: white;width: 50px;" size="mini" type="text"
 				@click="dialogFormVisible = true">增加
@@ -38,7 +38,7 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="班级人数容纳量" :label-width="formLabelWidth">
+					<el-form-item label="开班人数" :label-width="formLabelWidth">
 						<el-input v-model="form.classesSize" type="text" autocomplete="off"></el-input>
 					</el-form-item>
 					<el-form-item label="开班时间" :label-width="formLabelWidth">
@@ -117,13 +117,12 @@
 				</el-table-column>
 				<el-table-column prop="starteddate" label="开班时间" width="150" align="center">
 				</el-table-column>
-				<el-table-column fixed="right" label="操作" align="center" width="200">
+				<el-table-column fixed="right" label="操作" align="center" width="230">
 					<template #default="scope">
-						<el-button @click="updateClassesOpen(scope.row)" type="text" size="small">开报/停报</el-button>
+						<el-button @click="updateClassesOpen1(scope.row)" type="text" size="small">开报</el-button>
+						<el-button @click="updateClassesOpen0(scope.row)" type="text" size="small">停报</el-button>
 						<el-button @click="deleteClasses(scope.row)" type="text" size="small">删除</el-button>
-						<el-button type="info" size="small" @click="showEdit(scope.row)">
-						编辑
-						</el-button>
+						<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -145,6 +144,9 @@
 		ref
 	} from 'vue'
 	import qs from "qs";
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			handleSizeChange(pagesize) {
@@ -183,9 +185,8 @@
 						console.log(error)
 					})
 			},
-			updateClassesOpen(row) {
+			updateClassesOpen1(row) {
 				const _this = this
-				if (this.classesOpen == "0") {
 				this.$confirm('此操作将会将开班, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -203,13 +204,9 @@
 						.catch(function(error) {
 							console.log(error)
 						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消操作!'
-					})
 				})
-				}else if(this.classesOpen == "1") {
+				},
+				updateClassesOpen0(row) {
 				this.$confirm('此操作将会将停班, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -226,13 +223,7 @@
 						.catch(function(error) {
 							console.log(error)
 						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消操作!'
-					})
 				})
-				}
 			},
 			addclasses(){
 				const _this = this
@@ -252,6 +243,30 @@
 								params: _this.pageInfo
 							})
 							.then(function(response) {
+								if (response.data.code == 200) {
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								} else if (response.data.code == 600) {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({
+										path: '/login'
+									})
+								} else if (response.data.code == '601') {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
 								_this.classesData = response.data.list
 								_this.pageInfo.total = response.data.total
 							}).catch(function(error) {
@@ -267,7 +282,6 @@
 			},
 			deleteClasses(row) {
 				const _this = this
-				this.row.deletename=this.$store.state.userInfo.userName;
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -316,6 +330,30 @@
 								params: _this.pageInfo
 							})
 							.then(function(response) {
+								if (response.data.code == 200) {
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								} else if (response.data.code == 600) {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({
+										path: '/login'
+									})
+								} else if (response.data.code == '601') {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
 								_this.classesData = response.data.list
 								_this.pageInfo.total = response.data.total
 							}).catch(function(error) {

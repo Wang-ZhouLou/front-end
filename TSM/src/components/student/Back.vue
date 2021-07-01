@@ -51,7 +51,6 @@
 			<el-table-column fixed="right" label="操作" align="center" width="200">
 				<template #default="scope">
 					<el-button @click="updateLearningstate2(scope.row)" type="text" size="small">审核通过</el-button>
-					<!-- <el-button @click="showEdit(scope.row)" type="text" size="small">修改</el-button> -->
 					<el-button @click="deleteSuspend(scope.row)" type="text" size="small">删除</el-button>
 				</template>
 			</el-table-column>
@@ -68,6 +67,9 @@
 </template>
 
 <script>
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			handleSizeChange(pagesize) {
@@ -101,6 +103,7 @@
 						params: this.pageInfo
 					})
 					.then(function(response) {
+						
 						_this.backData = response.data.list
 					}).catch(function(error) {
 						console.log(error)
@@ -112,7 +115,7 @@
 			},
 			updateBack() { // eslint-disable-line no-unused-vars
 				const _this = this
-				this.form.updatename=this.$store.state.userInfo.userName;
+				this.form.updatename = this.$store.state.userInfo.userName;
 				this.axios.put("http://localhost:8089/tsm/updateBack", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -125,10 +128,34 @@
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								},
-			
+
 								params: this.pageInfo
 							})
 							.then(function(response) {
+								if (response.data.code == 200) {
+									ElMessage.success({
+										message: response.data.data,
+										type: 'success'
+									});
+								} else if (response.data.code == 600) {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+									_this.$router.push({
+										path: '/login'
+									})
+								} else if (response.data.code == '601') {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									ElMessage.error({
+										message: response.data.message,
+										type: 'success'
+									});
+								}
 								_this.backData = response.data.list
 								_this.pageInfo.total = response.data.total
 								//console.log(_this.EnterpriseData[0])
@@ -140,10 +167,9 @@
 						console.log(error)
 					})
 			},
-			
+
 			deleteBack(row) {
 				const _this = this
-				this.row.deletename=this.$store.state.userInfo.userName;
 				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -158,6 +184,30 @@
 							}
 						})
 						.then(function(response) {
+							if (response.data.code == 200) {
+								ElMessage.success({
+									message: response.data.data,
+									type: 'success'
+								});
+							} else if (response.data.code == 600) {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+								_this.$router.push({
+									path: '/login'
+								})
+							} else if (response.data.code == '601') {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							} else {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}
 							console.log(response)
 							var rows = _this.backData
 								.filter(b => b.backId != row.backId)
@@ -191,58 +241,47 @@
 						})
 						.then(function(response) {
 							console.log(response)
-							// console.log("+++++++++++++++++++++")
-							// console.log(row)
+							if (response.data.code == 200) {
+								ElMessage.success({
+									message: response.data.data,
+									type: 'success'
+								});
+							} else if (response.data.code == 600) {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+								_this.$router.push({
+									path: '/login'
+								})
+							} else if (response.data.code == '601') {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							} else {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}
 
-							//_this.dropData = rows
 						}).catch(function(error) {
 							console.log(error)
 						})
-						this.axios.put("http://localhost:8089/tsm/updateBack_Approval", row, {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							}).then(function(response) {
-							console.log(response)
-							
-						}).catch(function(error) {
-									console.log(error)
-								})
-								
-					this.axios.post("http://localhost:8089/tsm/addRefund", {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								}
-							})
-							.then(function(response) {
-								
-								if(response.data.code==200){
-									ElMessage.success({
-										message: response.data.data,
-										type: 'success'
-									});
-								}else if(response.data.code==600){
-									ElMessage.error({
-										message: response.data.message,
-										type: 'success'
-									});
-									_this.$router.push({path: '/login'})
-								}else if(response.data.code=='601'){
-									ElMessage.error({
-										message: response.data.message,
-										type: 'success'
-									});
-								}else {
-									ElMessage.error({
-										message: response.data.message,
-										type: 'success'
-									});
-								}
-							}).catch(function(error) {
-								console.log(error)
-							})
+					this.axios.put("http://localhost:8089/tsm/updateBack_Approval", row, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					}).then(function(response) {
+						console.log(response)
+
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+
 					// this.updateSuspend_Approval1(row);
 
 				}).catch(() => {
@@ -252,7 +291,7 @@
 					// });
 				});
 			},
-			
+
 		},
 		data() {
 			return {
@@ -260,11 +299,11 @@
 
 				CourseRecorddetailData: [],
 
-				courseData:[],
-				ClassesData:[],
-				form:{
-					updatename:"",
-					backReason:""
+				courseData: [],
+				ClassesData: [],
+				form: {
+					updatename: "",
+					backReason: ""
 				},
 				search: '',
 				dialogFormVisible3: false,
@@ -279,66 +318,65 @@
 
 			}
 		},
-			created() {
-				const _this = this
-				this.axios.get("http://localhost:8089/tsm/selectAllBack", {
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/tsm/selectAllBack", {
 
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: _this.pageInfo
-					})
-					.then(function(response) {
-						console.log("+++++++++++++++++++++++++++++++++++")
-						console.log(response)
-						_this.backData = response.data.list
-						_this.pageInfo.total = response.data.total
-					}).catch(function(error) {
-						console.log(error)
-					})
-				// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
-				// 	headers: {
-				// 		'content-type': 'application/json',
-				// 		'jwtAuth': _this.$store.getters.token
-				// 	}
-				// })
-				// .then(function(response) {
-				// 	console.log("+++++++++++++++++++++++++++++++++++")
-				// 	console.log(response)
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: _this.pageInfo
+				})
+				.then(function(response) {
+					console.log("+++++++++++++++++++++++++++++++++++")
+					console.log(response)
+					_this.backData = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+			// 	headers: {
+			// 		'content-type': 'application/json',
+			// 		'jwtAuth': _this.$store.getters.token
+			// 	}
+			// })
+			// .then(function(response) {
+			// 	console.log("+++++++++++++++++++++++++++++++++++")
+			// 	console.log(response)
 
-				// 	_this.CourseRecorddetailData = response.data
-				// }).catch(function(error) {
-				// 	console.log(error)
-				// })
-				// this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
-				// 		headers: {
-				// 			'content-type': 'application/json',
-				// 			'jwtAuth': _this.$store.getters.token
-				// 		}
-				// 	})
-				// 	.then(function(response) {
-				// 		_this.courseData = response.data
-				// 		console.log(response)
-				// 	}).catch(function(error) {
-				// 		console.log(error)
-				// 	})
-				// this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
-				// 		headers: {
-				// 			'content-type': 'application/json',
-				// 			'jwtAuth': _this.$store.getters.token
-				// 		}
-				// 	})
-				// 	.then(function(response) {
-				// 		_this.ClassesData = response.data
-				// 	}).catch(function(error) {
-				// 		console.log(error)
-				// 	})
-				
+			// 	_this.CourseRecorddetailData = response.data
+			// }).catch(function(error) {
+			// 	console.log(error)
+			// })
+			// this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		_this.courseData = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
+			// this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		_this.ClassesData = response.data
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
+
+		}
+
 	}
-	
-	}
-
 </script>
 
 <style>

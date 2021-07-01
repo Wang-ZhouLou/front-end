@@ -4,7 +4,6 @@
 		<el-breadcrumb-item>班级管理</el-breadcrumb-item>
 	</el-breadcrumb><br>
 	<el-button size="mini" @click="dialogFormVisible = true">新增</el-button>
-	<el-button size="mini">开设/停止</el-button>
 	<el-button size="mini" @click="del()" plain>删除</el-button>
 	
 	<el-dialog title="开设课程" v-model="dialogFormVisible">
@@ -109,9 +108,9 @@
 <script>
 	import qs from 'qs' // eslint-disable-line no-unused-vars
 	// import ref from 'vue' 
-	// import {
-	// 	ElMessage
-	// } from 'element-plus'
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		data() {
 			return {

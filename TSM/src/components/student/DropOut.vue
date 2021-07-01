@@ -13,11 +13,11 @@
 			</el-table-column>
 			<el-table-column label="退学编号" prop="dropId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentNumber" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			<el-table-column label="课程名称" prop="courseName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			<el-table-column label="班级" prop="classesName" width="140" align="center">
 			</el-table-column>
 			<el-table-column label="退学时间" prop="dropRime" width="150" align="center">
 			</el-table-column>
@@ -25,13 +25,13 @@
 			</el-table-column>
 			<el-table-column label="退学办理人" prop="dropHandler" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="退费状态" prop="ispay" width="140" align="center">
+			<!-- <el-table-column label="退费状态" prop="ispay" width="140" align="center">
 				<template v-slot="scope">
 					<p v-if="scope.row.ispay==0">未退费</p>
 					<p v-if="scope.row.ispay==1">待退费</p>
 					<p v-if="scope.row.ispay==2">已退费</p>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column label="审核状态" prop="jwApproval" width="140" align="center">
 				<template v-slot="scope">
 					<p v-if="scope.row.jwApproval==0">未审核</p>
@@ -58,6 +58,9 @@
 
 <script>
 	import qs from "qs"
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			handleSizeChange(pagesize) {
@@ -158,19 +161,43 @@
 							'jwtAuth': _this.$store.getters.token
 						}
 					})
-					//新增退费记录
-					this.refund.dropId = row.dropId
-					this.refund.courseId = row.courseId
-					this.refund.detailcourseId = row.detailcourseId
-					this.refund.classesId = row.classesId
-					this.refund.addname = this.$store.state.userInfo.userName;
-					this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						})
+					// //新增退费记录
+					// this.refund.dropId = row.dropId
+					// this.refund.courseId = row.courseId
+					// this.refund.detailcourseId = row.detailcourseId
+					// this.refund.classesId = row.classesId
+					// this.refund.addname = this.$store.state.userInfo.userName;
+					// this.axios.post("http://localhost:8089/tsm/addRefund", this.refund, {
+					// 		headers: {
+					// 			'content-type': 'application/json',
+					// 			'jwtAuth': _this.$store.getters.token
+					// 		}
+					// 	})
 						.then(function(response) { // eslint-disable-line no-unused-vars
+						if (response.data.code == 200) {
+							ElMessage.success({
+								message: response.data.data,
+								type: 'success'
+							});
+						} else if (response.data.code == 600) {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+							_this.$router.push({
+								path: '/login'
+							})
+						} else if (response.data.code == '601') {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						} else {
+							ElMessage.error({
+								message: response.data.message,
+								type: 'success'
+							});
+						}
 							console.log(response)
 						}).catch(function(error) {
 							console.log(error)
@@ -256,44 +283,44 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-			this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					console.log("+++++++++++++++++++++++++++++++++++")
-					console.log(response)
+			// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		console.log("+++++++++++++++++++++++++++++++++++")
+			// 		console.log(response)
 
-					_this.CourseRecorddetailData = response.data
-				}).catch(function(error) {
-					console.log(error)
-				})
-			this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					_this.courseData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
-			this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					_this.ClassesData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+			// 		_this.CourseRecorddetailData = response.data
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
+			// this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		_this.courseData = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
+			// this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		_this.ClassesData = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
 
 		}
 	}

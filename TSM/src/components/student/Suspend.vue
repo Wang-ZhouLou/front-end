@@ -13,11 +13,11 @@
 			</el-table-column>
 			<el-table-column label="停课编号" prop="suspendId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentNumber" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="课程名称" prop="courseVo.courseName" width="140" align="center">
+			<el-table-column label="课程名称" prop="courseName" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="班级" prop="classesVo.classesName" width="140" align="center">
+			<el-table-column label="班级" prop="classesName" width="140" align="center">
 			</el-table-column>
 			<el-table-column label="停课时间" prop="suspendTime" width="150" align="center">
 			</el-table-column>
@@ -51,6 +51,9 @@
 
 <script>
 	import qs from "qs"
+	import {
+		ElMessage
+	} from 'element-plus'
 	export default {
 		methods: {
 			handleSizeChange(pagesize) {
@@ -150,7 +153,22 @@
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
 								}
-							}).then(function(response) {
+							})this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
+
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log("+++++++++++++++++++++++++++++++++++")
+						console.log(response)
+						_this.suspendData = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					}).then(function(response) {
 							console.log(response)
 							
 						})
@@ -261,50 +279,45 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-				this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					console.log("+++++++++++++++++++++++++++++++++++")
-					console.log(response)
+				// this.axios.get("http://localhost:8089/tsm/selectAllCourseRecorddetail", {
+				// 	headers: {
+				// 		'content-type': 'application/json',
+				// 		'jwtAuth': _this.$store.getters.token
+				// 	}
+				// })
+				// .then(function(response) {
+				// 	console.log("+++++++++++++++++++++++++++++++++++")
+				// 	console.log(response)
 
-					_this.CourseRecorddetailData = response.data
-					// for(c c:as){
-						
-						
-					// 	c.
-					// }
-					// for
+				// 	_this.CourseRecorddetailData = response.data
 					
-				}).catch(function(error) {
-					console.log(error)
-				})
-				this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.courseData = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-				this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						_this.ClassesData = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
+					
+				// }).catch(function(error) {
+				// 	console.log(error)
+				// })
+				// this.axios.get("http://localhost:8089/tsm/WJselAllcourse", {
+				// 		headers: {
+				// 			'content-type': 'application/json',
+				// 			'jwtAuth': _this.$store.getters.token
+				// 		}
+				// 	})
+				// 	.then(function(response) {
+				// 		_this.courseData = response.data
+				// 		console.log(response)
+				// 	}).catch(function(error) {
+				// 		console.log(error)
+				// 	})
+				// this.axios.get("http://localhost:8089/tsm/WJselAllclasses", {
+				// 		headers: {
+				// 			'content-type': 'application/json',
+				// 			'jwtAuth': _this.$store.getters.token
+				// 		}
+				// 	})
+				// 	.then(function(response) {
+				// 		_this.ClassesData = response.data
+				// 	}).catch(function(error) {
+				// 		console.log(error)
+				// 	})
 				
 	}
 	

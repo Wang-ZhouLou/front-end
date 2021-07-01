@@ -13,7 +13,7 @@
 			</el-table-column>
 			<el-table-column label="复课编号" prop="shiftId" width="80" align="center">
 			</el-table-column>
-			<el-table-column label="学号" prop="studentVo.studentId" width="130" align="center">
+			<el-table-column label="学号" prop="studentNumber" width="130" align="center">
 			</el-table-column>
 			<el-table-column label="原班级" prop="oldclass" width="140" align="center">
 			</el-table-column>
@@ -23,18 +23,18 @@
 			</el-table-column>
 			<el-table-column label="复课理由" prop="shiftReason" width="140" align="center">
 			</el-table-column>
-			<el-table-column label="复课办理人" prop="shiftHandler" width="140" align="center">
+			<el-table-column label="复课办理人" prop="shiftHandler" width="130" align="center">
 			</el-table-column>
-			<el-table-column label="审核状态" prop="shiftApproval" width="140" align="center">
+			<el-table-column label="审核状态" prop="approval" width="140" align="center">
 				<template v-slot="scope">
-					<p v-if="scope.row.shiftApproval==0">未审核</p>
-					<p v-if="scope.row.shiftApproval==1">已审核</p>
+					<p v-if="scope.row.approval==0">未审核</p>
+					<p v-if="scope.row.approval==1">已审核</p>
 				</template>
 			</el-table-column>
-			<el-table-column fixed="right" label="操作" align="center">
+			<el-table-column fixed="right" label="操作" align="center" width="140">
 				<template #default="scope">
-					<el-button @click="updateLearningstate2(scope.row)" type="info" size="small">审核通过</el-button>
-					<el-button @click="deleteShift(scope.row)" type="info" size="small">删除</el-button>
+					<el-button @click="updateLearningstate2(scope.row)" type="text" size="small">审核通过</el-button>
+					<el-button @click="deleteShift(scope.row)" type="text" size="small">删除</el-button>
 				</template>
 			</el-table-column>
 
@@ -73,6 +73,30 @@
 							}
 						})
 						.then(function(response) {
+							if (response.data.code == 200) {
+								ElMessage.success({
+									message: response.data.data,
+									type: 'success'
+								});
+							} else if (response.data.code == 600) {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+								_this.$router.push({
+									path: '/login'
+								})
+							} else if (response.data.code == '601') {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							} else {
+								ElMessage.error({
+									message: response.data.message,
+									type: 'success'
+								});
+							}
 							console.log(response)
 							var rows = _this.shiftData
 								.filter(s => s.shiftId != row.shiftId)
@@ -152,24 +176,7 @@
 							
 						})
 						
-						// .catch(function(error) {
-						// 			console.log(error)
-						// 		})
-						// 		this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-						// 			headers: {
-						// 				'content-type': 'application/json',
-						// 				'jwtAuth': _this.$store.getters.token
-						// 			},
-						// 				params: _this.pageInfo
-										
-										
-						// 			})
-						// 			.then(function(response) {
-						// 				console.log("+++++++++++++++++++++++++++++++++++")
-						// 				console.log(response)
-						// 				_this.suspendData = response.data.list
-						// 				_this.pageInfo.total = response.data
-						//			})
+				
 									.catch(function(error) {
 										console.log(error)
 									})
@@ -184,37 +191,7 @@
 					// });
 				});
 			},
-			// updateSuspend_Approval1(row) {
-			// 	const _this = this
-			// 	console.log(params)
-			// 	this.axios.put("http://localhost:8089/tsm/updateSuspend_Approval1", row, {
-			// 			headers: {
-			// 				'content-type': 'application/json',
-			// 				'jwtAuth': _this.$store.getters.token
-			// 			}
-			// 		}).catch(function(error) {
-			// 				console.log(error)
-			// 			})
-					
-					// _this.axios.get("http://localhost:8089/tsm/selectAllSuspends", {
-					// 	headers: {
-					// 		'content-type': 'application/json',
-					// 		'jwtAuth': _this.$store.getters.token
-					// 	},
-					// 		params: _this.pageInfo
-							
-							
-					// 	})
-					// 	.then(function(response) {
-					// 		console.log("+++++++++++++++++++++++++++++++++++")
-					// 		console.log(response)
-					// 		_this.suspendData = response.data.list
-					// 		_this.pageInfo.total = response.data
-					// 	}).catch(function(error) {
-					// 		console.log(error)
-					// 	})
-						
-			// }
+			
 			
 		},
 		data() {
